@@ -2,6 +2,8 @@
 
 This is a book documenting the creation of SongBird, a simple CMS created using Symfony.
 
+The completed project is in [github](https://github.com/bernardpeh/songbird).
+
 I created this project to:
 
 * Illustrate the power of rapid development with Symfony.
@@ -18,9 +20,9 @@ Choosing the best framework for RAD (Rapid Application Development) has been a t
 
 At the time of writing, NodeJS and Rails continue to innovate with PHP closing in fast behind. PHP is the old veteran when comes to web development with the most frameworks in the market. The 2 frameworks that stood out from the pack at the time of writing were Laravel and Symfony. If you are looking to learn a new framework, I highly recommend Symfony because it is one of the more stable modern framework out there. Symfony components have been used by many projects including Drupal and Laravel.
 
-Symfony 2 is a mature framework. A mature framework means that information and libraries don’t get outdated quickly. Adapting quickly to technology can be both good and bad. Rails early days suffered from this. Nothing worked out of the box and googled information was often outdated as many 3rd party libraries were struggling to keep up. If you do not want to spend time troubleshooting system configurations and library dependencies, choose a stable framework that is well supported and documented. You should be spending your precious time learning the software instead.
+Symfony 3 is a mature framework. A mature framework means that information and libraries do not get outdated quickly. Adapting quickly to technology can be both good and bad. Rails early days suffered from this. Nothing worked out of the box and googled information was often outdated as many 3rd party libraries were struggling to keep up. If you do not want to spend time troubleshooting system configurations and library dependencies, choose a stable framework that is well supported and documented. You should be spending your precious time learning the software instead.
 
-Learning a new framework has never been an easy task. Many people follow tutorials in google and read up all the documentation in [Symfony website](http://symfony.com) and still find it challenging to create a simple application. Why? Because there is too much theory and not enough real world practical examples. Worst still, you can get entangled in technical jargons and advance customisations easily. The fact that Symfony is an extremely flexible framework makes it even harder to master because there are so many ways to achieve the same goal. If you are new to MVC (Model-View-Controller) and RAD, you will find that Symfony has a steep learning curve.
+Learning a new framework is never an easy task. Many people follow tutorials in google and read up all the documentation in [Symfony website](http://symfony.com) and still find it challenging to create a simple application. Why? Because there is too much theory and not enough real world practical examples. Worst still, you can get entangled in technical jargons and advance customisations easily. The fact that Symfony is an extremely flexible framework makes it even harder to master because there are so many ways to achieve the same goal. If you are new to MVC (Model-View-Controller) and RAD, you will find that Symfony has a steep learning curve.
 
 This book aims to lower the learning curve by providing a step by step hands-on approach to guide developers who are new to Symfony to build a simple CMS (Let us call it "SongBird") using good industry practice. Hopefully after following all the chapters, your eyes will be opened to RAD and the unlimited possibilities with Symfony. 
 
@@ -38,7 +40,7 @@ We are not building a new CMS and SongBird is not trying to compete in the CMS s
 
 Definitely. SongBird is not just a tutorial project, I use it often as a vanilla framework to kickstart projects. Its a hugh time saver because all common features have been build and configured already. Since I built the software, I have full knowledge of how the software works and know where to customise things should the need arises. 
 
-You can also think of SongBird as a foundation to learn [cmf project](http://cmf.symfony.com/). Once you are comfortable with the basic concepts of building a CMS, you are ready for more complex projects.
+You can also think of SongBird as a foundation to learn cmf. Once you are comfortable with the basic concepts of building a CMS, you are ready for more complex projects.
 
 ## Conventions Used in This Book
 
@@ -91,7 +93,7 @@ or it could mean a comment for you to action like
 
 If you are new to RAD and like to learn Symfony, I recommend you to go through the chapters in sequential order. Every time you are on a new chapter, create a new branch based on the previous chapter and try to add or update the code as suggested in the chapter. For example, you have just finished chapter 4 and going into chapter 5.
 
-Firstly, commit all your changes in chapter 4 first
+Commit all your changes in chapter 4 first.
 
 ```
 -> git commit -m"This is chapter 4 commit comments"
@@ -165,9 +167,9 @@ composer update
 If you are already getting impatient and wants to see a demo of the completed project, you can
 
 ```
--> git clone git@github.com:your_username/songbird.git
--> git checkout chapter_final
+-> git clone https://github.com/bernardpeh/songbird
 -> cd songbird
+-> git checkout chapter_final
 -> vagrant up
 -> cd symfony
 -> composer update
@@ -198,7 +200,7 @@ If you are already getting impatient and wants to see a demo of the completed pr
 
 Now go to http://songbird.app and you should see the homepage.
 
-![songbird cms](images/cms_final.png)
+![](images/cms_final.png)
 
 You can log into the backend using admin:admin
 

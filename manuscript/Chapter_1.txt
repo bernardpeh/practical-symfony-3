@@ -1,7 +1,5 @@
 # Chapter 1: Survival Skills
 
-Many people will tend to say that learning modern day frameworks is easy. The fact is often exactly the opposite and more so if you are not exposed to new web development methodologies.
-
 The 2 biggest Symfony resources on the web at the moment are [The Book](http://symfony.com/doc/current/book/index.html) and [The Cookbook](http://symfony.com/doc/2.7/cookbook/index.html), both on Symfony website. Cudos to Fabien and the team behind the books, making Symfony one of the best documented frameworks out there. Having said that, the content in these 2 books are hard to digest and almost impossible to follow unless you have good foundation in Object Oriented Programming. There are a lot to go through. Even if you are have the skills, you will need enough determination to read them. Even if you finish reading them, you still need to have enough practical experience to digest the theory.
 
 I hope there is really a simple formula to become a Symfony ninja overnight...

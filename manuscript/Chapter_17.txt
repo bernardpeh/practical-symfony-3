@@ -16,22 +16,18 @@ Since SongbirdNestableBundle is going to be decoupled from AppBundle, so we will
 
 **SongbirdNestableBundle**
 
-<table>
-<tr><td><strong>Story Id</strong></td><td><strong>As a</strong></td><td><strong>I</strong></td><td><strong>So that I</strong></td></tr>
-<tr><td>17.1</td><td>test2 user</td><td>want to manage pages</td><td>can update them anytime.</td></tr>
-</table>
+|**Story Id**|**As a**|**I**|**So that I**|
+|17.1|test2 user|want to manage pages|can update them anytime.|
 
-<strong>Story ID 17.1: As test2 user, I want to manage pages, so that I can update them anytime.</strong>
+**Story ID 17.1: As test2 user, I want to manage pages, so that I can update them anytime.**
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>17.11</td><td>List Pages</td><td>I go to /songbird_page</td><td>I should see the why_songbird slug under the about slug</td></tr>
-<tr><td>17.12</td><td>Show contact us page</td><td>I go to /songbird_page/5</td><td>I should see the word "contact_us" and the word "Created"</td></tr>
-<tr><td>17.13</td><td>Reorder home</td><td>I simulate a drag and drop of the home menu to under the about menu and submit the post data to /songbird_page/reorder</td><td>I should see "reordered successfully message" in the response and menus should be updated</td></tr>
-<tr><td>17.14</td><td>Edit home page meta</td><td>I go to edit homepage url and update the menu title of "Home" to "Home1" and click update</td><td>I should see the text "successfully updated" message</td></tr>
-<tr><td>17.15</td><td>Create and delete test pagemeta</td><td>go to /new and fill in details and click "Create" button, then go to test page and click add new meta and fill in the details and click "create" button, then click delete button</td><td>I should see the new page and pagemeta being created and pagemeta deleted</td></tr>
-<tr><td>17.16</td><td>Delete contact us page</td><td>go to /songbird_page/5 and click "Delete" button</td><td>I should see the contact_us slug no longer available in the listing page. Page id 5 should no longer be found in the pagemeta table.</td></tr>
-</table>
+|**Scenario Id**|**Given**|**When**|**Then**|
+|17.11|List Pages|I go to /songbird_page|I should see the why_songbird slug under the about slug|
+|17.12|Show contact us page|I go to /songbird_page/5|I should see the word "contact_us" and the word "Created"|
+|17.13|Reorder home|I simulate a drag and drop of the home menu to under the about menu and submit the post data to /songbird_page/reorder|I should see "reordered successfully message" in the response and menus should be updated|
+|17.14|Edit home page meta|I go to edit homepage url and update the menu title of "Home" to "Home1" and click update|I should see the text "successfully updated" message|
+|17.15|Create and delete test pagemeta|go to /new and fill in details and click "Create" button, then go to test page and click add new meta and fill in the details and click "create" button, then click delete button|I should see the new page and pagemeta being created and pagemeta deleted|
+|17.16|Delete contact us page|go to /songbird_page/5 and click "Delete" button|I should see the contact_us slug no longer available in the listing page. Page id 5 should no longer be found in the pagemeta table.|
 
 ## Create Our Own Bundle Generation Script (Optional)
 

@@ -173,6 +173,7 @@ http://adminer.app/
 No, because the CRUD that we have created automatically didn't know that the password was supposed to be encrypted before inserting into the db. Fortunately, FOSUserBundle has a service container that can help us with this. Don't worry about the word "services" for now as we will cover this in the following chapters.
 
 For the sake of curiousity, let us see all the FOSUserBundle service containers.
+
 ```
 -> app/console debug:container | grep fos
 
@@ -198,7 +199,6 @@ For the sake of curiousity, let us see all the FOSUserBundle service containers.
  fos_user.util.email_canonicalizer                                  FOSUserBundleUtilCanonicalizer
  fos_user.util.token_generator                                      FOSUserBundleUtilTokenGenerator
  fos_user.util.user_manipulator                                     FOSUserBundleUtilUserManipulator
- fos_user.util.username_canonicalizer                               alias for "fos_user.util.email_canonicalizer"
 ```
 
 The logic for all user related actions is stored in FOS\UserBundle\Doctrine\UserManager. The service for that class is fos_user.user_manager. Let us use the service in UserController.php

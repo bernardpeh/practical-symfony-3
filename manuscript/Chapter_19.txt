@@ -17,33 +17,27 @@ Make sure we are in the right branch. Let us branch off from the previous chapte
 
 **19. Page Management**
 
-<table>
-<tr><td><strong>Story Id</strong></td><td><strong>As a</strong></td><td><strong>I</strong></td><td><strong>So that I</strong></td></tr>
-<tr><td>19.1</td><td>an admin</td><td>want to manage pages</td><td>update them anytime.</td></tr>
-<tr><td>19.2</td><td>test1 user</td><td>don't want to manage pages</td><td>don't breach security</td></tr>
-</table>
+|**Story Id**|**As a**|**I**|**So that I**|
+|19.1|an admin|want to manage pages|update them anytime.|
+|19.2|test1 user|don't want to manage pages|don't breach security|
 
-<strong>Story ID 19.1: As an admin, I want to manage pages, so that I can update them anytime.</strong>
+**Story ID 19.1: As an admin, I want to manage pages, so that I can update them anytime.**
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>19.11</td><td>List Pages</td><td>I go to page list url</td><td>I can see 2 elements under the about slug</td></tr>
-<tr><td>19.12</td><td>Show Contact Us Page</td><td>I go to contact_us page</td><td>I should see the word "contact_us" and the word "Created"</td></tr>
-<tr><td>19.13</td><td>Reorder home</td><td>I drag and drop the home menu to under the about menu</td><td>I should see "reordered successfully message" in the response and see 3 items unter the about menu</td></tr>
-<tr><td>19.14</td><td>edit home page meta</td><td>I go to edit homepage url and update the menu title of "Home" to "Home1" and click update</td><td>I should see the ckeditor, locale dropdown with 2 entries only and the text "successfully updated" message upon clicking update</td></tr>
-<tr><td>19.15</td><td>Create and delete test page</td><td>go to page list and click "Add new page" and fill in details and click "Create" button, then go to newly created test page and create 2 new test meta. Delete one testmeta and then delete the whole test page</td><td>I should see the first pagemeta being created and deleted. Then see the second testmeta being deleted when the page is being deleted.</td></tr>
-<tr><td>19.16</td><td>Delete Contact Us Page</td><td>go to contact us page and click "delete"</td><td>I should see that the contact us page and its associate meta being deleted.</td></tr>
-<tr><td>19.17</td><td>Create new page with existing locale</td><td>go to page list and click "Add new pagemeta" and fill in details, select locale as en, page as home and click "Create" button</td><td>I should see an exception.</td></tr>
-</table>
+|**Scenario Id**|**Given**|**When**|**Then**|
+|19.11|List Pages|I go to page list url|I can see 2 elements under the about slug|
+|19.12|Show Contact Us Page|I go to contact_us page|I should see the word "contact_us" and the word "Created"|
+|19.13|Reorder home|I drag and drop the home menu to under the about menu|I should see "reordered successfully message" in the response and see 3 items unter the about menu|
+|19.14|edit home page meta|I go to edit homepage url and update the menu title of "Home" to "Home1" and click update|I should see the ckeditor, locale dropdown with 2 entries only and the text "successfully updated" message upon clicking update|
+|19.15|Create and delete test page|go to page list and click "Add new page" and fill in details and click "Create" button, then go to newly created test page and create 2 new test meta. Delete one testmeta and then delete the whole test page|I should see the first pagemeta being created and deleted. Then see the second testmeta being deleted when the page is being deleted.|
+|19.16|Delete Contact Us Page|go to contact us page and click "delete"|I should see that the contact us page and its associate meta being deleted.|
+|19.17|Create new page with existing locale|go to page list and click "Add new pagemeta" and fill in details, select locale as en, page as home and click "Create" button</td><td>I should see an exception.|
 
-<strong>Story ID 19.2: As test1 user, I don't want to manage pages, so that I dont breach security.</strong>
+**Story ID 19.2: As test1 user, I don't want to manage pages, so that I don't breach security.**
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>19.21</td><td>List pages</td><td>I go to the page management url</td><td>I should get a access denied message</td></tr>
-<tr><td>19.22</td><td>show about us page</td><td>I go to show about us url</td><td>I should get a access denied message</td></tr>
-<tr><td>19.23</td><td>edit about us page</td><td>I go to edit about us url</td><td>I should get a access denied message</td></tr>
-</table>
+|**Scenario Id**|Given**|**When**|**Then**|
+|19.21|List pages|I go to the page management url|I should get a access denied message|
+|19.22|show about us page|I go to show about us url|I should get a access denied message|
+|19.23|edit about us page|I go to edit about us url|I should get a access denied message|
 
 ## Adding new image field to PageMeta Entity
 

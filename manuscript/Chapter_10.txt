@@ -40,62 +40,50 @@ Let us define the user stories for this chapter. We will define the user stories
 
 We will break the individual story down with user scenarios.
 
-<strong>Story ID 10.1: As a test1 user, I want to login, so that I can access admin functions.</strong>
+**Story ID 10.1: As a test1 user, I want to login, so that I can access admin functions.**
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>10.1.1</td><td>Wrong login credentials</td><td>I login with the wrong credentials</td><td>I should see an error message</td></tr>
-<tr><td>10.1.2</td><td>See my dashboard content</td><td>I login correctly</td><td>I should see Access Denied</td></tr>
-<tr><td>10.1.3</td><td>Logout successfully</td><td>I go to the logout url</td><td>I should be redirected to the home page</td></tr>
-<tr><td>10.1.4</td><td>Acess admin url without logging in</td><td>go to admin url without logging in</td><td>I should be redirected to the login page</td></tr>
-</table>
+|**Scenario Id**|**Given**|**When**|**Then**|
+|10.1.1|Wrong login credentials|I login with the wrong credentials|I should see an error message|
+|10.1.2|See my dashboard content|I login correctly|I should see Access Denied|
+|10.1.3|Logout successfully|I go to the logout url|I should be redirected to the home page|
+|10.1.4|Access admin url without logging in|go to admin url without logging in|I should be redirected to the login page|
 
-<strong>Story ID 10.2: As a admin user, I want to login, so that I can access admin functions.</strong>
+**Story ID 10.2: As a admin user, I want to login, so that I can access admin functions.**
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>10.2.1</td><td>Wrong login credentials</td><td>I login with the wrong credentials</td><td>I should see an error message</td></tr>
-<tr><td>10.2.2</td><td>See my dashboard content</td><td>I login correctly</td><td>I should see the text User Management</td></tr>
-<tr><td>10.2.3</td><td>Logout successfully</td><td>I go to the logout url</td><td>I should be redirected to the home page</td></tr>
-<tr><td>10.2.4</td><td>Acess admin url without logging in</td><td>go to admin url without logging in</td><td>I should be redirected to the login page</td></tr>
-</table>
+|**Scenario Id**|**Given**|**When**|**Then**|
+|10.2.1|Wrong login credentials|I login with the wrong credentials|I should see an error message|
+|10.2.2|See my dashboard content|I login correctly|I should see the text User Management|
+|10.2.3|Logout successfully| go to the logout url|I should be redirected to the home page|
+|10.2.4|Access admin url without logging in|go to admin url without logging in|I should be redirected to the login page|
 
-<strong>Story ID 10.3: As a test3 user, I don't want to login successfully, so that I can prove that this account is disabled.</strong>
+**Story ID 10.3: As a test3 user, I don't want to login successfully, so that I can prove that this account is disabled.**
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>10.3.1</td><td>Account disabled</td><td>I login with the right credentials</td><td>I should see an "account disabled" message</td></tr>
-</table>
+|**Scenario Id**|**Given**|**When**|**Then**|
+|10.3.1|Account disabled|I login with the right credentials|I should see an "account disabled" message|
 
-<strong>Story ID 10.4: As a test1 user, I want to manage my profile, so that I can update it any time.</strong>
+**Story ID 10.4: As a test1 user, I want to manage my profile, so that I can update it any time.**
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>10.4.1</td><td>Show my profile</td><td>I go to "/admin/?action=show&entity=User&id=2"</td><td>I should see test1@songbird.app</td></tr>
-<tr><td>10.4.2</td><td>Hid uneditable fields</td><td>I go to "/admin/?action=edit&entity=User&id=2"</td><td>I should not see enabled, locked and roles fields</td></tr>
-<tr><td>10.4.3</td><td>Update Firstname Only</td><td>I go to "/admin/?action=edit&entity=User&id=2" And update firstname only And Submit</td><td>I should see content updated</td></tr>
-<tr><td>10.4.4</td><td>Update Password Only</td><td>I go to "/admin/?action=edit&entity=User&id=2" And update password And Submit And Logout And Login Again</td><td>I should see content updated And be able to login with the new password</td></tr>
-</table>
+|**Scenario Id**|Given**|**When**|Then**|
+|10.4.1|Show my profile|I go to "/admin/?action=show&entity=User&id=2"|I should see test1@songbird.app|
+|10.4.2|Hid uneditable fields|I go to "/admin/?action=edit&entity=User&id=2"|I should not see enabled, locked and roles fields|
+|10.4.3|Update Firstname Only|I go to "/admin/?action=edit&entity=User&id=2" And update firstname only And Submit|I should see content updated|
+|10.4.4|Update Password Only|I go to "/admin/?action=edit&entity=User&id=2" And update password And Submit And Logout And Login Again|I should see content updated And be able to login with the new password|
 
-<strong>Story ID 10.5: As a test1 user, I don't want to manage other profiles, so that I don't breach security.</strong>
+**Story ID 10.5: As a test1 user, I don't want to manage other profiles, so that I don't breach security.**
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>10.5.1</td><td>List all profiles</td><td>I go to "/admin/?action=list&entity=User" url</td><td>I should get an "access denied" error.</td></tr>
-<tr><td>10.5.2</td><td>Show test2 profile</td><td>I go to "/admin/?action=show&entity=User&id=3"</td><td>I should get an "access denied" error.</td></tr>
-<tr><td>10.5.3</td><td>Edit test2 user profile</td><td>I go to "/admin/?action=edit&entity=User&id=3"</td><td>I should get an "access denied" error</td></tr>
-<tr><td>10.5.4</td><td>See admin dashboard content</td><td>I login correctly</td><td>I should not see User Management Text</td></tr>
-</table>
+|**Scenario Id**|**Given**|**When**|**Then**|
+|10.5.1|List all profiles|I go to "/admin/?action=list&entity=User" url|I should get an "access denied" error.|
+|10.5.2|Show test2 profile|I go to "/admin/?action=show&entity=User&id=3"|I should get an "access denied" error.|
+|10.5.3|Edit test2 user profile|I go to "/admin/?action=edit&entity=User&id=3"|I should get an "access denied" error|
+|10.5.4|See admin dashboard content|I login correctly|I should not see User Management Text|
 
-<strong>Story ID 10.6: As an admin user, I want to manage all users, so that I can control user access of the system.</strong>
+**Story ID 10.6: As an admin user, I want to manage all users, so that I can control user access of the system.**
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>10.6.1</td><td>List all profiles</td><td>I go to "/admin/?action=list&entity=User" url</td><td>I should see a list of all users in a table</td></tr>
-<tr><td>10.6.2</td><td>Show test3 user</td><td>I go to "/admin/?action=show&entity=User&id=4" url</td><td>I should see test3 user details</td></tr>
-<tr><td>10.6.3</td><td>Edit test3 user</td><td>I go to "/admin/?action=edit&entity=User&id=4" url And update lastname</td><td>I should see test3 lastname updated on the "List all users" page</td></tr>
-<tr><td>10.6.4</td><td>Create and Delete new user</td><td>I got to "/admin/?action=new&entity=User" And fill in the required fields And Submit And Delete the new user</td><td>I should see the new user created and deleted again in the listing page.</td></tr>
-</table>
+|**Scenario Id**|**Given**|**When**|**Then|
+|10.6.1|List all profiles|I go to "/admin/?action=list&entity=User" url|I should see a list of all users in a table|
+|10.6.2|Show test3 user|I go to "/admin/?action=show&entity=User&id=4" url|I should see test3 user details|
+|10.6.3|Edit test3 user|I go to "/admin/?action=edit&entity=User&id=4" url And update lastname|I should see test3 lastname updated on the "List all users" page|
+|10.6.4|Create and Delete new user|I got to "/admin/?action=new&entity=User" And fill in the required fields And Submit And Delete the new user|I should see the new user created and deleted again in the listing page.|
 
 ## Creating the Cest Class
 

@@ -10,28 +10,22 @@ There is a popular [loggable doctrine extension](https://github.com/Atlantic18/D
 
 **15. Logging User Activitiy**
 
-<table>
-<tr><td><strong>Story Id</strong></td><td><strong>As a</strong></td><td><strong>I</strong></td><td><strong>So that I</strong></td></tr>
-<tr><td>15.1</td><td>admin user</td><td>want to manage user logs</td><td>check on user activity anytime.</td></tr>
-<tr><td>15.2</td><td>test1 user</td><td>don't want to manage user logs</td><td>don't breach security</td></tr>
-</table>
+|**Story Id**|**As a**|**I**|**So that I**|
+|15.1|admin user|want to manage user logs|check on user activity anytime.|
+|15.2|test1 user|don't want to manage user logs|don't breach security|
 
-<strong>Story ID 15.1: As an admin, I want to manage user logs, so that I can check on user activity anytime.</strong>
+**Story ID 15.1: As an admin, I want to manage user logs, so that I can check on user activity anytime.**
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>15.1.1</td><td>List user log</td><td>I click on user log on the left menu</td><td>I should see more than 1 row in the table</td></tr>
-<tr><td>15.1.2</td><td>Show user log 1</td><td>I go to the first log entry</td><td>I should see the text "/admin/dashboard"</td></tr>
-</table>
+|**Scenario Id**|**Given**|**When**|**Then**|
+|15.1.1|List user log|I click on user log on the left menu|I should see more than 1 row in the table|
+|15.1.2|Show user log 1|I go to the first log entry|I should see the text "/admin/dashboard"|
 
-<strong>Story ID 15.2: As test1 user, I don't want to manage user logs, so that I dont breach security.</strong>
+**Story ID 15.2: As test1 user, I don't want to manage user logs, so that I don't breach security.**
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>15.2.1</td><td>List user log</td><td>I go to the user log url</td><td>I should get an access denied message</td></tr>
-<tr><td>15.2.2</td><td>Show log 1</td><td>I go to the show log id 1 url</td><td>I should get an access denied message</td></tr>
-<tr><td>15.2.3</td><td>Edit log 1</td><td>I go to the edit log id 1 url</td><td>I should get an access denied message</td></tr>
-</table>
+|**Scenario Id**|**Given**|**When**|**Then**|
+|15.2.1|List user log|I go to the user log url|I should get an access denied message|
+|15.2.2|Show log 1|I go to the show log id 1 url|I should get an access denied message|
+|15.2.3|Edit log 1|I go to the edit log id 1 url|I should get an access denied message|
 
 ## Implementation
 

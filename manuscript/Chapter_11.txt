@@ -6,17 +6,13 @@ In the previous chapters, we have created the admin area and wrote tests for man
 
 **11. Reset Password**
 
-<table>
-<tr><td><strong>Story Id</strong></td><td><strong>As a</strong></td><td><strong>I</strong></td><td><strong>So that I</strong></td></tr>
-<tr><td>11.1</td><td>test1 user</td><td>want to reset my password without logging in</td><td>have a way to access my account in case I forget or loses my password.</td></tr>
-</table>
+|**Story Id**|**As a**|**I**|**So that I**|
+|11.1|test1 user|want to reset my password without logging in|have a way to access my account in case I forget or loses my password.|
 
-<strong>Story ID 11.1: As a test1 user, I want to be able to reset my password without logging in, so that I have a way to access my account in case I forget or loses my password.</strong>
+**Story ID 11.1: As a test1 user, I want to be able to reset my password without logging in, so that I have a way to access my account in case I forget or loses my password.**
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>11.1.1</td><td>Reset Password Successfully</td><td>I click on forget password in the login page and go through the whole resetting process</td><td>I should be redirected to the dashboard.</td></tr>
-</table>
+|**Scenario Id**|**Given**|**When**|**Then**|
+|11.1.1|Reset Password Successfully|I click on forget password in the login page and go through the whole resetting process|I should be redirected to the dashboard.|
 
 ## Customise the Login Page
 
@@ -235,8 +231,6 @@ Let us add the new request password link
   </div>
 ...
 ```
-
-![](images/login_with_forget_password.png)
 
 By looking at vendors/friendsofsymfony/Resources/views, we can create all the required twig files to override.
 

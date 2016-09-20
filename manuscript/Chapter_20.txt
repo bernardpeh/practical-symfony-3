@@ -10,20 +10,16 @@ Lastly, we'll add a language toggle so that the page can render different langua
 
 **20. Frontend**
 
-<table>
-<tr><td><strong>Story Id</strong></td><td><strong>As a</strong></td><td><strong>I</strong></td><td><strong>So that I</strong></td></tr>
-<tr><td>20.1</td><td>an test3 user</td><td>want to browse the frontend</td><td>I can get the information I want.</td></tr>
-</table>
+|**Story Id**|**As a**|**I**|**So that I**|
+|20.1|test3 user|want to browse the frontend|I can get the information I want.|
 
-<strong>Story ID 20.1: As test3 user, I want to browse the frontend, so that I can get the information I want.</strong>
+**Story ID 20.1: As test3 user, I want to browse the frontend, so that I can get the information I want.**
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>20.11</td><td>Home page is working</td><td>I go to the / or /home</td><td>I can see the jumbotron class and the text "SongBird CMS Demo"</td></tr>
-<tr><td>20.12</td><td>Menus are working</td><td>I mouseover the about menu</td><td>I should see 2 menus under the about menu</td></tr>
-<tr><td>20.13</td><td>Subpages are working</td><td>I click on contact memu</td><td>I should see the text "This project is hosted in"</td></tr>
-<tr><td>20.14</td><td>Login menu is working</td><td>I click on login memu</td><td>I should see 2 menu items only</td></tr>
-</table>
+|**Scenario Id**|**Given**|**When**|**Then**|
+|20.11|Home page is working|I go to the / or /home|I can see the jumbotron class and the text "SongBird CMS Demo"|
+|20.12|Menus are working|I mouseover the about menu|I should see 2 menus under the about menu|
+|20.13|Subpages are working|I click on contact memu|I should see the text "This project is hosted in"|
+|20.14|Login menu is working|I click on login memu|I should see 2 menu items only|
 
 ## Creating the Frontend
 

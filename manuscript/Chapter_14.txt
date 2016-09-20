@@ -6,36 +6,22 @@ Our CMS should allow uploading of files. Let's say we want to allow user to uplo
 
 **Story ID 10.6: As an admin user, I want to manage all users, so that I can control user access of the system.**
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>10.6.1</td><td>List all profiles</td><td>I go show profile page" url</td><td>I should see a list of all users in a table with image fields</td></tr>
-</table>
+|**Scenario Id**|**Given**|**When**|**Then**|
+|10.6.1|List all profiles|I go show profile page" url|I should see a list of all users in a table with image fields|
 
 **Story ID 10.1: As a test1 user, I want to manage my profile, so that I can update it any time.**
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>10.4.1</td><td>Show my profile</td><td>I go to show profile page</td><td>I should see test1@songbird.app and an Image field</td></tr>
-<tr><td>10.4.5</td><td>Delete and Add profile image</td><td>I go to edit profile page And delete profile image and add a new image</td><td>I should see an empty profile, previous profile image gone and then a new one appearing in the file system.</td></tr>
-<tr><td>10.4.6</td><td>Update profile image Only</td><td>I go to edit profile page And update profile image and submit</td><td>I should see user profile updated and previous profile image gone from file system.</td></tr>
-</table>
+|**Scenario Id**|**Given**|**When**|**Then**|
+|10.4.1|Show my profile|I go to show profile page|I should see test1@songbird.app and an Image field|
+|10.4.5|Delete and Add profile image|I go to edit profile page And delete profile image and add a new image|I should see an empty profile, previous profile image gone and then a new one appearing in the file system.|
+|10.4.6|Update profile image Only|I go to edit profile page And update profile image and submit|I should see user profile updated and previous profile image gone from file system.|
 
 ## Install Vich Uploader Bundle
 
-Add the media bundle to composer.json
-```
-# composer.json
-...
-"require": {
-   ...
-   "vich/uploader-bundle": "^1.2"
-...
-```
-
-Then,
+Add the vich uploaded bundle to composer
 
 ```
--> composer update
+-> composer require vich/uploader-bundle ^1.2
 ```
 
 In config.yml, we need to add a few parameters

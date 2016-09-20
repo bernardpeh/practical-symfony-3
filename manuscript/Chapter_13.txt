@@ -8,17 +8,13 @@ What about [Google Translate](http://translate.google.com.au)? Google translate 
 
 **13. Internalisation**
 
-<table>
-<tr><td><strong>Story Id</strong></td><td><strong>As a</strong></td><td><strong>I</strong></td><td><strong>So that I</strong></td></tr>
-<tr><td>13.1</td><td>test1 user</td><td>want to be able to switch language</td><td>can choose my preferred language anytime.</td></tr>
-</table>
+|**Story Id**|**As a**|**I**|**So that I**|
+|13.1|test1 user|want to be able to switch language|can choose my preferred language anytime.|
 
 **Story ID 13.1: As a test1 user, I want to be able to switch language, so that I can choose my preferred language anytime.**
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>13.1.1</td><td>Locale in french</td><td>I login and switch language to french</td><td>I should be able to see the dashboard in french till I switched back to english</td></tr>
-</table>
+|**Scenario Id**|**Given**|**When**|**Then**|
+|13.1.1|Locale in french|I login and switch language to french|I should be able to see the dashboard in french till I switched back to english|
 
 ## Translations for the AppBundle
 
@@ -385,8 +381,6 @@ To see what is going on with the events sequencing,
 ```
 
 Look at the kernel.request section and you should see our custom event listener ranked 7, just above the kernel LocaleListener.
-
-![kernel event dispatcher](images/kernel_event_dispatcher.png)
 
 Can you use the AppSubscriber class that we have created to do the same job?
 

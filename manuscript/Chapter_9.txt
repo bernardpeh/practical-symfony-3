@@ -11,21 +11,7 @@ It wouldn't be fun if we just use the ready made solution. In this and the next 
 As usual, let us add the required bundles in the composer.json file
 
 ```
-# composer.json
-
-"require": }
-    ....
-    "javiereguiluz/easyadmin-bundle": "^1.15"
-    ....
-```
-
-then run composer update
-
-```
--> composer update
-
-# if composer is playing up with memory issues
-# php -d memory_limit=-1 path_to_composer update
+-> composer require javiereguiluz/easyadmin-bundle ^1.15
 ```
 
 and remember to activate the required bundles in AppKernel.php

@@ -28,15 +28,13 @@ Let us define the user stories for this chapter. We will define the user stories
 
 **User Story 10: User Management**
 
-<table>
-<tr><td><strong>Story Id</strong></td><td><strong>As a</strong></td><td><strong>I</strong></td><td><strong>So that I</strong></td></tr>
-<tr><td>10.1</td><td>test1 user</td><td>want to login</td><td>can access admin functions</td></tr>
-<tr><td>10.2</td><td>admin user</td><td>want to login</td><td>can access admin functions</td></tr>
-<tr><td>10.3</td><td>test3 user</td><td>don't want to login</td><td>can prove that this account is disabled</td></tr>
-<tr><td>10.4</td><td>test1 user</td><td>want to manage my own profile</td><td>can update it any time</td></tr>
-<tr><td>10.5</td><td>test1 user</td><td>dont't want to manage other profiles</td><td>don't breach security</td></tr>
-<tr><td>10.6</td><td>admin user</td><td>want to manage all users</td><td>can control user access of the system</td></tr>
-</table>
+|**Story Id**|**As a**|**I**|**So that I**|
+|10.1|test1 user|want to login|can access admin functions|
+|10.2|admin user|want to login|can access admin functions|
+|10.3|test3 user|don't want to login|can prove that this account is disabled|
+|10.4|test1 user|want to manage my own profile|can update it any time|
+|10.5|test1 user|dont't want to manage other profiles|don't breach security|
+|10.6|admin user|want to manage all users|can control user access of the system|
 
 ## User Scenarios
 

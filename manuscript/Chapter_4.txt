@@ -15,6 +15,11 @@ I will be writing acceptance tests in most cases. There are many frameworks for 
 ## Installation
 
 ```
+-> composer require codeception/codeception ~2.1 --dev
+```
+
+If everything is working, you will see composer adding the dependency in composer.json
+
 # composer.json
 
 # add the codeception line under require-dev

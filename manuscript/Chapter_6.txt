@@ -15,25 +15,13 @@ Make sure we are in the right branch. Let us branch off from the previous chapte
 Add the bundle in composer.json
 
 ```
-# composer.json
-...
-"require": {
-    ....
-    "friendsofsymfony/user-bundle": "~2.0@dev",
-    ...
-}
+-> composer require friendsofsymfony/user-bundle ~2.0@dev
 ```
 
-and install it
+Note that you can also install the bundle by editing composer.json directly and then
 
 ```
 -> composer update
-```
-
-Note that you can also automate these 2 steps using
-
-```
-composer require friendsofsymfony/user-bundle:~2.0@dev
 
 ```
 

@@ -1,16 +1,16 @@
 # Introduction
 
-This is a book documenting the creation of SongBird, a simple CMS created using Symfony.
+This is a book documenting the creation of SongBird, a simple CMS created using Symfony. The idea was conceptualised in early 2015 but the implementation turned out to be much harder that I thought. I had to upgrade Symfony from 2 to 3 and dropped SonataAdmin in favor of EasyAdmin when I was 90% done.
 
-The completed project is in [github](https://github.com/bernardpeh/songbird).
+The project was finally completed in Aug 2016 and the code is hosted [here](https://github.com/bernardpeh/songbird).
 
 I created this project to:
 
 * Illustrate the power of rapid development with Symfony.
 
-* Reduce the learning curve by sharing step-by-step guide to create a simple CMS. This process should be helpful to anyone who wants to dive into Symfony.
+* Reduce the learning curve by sharing step-by-step guide to create a working application. This process should be helpful to anyone who wants to dive into Symfony.
 
-* Kickstart more complex Symfony projects with this application.
+* Kickstart simple Symfony projects with this application.
 
 * Have fun! 
 
@@ -151,6 +151,16 @@ If you are getting errors on bootstrap.php.cache, you can regenerate it easily.
 
 ```
 -> ./vendor/sensio/distribution-bundle/Resources/bin/build_bootstrap.php
+```
+
+## Composer Memory Errors
+
+Refer to [composer troubleshooting guide](https://getcomposer.org/doc/articles/troubleshooting.md) if you have problems using composer.
+
+A common issue is when you get allowed memory exhausted. A quick workaround is
+
+```
+-> php -d memory_limit=-1 path_to_composer update
 ```
 
 ## Reinstalling Symfony

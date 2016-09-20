@@ -5,21 +5,9 @@ As of now, we could create and manage users via the command line (app/console fo
 ## Install DoctrineFixturesBundle
 
 Install via composer
-```
-# composer.json
-
-...
-"require-dev": {
-    ...
-    "doctrine/doctrine-fixtures-bundle": "^2.3"
-    ...
-}
-```
-
-and run
 
 ```
--> composer update
+-> composer doctrine/doctrine-fixtures-bundle ^2.3 --dev
 ```
 
 Now that the data-fixtures-bundle is installed, we can update the kernel.

@@ -16,4 +16,4 @@ I started this project to:
 
 * Have fun!
 
-I hope you have fun creating your own version of SongBird.
+I hope you have fun creating your own version of SongBird by following the exercises in this book.

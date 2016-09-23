@@ -404,9 +404,9 @@ $I->waitForElement('//div[contains(@class, "alert-success")]');
 $I->canSeeElement('//div[contains(@class, "alert-success")]');
 ```
 
-We have only written the BDD tests for user story 10.6. Are you ready to write acceptance test for the other user stories?
+We have only written the BDD tests for user story 10.6. Are you ready to write acceptance tests for the other user stories?
 
-Writing test can be a boring process but essential if you want your software to be robust. A tip to note is that every scenario must have a closure so that it is self-contained. The idea is that you can run a test scenario by itself without affecting the rest of the scenarios. For example, if you change a password in a scenario, you have to remember to change it back so that you can run the next test without worrying that the password has been changed. There are several ways you can achieve this. How can you do it such that it doesn't affect performance?
+Writing tests can be a boring process but essential if you want your software to be robust. A tip to note is that every scenario must have a closure so that it is self-contained. The idea is that you can run a test scenario by itself without affecting the rest of the scenarios. For example, if you change a password in a scenario, you have to remember to change it back so that you can run the next test without worrying that the password has been changed. Alternatively, you could reset the db after every test but this would make running all the tests longer.  There are also other ways you can achieve this. How can you do it such that it doesn't affect performance?
 
 The workflow in this book is just one of many ways to write BDD tests. At the time of writing, many people uses [behat](http://docs.behat.org/en/v3.0/).
 

@@ -1,6 +1,6 @@
 # Chapter 1: Survival Skills
 
-The 2 biggest Symfony resources on the web at the moment are [The Book](http://symfony.com/doc/current/book/index.html) and [The Cookbook](http://symfony.com/doc/2.7/cookbook/index.html), both on Symfony website. Cudos to Fabien and the team behind the books, making Symfony one of the best documented frameworks out there. Having said that, the content in these 2 books are hard to digest and almost impossible to follow unless you have good foundation in Object Oriented Programming. There are a lot to go through. Even if you are have the skills, you will need enough determination to read them. Even if you finish reading them, you still need to have enough practical experience to digest the theory.
+The 2 biggest Symfony resources on the web at the moment are "The Book" and "The Cookbook", both can be downloaded from [Symfony Documentation Page](http://symfony.com/doc/current/index.html). Cudos to Fabien and the team behind the books, making Symfony one of the best documented frameworks out there. Having said that, the content in these 2 books are hard to digest and almost impossible to follow unless you have good foundation in Object Oriented Programming. There are a lot to go through. Even if you are have the skills, you will need enough determination to read them. Even if you finish reading them, you still need to have enough practical experience to digest the theory.
 
 I hope there is really a simple formula to become a Symfony ninja overnight...
 
@@ -9,7 +9,7 @@ I hope there is really a simple formula to become a Symfony ninja overnight...
 You will need to equip yourself before diving in. Ideally, you have
 
 * A good computer. I recommend a modern day *Mac* not more than 4 years old with at least 100G of free space to setup development environment. Mac is fast becoming the new standard for coding. Linux is fine. If you insist in windows, make sure you have command line - [cygwin](https://www.cygwin.com/) is a good option.
-* Good foundation in Computer Science. Experience with PHP and MYSQL is recommended. A good understanding of Object Oriented Programming and relational databases is required.
+* Good foundation in programming. Experience with Object Oriented Programming and relational databases is recommended.
 * Understand Dependency Injection (DI). Fabien wrote a good article about [DI](http://fabien.potencier.org/what-is-dependency-injection.html). DI is the heartbeat of Symfony and most modern day framework.
 * Good source control knowledge, especially Git and Git Flow.
 * Basic HTML, CSS and Javascript knowledge.

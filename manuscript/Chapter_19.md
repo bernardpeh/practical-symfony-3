@@ -2,17 +2,6 @@
 
 In this chapter, we are going to integrate NestablePageBundle with EasyAdminBundle. We are also going to improve the cms by integrating a wysiwyg editor (ckeditor) and create a custom locale dropdown.
 
-## Pre-setup
-
-Make sure we are in the right branch. Let us branch off from the previous chapter.
-
-```
-# check your branch
--> git status
-# start branching now
--> git checkout -b my_chapter19
-```
-
 ## Define User Stories
 
 **19. Page Management**
@@ -149,7 +138,7 @@ vich_uploader:
             namer: vich_uploader.namer_uniqid
 ```
 
-## Installing of CKEditor
+## Installing CKEditor
 
 We will now install CKEditor
 
@@ -181,7 +170,7 @@ and we can now install the styles
 
 ## Integration with EasyAdminBundle
 
-There are still a lot of work to get BpehNestablePageBundle integrate properly with EasyAdminBundle. The reason is because the big difference in controller logic between the 2 bundles.
+There is still some effort to get BpehNestablePageBundle integrate properly with EasyAdminBundle. The reason is because the big difference in controller logic between the 2 bundles.
 
 Let us assume that we not going to use the PageController.php and PageMetaController.php except the reorder route
 
@@ -327,7 +316,7 @@ We now need to add actions to the AdminController
     }
 ```
 
-We then need to update the list views
+and then update the list views
 
 ```
 # src/AppBundle/Resources/views/Page/list.html.twig
@@ -411,7 +400,7 @@ We then need to update the list views
 {% endblock main %}
 ```
 
-and
+not forgetting the nested tree.html.twig
 
 ```
 # src/AppBundle/Resources/views/tree.html.twig
@@ -510,7 +499,7 @@ Noticed the new field type we have used, ie ckeditor, vich_image, and AppBundle\
 
 ## Creating Custom Locale Selector Form Type
 
-If you are looking at the pagemeta page, say http://songbird.app/app_dev.php/admin/?entity=PageMeta&action=new for example, you should have noticed by now that user can enter anything under the locale textbox. What if we want to load only the languages that we defined in the config file (ie, english and french)? It is a good idea to create our own select form type.
+If you are looking at the pagemeta page, say http://songbird.app/app_dev.php/admin/?entity=PageMeta&action=new for example, you should have noticed by now that user can enter anything under the locale textbox. What if we want to load only the languages that we defined in the config file (ie, english and french)? It is a good idea to create our own dropdown.
 
 ```
 # src/AppBundle/Form/LocaleType.php

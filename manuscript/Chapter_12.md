@@ -290,15 +290,12 @@ Try changing admin_path to something else and check if all the routes have been 
 
 Now that we have defined the admin layout, we should add new BDD tests to the dashboard cest to test on the dashboard and left menu.
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>10.1.2</td><td>See my dashboard content</td><td>I login correctly</td><td>I should not see the text "User Management" and should see the text "Dear test1"</td></tr>
+|**Scenario Id**|**Given**|**When**|**Then**|
+|10.1.2|See my dashboard content|I login correctly|I should not see the text "User Management" and should see the text "Dear test1"|
 </table>
 
-<table>
-<tr><td><strong>Scenario Id</strong></td><td><strong>Given</strong></td><td><strong>When</strong></td><td><strong>Then</strong></td></tr>
-<tr><td>10.2.2</td><td>See my dashboard content</td><td>I login correctly</td><td>I should see the text "User Management" and "Dear Admin"</td></tr>
-</table>
+|**Scenario Id**|**Given**|**When**|**Then**|
+|10.2.2|See my dashboard content|I login correctly|I should see the text "User Management" and "Dear Admin"|
 
 Also with the left menu installed, we should be clicking on the links rather than going to the page directly. In all the "cest", replace all amOnPage methods to "click" method.
 

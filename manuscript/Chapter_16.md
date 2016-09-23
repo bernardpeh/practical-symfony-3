@@ -1,6 +1,6 @@
 # Chapter 16: Improving Performance and Troubleshooting
 
-If your site uses a lot of javascript and css, another good optimisation strategy is to merge the css and js into one file. That way, its one http request rather multiple, improving the loading time. There are also tools to find out where bottlenecks are and fix them.
+If your site uses a lot of javascript and css, another good optimisation strategy is to merge the css and js into just one file each. That way, its one http request rather multiple, improving the loading time. There are also tools to find out where bottlenecks are and fix them.
 
 ## Install APC and Blackfire
 
@@ -168,8 +168,7 @@ vendor/bin/codecept run acceptance $@ -c src/AppBundle
 
 ## Minimising JS/CSS
 
-You might have heard of using assetic to manage assets and minimising JS/CSS from [The book](http://symfony.com/doc/current/cookbook/assetic/asset_management.html) and [The Cookbook](http://symfony.com/doc/current/cookbook/assetic/index.html). The nice thing about using assetic is that you can do compilation of [sass](http://sass-lang.com) or [less](http://lesscss.org) file on the fly. If you are unsure about css preprocessor, I recommend heading to these 2 websites and have a look. At the time of writing, sass is more popular.
-
+You might have heard of using assetic to manage assets and minimising JS/CSS from [The book](http://symfony.com/doc/current/cookbook/assetic/asset_management.html) and [The Cookbook](http://symfony.com/doc/current/cookbook/assetic/index.html). The nice thing about using assetic is that you can do compilation of [sass](http://sass-lang.com) or [less](http://lesscss.org) files on the fly. If you are unsure about css preprocessor, I recommend checking them out. At the time of writing, sass is more popular.
 
 The has been a lot of innovation in frontend technologies with node in recent years. [gulpjs](http://gulpjs.com) is now the industrial standard when handling task like this.
 
@@ -185,7 +184,7 @@ Install node if not done.
 -> brew install node
 ```
 
-If successful, "node -v" and "npm -v" should return values. Now we create the package.json.
+If successful, "node -v" and "npm -v" should return values. Now we create package.json.
 
 ```
 -> npm init
@@ -354,6 +353,7 @@ In short, this gulpfile.js simply says minify all relevant js and css, then copy
 
 Since we are only using 1 css and js file, we only need to include the files once in the base template.
 
+
 ```
 #  src/AppBundle/Resources/views/base.html.twig
 ....
@@ -393,7 +393,7 @@ To compile the js and css, open up another terminal and enter
 -> gulp
 ```
 
-if you want to auto compile js or css files
+if you want to auto compile js or css files when you change the sass or javascript files
 
 ```
 -> gulp watch
@@ -411,11 +411,11 @@ If you have been observant enough, you should have seen the red alert on the too
 
 You would see the obvious alert icon in the toolbar... Clicking on the red icon will tell you that you have missing translations.
 
-There are lots of "messages" under the domain column because if there is no translation for certain text.
+There will be lots of "messages" under the domain column if there is no translation for certain text.
 
-How would you fix the translation errors? Using the debug toolbar is straight forward and should be self explainatory.
+How would you fix the translation errors? Using the debug toolbar is straight forward and should be self explanatory.
 
-> Tip: PHP developers should be aware of the print_r or var_dump command to dump objects or variables. Try doing it with Symfony and your browser will crash. Use the [dump](http://symfony.com/doc/current/components/var_dumper/introduction.html) function instead.
+> Tip: PHP developers should be aware of the print_r or var_dump command to dump objects or variables. Try doing it with Symfony and your browser will crash. In PHP, use [var_dumper](http://symfony.com/doc/current/components/var_dumper/introduction.html) and in twig, use [dump](http://twig.sensiolabs.org/doc/functions/dump.html) instead.
 
 
 ## Identifying bottlenecks with blackfire.io

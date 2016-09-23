@@ -21,7 +21,7 @@ Let us create the composer.json file for this repo. We will do a simple one
 -> composer init
 ```
 
-Follow the prompts. You might need to read up on software licensing. <a href="https://en.wikipedia.org/wiki/MIT_License">MIT license</a> is becoming really popular. The sample composer.json might look like this:
+Follow the prompts. You might need to read up on software licensing. [MIT license](https://en.wikipedia.org/wiki/MIT_License) is becoming really popular. The sample composer.json might look like this:
 
 ```
 {
@@ -135,8 +135,6 @@ songbird_page_reorder    POST     ANY    ANY  /songbird_page/reorder
 
 Woah!! We have already deleted src/Songbird/NestablePageBundle and we should expect to see some errors. Why are the songbird routes still there?
 
-That's right, that shows that vendor/your_name/nestable-page-bundle is working. The *new SongbirdNestablePageBundleSongbirdNestablePageBundle()* initialised in AppKernel.php is working because of the namespace.
-
 We have a problem. The namespace "Songbird" is no longer relevant in vendor/your-name/nestable-page-bundle since the bundle is already decoupled from Songbird CMS. We want to change the bundle's filename and namespace so that it is more intuitive. How do we do that?
 
 Let us re-download the repo and do some mass restructuring
@@ -173,7 +171,7 @@ Lastly, rename the bundle file
 -> git mv SongbirdNestablePageBundle.fr.xlf {your-initial}NestablePageBundle.fr.xlf
 ```
 
-Now, here is the question. How do we test our changes without commiting to git and re-run composer update? We can update our entry in vendor/composer/autoload_psr4.php
+Now, here is the question. How do we test our changes without committing to git and re-run composer update? We can update our entry in vendor/composer/autoload_psr4.php
 
 ```
 # vendor/composer/autoload_psr4.php
@@ -207,7 +205,7 @@ and routing
     prefix:   /
 ```
 
-lLet's say my initial is bpeh, let us check that the routes are working.
+Let's say my initial is bpeh, let us check that the routes are working.
 
 ```
 app/console debug:router | grep bpeh
@@ -243,7 +241,7 @@ This is a sign of relieve... Everything is working. Remember to commit your code
 
 ## Making the Bundle Extensible
 
-When this bundle is initialised in AppKernel.php, running "app/console doctrine:schema:create will create the default tables. We should be able to extend this bundle and modify the entity name and methods easily. The war is not over. There is still a lot to be done!!
+When this bundle is initialised in AppKernel.php, running "app/console doctrine:schema:create will create the default tables. We should be able to extend this bundle and modify the entity name and methods easily. The war is not over. There are still lots to be done!!
 
 Let us clean up the AppKernel and Route.
 
@@ -271,7 +269,7 @@ and refocus our attention to the NestablePageBundle:
 -> cd vendor/{your-initial}/NestablePageBundle
 ```
 
-First of all, we need to make The 2 entities extensible. Using [inheritance mapping](http://doctrine-orm.readthedocs.org/projects/doctrine-orm/en/latest/reference/inheritance-mapping.html), We will move the entities to the Model directory. We will make the entities abstract and top level in a single-table strategy. Then, we create mapped super classes in the entity dir for each Page and pageMeta entity. The entities from AppBundle will extend from the mapped super classes.
+First of all, we need to make Page and PageMeta entities extensible. Using [inheritance mapping](http://doctrine-orm.readthedocs.org/projects/doctrine-orm/en/latest/reference/inheritance-mapping.html), We will move the entities to the Model directory, make the entities abstract and top level in a single-table strategy. Then, we create mapped super classes in the entity dir for each Page and pageMeta entity. The entities from AppBundle will extend from the mapped super classes.
 
 I'll be using my initial (bpeh) from now onwards to make life easier when referencing paths.
 
@@ -1554,7 +1552,7 @@ The bundle is now ready to be extended.
 
 ## Extending BpehNestablePageBundle
 
-I've created a [demo bundle](https://github.com/bernardpeh/NestablePageBundle) and you can install the demo bundle and test it for yourself.
+If you are already lost, I've created a [demo bundle](https://github.com/bernardpeh/NestablePageBundle) and you can install the demo bundle and test out it for yourself.
 
 Let us extend BpehNestablePageBundle by copying that bundle.
 
@@ -1891,7 +1889,7 @@ songbird.app/app_dev.php/page
 
 In this chapter, we have created a new repo for the NestablePageBundle. We have updated composer to pull the bundle from the repo and auto-loaded it according to the PSR-4 standard. We learned the hard way of creating a non-extensible bundle with the wrong namespace and then mass renaming it again. Making the entities extensible was a massive job and required a lot of refactoring in our code.
 
-We have done so much to make NestablePageBundle as decoupled as possible. Still the was still a lot of room for improvements. Was it worth the effort? Definitely!
+We have done so much to make NestablePageBundle as decoupled as possible. Still, there was lots of room for improvement. Was it worth the effort? Definitely!
 
 ## Exercises
 

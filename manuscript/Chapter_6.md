@@ -117,7 +117,7 @@ security:
 
 ## Creating the User Entity
 
-Have a quick read if you are unfamiliar with [doctrine and entity](http://symfony.com/doc/current/book/doctrine.html).
+Have a quick read if you are unfamiliar with [doctrine and entity](http://symfony.com/doc/current/book/doctrine.html). We will be talking about doctrine very often in this book.
 
 Symfony allows us to automate lots of things using command line, including the creation of entities. We will create the user entity with 2 custom fields called firstname and lastname.
 
@@ -346,7 +346,7 @@ Remember to commit all your changes before moving on.
 
 ## Exercises (Optional)
 
-* Try installing the UserBundle as a separate bundle. Are there any pros and cons of doing that as compared to putting all the bundles in AppBundle?
+* Try installing the UserBundle outside of Appbundle. Are there any pros and cons of doing that as compared to putting all the bundles in AppBundle?
 
 ## References
 

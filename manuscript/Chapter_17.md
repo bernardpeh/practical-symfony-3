@@ -4,7 +4,7 @@ So far, we have been very lazy (a good thing?). We have offloaded bulk of the CM
 
 ## The Plan
 
-To be truly **decoupled** from the rest of the bundles, we want our page bundle to have no dependency on other bundles like sonata and fos bundles. Each page should have a unique slug and a couple of meta data such as title, short description, long description, created_date...etc. We will be using [nestable js](https://github.com/BeFiveINFO/Nestable) to allow drag and drop + page nesting using ajax.
+To be truly **decoupled** from the rest of the bundles, we want our page bundle to have no dependency on other bundles like FOSbundles. Each page should have a unique slug and a couple of meta data such as title, short description, long description, created_date...etc. We will be using [nestable js](https://github.com/BeFiveINFO/Nestable) to allow drag and drop + page nesting using ajax.
 
 We will create 2 entities. The first entity is the Page entity and will consist of simple attributes like id, slug, sequence, parent and children id...etc. The second entity will be the PageMeta entity consisting of attributes like name, locale, title, short description and content. The relationship between the Page and PageMeta entity will be one to many.
 

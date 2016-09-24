@@ -161,9 +161,12 @@ composer update
 If you are already getting impatient and wants to see a demo of the completed project, you can
 
 ```
+# If you are new to web development, you might be unfamiliar with some of the commands here. Don't worry as they will be explained as you follow through the chapters sequentially.
+
 -> git clone https://github.com/bernardpeh/songbird
 -> cd songbird
 -> git checkout chapter_final
+-> composer update
 -> vagrant up
 -> cd symfony
 -> composer update
@@ -180,6 +183,9 @@ If you are already getting impatient and wants to see a demo of the completed pr
 
 # add IP of your VM to your host file
 # eg. 192.168.56.111 songbird.app adminer.app
+
+# create the uploads dir
+mkdir -p web/uploads/featured_images
 
 # install db and fixtures
 -> scripts/resetapp

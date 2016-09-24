@@ -198,12 +198,19 @@ We will now create a homepage view.
 {% if pagemeta is not null %}
 	<div class="jumbotron">
 		<h1 class="text-center">{{ pagemeta.getShortDescription() | raw }}</h1>
-		{%  if pagemeta.featuredImage is not null %}
-			<img class="featured_image" src="{{ vich_uploader_asset(pagemeta, 'featuredImageFile') }}" alt="{{ pagemeta.getShortDescription() | striptags }}"/>
-		{% endif %}
 	</div>
 
-	{{ pagemeta.getContent() | raw }}
+	<div class="row-fluid">
+		<div class="pull-left col-xs-3 col-md-3">
+			{%  if pagemeta.featuredImage is not null %}
+				<img class="featured_image" src="{{ vich_uploader_asset(pagemeta, 'featuredImageFile') }}" alt="{{ pagemeta.getShortDescription() | striptags }}"/>
+			{% endif %}
+		</div>
+		<div class="pull-right col-xs-9 col-md-9">
+			{{ pagemeta.getContent() | raw }}
+		</div>
+	</div>
+	<div class="clearfix"></div>
 
 {% endif %}
 {% endblock %}
@@ -225,7 +232,7 @@ and pages view
 {% block content %}
 
 	{% if pagemeta is not null %}
-	<h1>{{ pagemeta.getShortDescription() | raw }}</h1>
+	<h2>{{ pagemeta.getShortDescription() | raw }}</h2>
 
 	{%  if pagemeta.featuredImage is not null %}
 		<img class="featured_image" src="{{ vich_uploader_asset(pagemeta, 'featuredImageFile') }}" alt="{{ pagemeta.getShortDescription() | striptags }}"/>

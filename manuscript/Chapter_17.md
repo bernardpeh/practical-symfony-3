@@ -560,7 +560,7 @@ class LoadPageData extends AbstractFixture implements ContainerAwareInterface
         $planmetaEn->setMenuTitle('Where do I start');
         $planmetaEn->setPageTitle('Where do I start?');
         $planmetaEn->setShortDescription('Where Do I Start?');
-        $planmetaEn->setContent('<p>I recommend reading the online documentation at <a href="http://practicalsymfony.com">practicalsymfony.com</a></p>
+        $planmetaEn->setContent('<p>I recommend reading the online documentation at <a href="https://leanpub.com/practicalsymfony3">leanpub</a></p>
             <p>git clone the repo. Read and Code at the same time. I believe that is the most effective way to learn.</p>');
         $manager->persist($planmetaEn);
 
@@ -570,7 +570,7 @@ class LoadPageData extends AbstractFixture implements ContainerAwareInterface
         $planmetaFR->setMenuTitle('Où est-ce que je commence');
         $planmetaFR->setPageTitle('Où est-ce que je commence?');
         $planmetaFR->setShortDescription('Où est-ce que je commence?');
-        $planmetaFR->setContent('<p>Je recommande la lecture de la documentation en ligne à <a href="http://practicalsymfony.com">practicalsymfony.com</a></p>
+        $planmetaFR->setContent('<p>Je recommande la lecture de la documentation en ligne à <a href="https://leanpub.com/practicalsymfony3">leanpub</a></p>
             <p>git clone the repo. Lire et code en même temps . Je crois que la façon la plus efficace d\'apprendre.</p>');
         $manager->persist($planmetaFR);
 

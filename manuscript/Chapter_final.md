@@ -16,7 +16,7 @@ Here are some suggestions:
 
 * Improve on look and feel. The frontend looks too plain.
 
-* Implement [ACL](http://symfony.com/doc/current/security/acl.html) for users. The current implementation is too simple and not robust enough.
+* Try Implement [ACL](http://symfony.com/doc/current/security/acl.html) for users.
 
 * Bundle SongBird up as a ready-to-install package.
 

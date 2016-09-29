@@ -413,12 +413,12 @@ class AppSubscriber implements EventSubscriberInterface
     {
     	// return the subscribed events, their methods and priorities
         return array(
-        	        EasyAdminEvents::PRE_NEW => 'checkUserRights',
-                    EasyAdminEvents::PRE_LIST => 'checkUserRights',
-                    EasyAdminEvents::PRE_EDIT => 'checkUserRights',
-                    EasyAdminEvents::PRE_SHOW => 'checkUserRights',
-        	        EasyAdminEvents::PRE_DELETE => 'checkUserRights',
-                    ...
+		EasyAdminEvents::PRE_NEW => 'checkUserRights',
+                EasyAdminEvents::PRE_LIST => 'checkUserRights',
+                EasyAdminEvents::PRE_EDIT => 'checkUserRights',
+                EasyAdminEvents::PRE_SHOW => 'checkUserRights',
+        	EasyAdminEvents::PRE_DELETE => 'checkUserRights',
+                ...
                 );
     }
 
@@ -543,7 +543,7 @@ But this structure would require a lot of code change to the templates. We have 
 
 ## Update BDD (Optional)
 
-Normal users can now see the Page list in the dashboard but cannot perform other actions other than listing it. Add this rule to the new BDD Test.
+Normal users can now see the Page list in the dashboard, perform all actions except delete. Add this rule to the new BDD Test.
 
 Write your test and make sure everything passes.
 

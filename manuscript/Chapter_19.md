@@ -316,7 +316,7 @@ We now need to add actions to the AdminController
     }
 ```
 
-and then update the list views
+and then update the list views. Note that we have added csrf token to validate valid ajax submissions.
 
 ```
 # src/AppBundle/Resources/views/Page/list.html.twig
@@ -353,11 +353,13 @@ and then update the list views
 
 				after = JSON.stringify($('.dd').nestable('serialize'));
 
+				token = '{{ csrf_token("bpeh_page_reorder") }}';
+
 				if (before != after) {
 					$.ajax({
 						type: "POST",
 						url: "{{ path('bpeh_page_reorder') }}",
-						data: {id: id, parentId: parentId, position: position},
+						data: { id: id, parentId: parentId, position: position, csrf: token },
 						success: function (data, dataType) {
 							if (data.success) {
 								$('.alert').addClass('alert-success');
@@ -380,6 +382,7 @@ and then update the list views
 		});
 	</script>
 {% endblock %}
+
 
 {% block main %}
 

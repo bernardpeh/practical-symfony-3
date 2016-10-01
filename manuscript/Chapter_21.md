@@ -1,18 +1,20 @@
-# Chapter 21: Further Improvements (Advanced)
+# Chapter 21: Dependency Injection Revisited
 
-Upon reflection of what we have covered in the last 20 chapters, I think there are a lot of improvements that can be done. In particular, I feel that I wouldn't do justice to this book if I don't finish off the book with an example of [Compiler Pass](http://symfony.com/doc/current/service_container/compiler_passes.html).
+Upon reflection of what we have covered in the last 20 chapters, I think there are a lot of improvements that can be done. In particular, I feel that I wouldn't do justice to this book if I don't give an example of [Compiler Pass](http://symfony.com/doc/current/service_container/compiler_passes.html).
 
-This is an advance chapter. If you skipped all the chapters and came to this chapter by chance, I recommend you understand DI and DIC before continuing.
+This is an advance chapter. If you skipped all the chapters and came to this chapter by chance, I recommend you read up DI and DIC before continuing.
 
-In this chapter, I like to implement 2 improvements to the CMS.
+In this chapter, I like to introduce 2 improvements to the CMS using DI.
 
 a) Simplifying config.yml
 
-b) Adding User Access Control to EasyAdminBundle.
+b) Adding Simple User Access Control to EasyAdminBundle.
 
 ## Simplifying config.yml
 
-So far our app/config/config.yml has many configuration parameters like fos, vich, doctrine ...etc. To make the installation easier, we could move all these extra configuration to elsewhere so that you don't have to worry about them and it also makes the file looks cleaner.
+Due to DI, the bundle Extension is called when the bundle is being initialised. The end result is a bunch of parameters and services that can be used and referenced throughout the application.
+
+The app/config/config.yml is read by all bundle extensions so that relevant information relating to the bundle can be extracted. So far, there are many configuration parameters like fos, vich, doctrine ...etc. To make the installation easier, we could move all these extra configuration to elsewhere so that developers don't have to worry about them when installing the CMS and it also makes the file looks cleaner.
 
 The trick that does that is to implement the [PrependExtensionInterface](http://symfony.com/doc/current/bundles/prepend_extension.html).
 
@@ -160,13 +162,13 @@ swiftmailer:
 
 I could have moved more parameters over to the prepend function if I want.
 
-## Adding Access Control to EasyAdminBundle
+## Adding Simple Access Control to EasyAdminBundle
 
-I still want to congratulate [javiereguiluz](https://github.com/javiereguiluz) for creating the [EasyAdminBundle](https://github.com/javiereguiluz/EasyAdminBundle). As of current, the bundle doesn't support user permissions out of the box. I believe there are plans to include this feature in the future.
+I still want to congratulate [javiereguiluz](https://github.com/javiereguiluz) for creating the wonderful [EasyAdminBundle](https://github.com/javiereguiluz/EasyAdminBundle). As of current, the bundle doesn't support user permissions out of the box. I believe there might be plans to include this feature in the future as it is a widely requested feature.
 
 As an exercise, let's say that we want to customise the bundle such that we can control access to certain parts of the admin area based on the user's role. We want to do that simply by changing the easyadmin yaml files.
 
-Let us allow all authenticated users to access the admin area.
+Let us allow all authenticated users to access the admin area rather than just ROLE_USER.
 
 ```
 # app/config/security.yml
@@ -191,13 +193,13 @@ easy_admin:
         menu:
           - { label: 'Dashboard', route: 'dashboard', default: true }
           - { entity: 'User', icon: 'user', role: ROLE_ADMIN }
-          - { entity: 'Page', icon: 'file', role: ROLE_ADMIN }
-          - { entity: 'UserLog', icon: 'database', role: ROLE_USER }
+          - { entity: 'Page', icon: 'file', role: ROLE_USER }
+          - { entity: 'UserLog', icon: 'database', role: ROLE_ADMIN }
 ```
 
-Noticed that we have added a new array key called "role" to each menu item and the value (say "ROLE_ADMIN") means the mimimum permission level required to access that menu. In this case, everyone can see the dashboard link, ROLE_USER and above can see the UserLog link and only ROLE_ADMIN can see the User and Page link.
+Noticed that we have added a new array key called "role" to each menu item and the value (say "ROLE_ADMIN") means the mimimum permission level required to access that menu. In this case, everyone can see the dashboard, ROLE_USER and above can see the Page link and only ROLE_ADMIN can see the User and UserLog link.
 
-Likewise for all the page entity:
+We are going to do something similar for all the entities yaml, starting from the page entity
 
 ```
 # app/config/easyadmin/page.yml
@@ -207,15 +209,60 @@ easy_admin:
         Page:
             class: AppBundle\Entity\Page
             label: admin.link.page_management
-            role: ROLE_ADMIN
-            ...
+            role: ROLE_USER
+            # for new page
+            new:
+                fields:
+                  - slug
+                  - isPublished
+                  - sequence
+                  - parent
+            edit:
+                fields:
+                  - slug
+                  - isPublished
+                  - sequence
+                  - parent
+                  - pageMetas
+            show:
+                fields:
+                  - id
+                  - slug
+                  - isPublished
+                  - sequence
+                  - parent
+                  - modified
+                  - created
+                  - pageMetas
+            list:
+                actions: ['show', 'edit', 'delete']
+                fields:
+                  - id
+                  - slug
+                  - isPublished
+                  - sequence
+                  - parent
+                  - modified
+            delete:
+                role: ROLE_ADMIN
         PageMeta:
             class: AppBundle\Entity\PageMeta
-            role: ROLE_ADMIN
-            ...
+            role: ROLE_USER
+            form:
+              fields:
+                - page_title
+                - menu_title
+                - { property: 'locale', type: 'AppBundle\Form\LocaleType' }
+                - { type: 'divider' }
+                - { property: 'featuredImageFile', type: 'vich_image' }
+                - { property: 'short_description', type: 'ckeditor' }
+                - { property: 'content', type: 'ckeditor' }
+                - page
 ```
 
-The user entity:
+We are allowing ROLE_USER to access all the actions of the page entity except deleting.
+
+Now, the user entity:
 
 ```
 # app/config/easyadmin/user.yml
@@ -230,7 +277,7 @@ easy_admin:
 
 ```
 
-and finally - userlog.yml. We are going to do something different here. We are going to allow ROLE_USER to access all the actions of the entity except the show action.
+and finally - userlog.yml. 
 
 ```
 # app/config/easyadmin/userlog.yml
@@ -240,17 +287,16 @@ easy_admin:
         UserLog:
             class: AppBundle\Entity\UserLog
             label: admin.link.user_log
-            role: ROLE_USER
+            role: ROLE_ADMIN
             show:
-                role: ROLE_ADMIN
                 actions: ['list', '-edit', '-delete']
             list:
                 actions: ['show', '-edit', '-delete']
 ```
 
-Due to DI, EasyAdminExtension is called when the EasyAdminBundle is being initialised. The end result is a bunch of parameters and services that can be used and referenced throughout the framework. Just when these parameters and services have been created but not yet compiled in optimised DIC, there is a chance to manipulate them. Compiler Pass exists for this purpose.
+When parameters and services are created by the extension but not yet compiled in optimised DIC, there is a chance to manipulate them. Compiler Pass exists for this purpose.
 
-Let us tell our bundle to initiate the compiler pass when it is loaded by the kernel.
+Let us tell our AppBundle to initiate its compiler pass when it is loaded by the kernel.
 
 ```
 # src/AppBundle/AppBundle.php
@@ -327,7 +373,7 @@ class ConfigPass implements CompilerPassInterface
 }
 ```
 
-What I have done here is to change the easyadmin.config parameter produced by the EasyAdminBundle. easyadmin.config is simply a bunch of arrays built based on the yaml config. Each for-loop adds a new key called "role" with the default "IS_AUTHENTICATED_FULLY" role if not specified.
+What we have done here is to change the easyadmin.config parameter produced by the EasyAdminBundle. easyadmin.config is simply a bunch of arrays built based on the yaml config under app/config/easy_admin. Each for-loop adds a new key called "role" with the default "IS_AUTHENTICATED_FULLY" role if not specified by the config.
 
 EasyAdmin dispatches lots of events. We were already subscribed to it.
 
@@ -367,12 +413,13 @@ class AppSubscriber implements EventSubscriberInterface
     {
     	// return the subscribed events, their methods and priorities
         return array(
-            EasyAdminEvents::PRE_LIST => 'checkUserRights',
-            EasyAdminEvents::PRE_EDIT => 'checkUserRights',
-            EasyAdminEvents::PRE_SHOW => 'checkUserRights',
-	        EasyAdminEvents::PRE_DELETE => 'checkUserRights',
-            ...
-        );
+		EasyAdminEvents::PRE_NEW => 'checkUserRights',
+                EasyAdminEvents::PRE_LIST => 'checkUserRights',
+                EasyAdminEvents::PRE_EDIT => 'checkUserRights',
+                EasyAdminEvents::PRE_SHOW => 'checkUserRights',
+        	EasyAdminEvents::PRE_DELETE => 'checkUserRights',
+                ...
+                );
     }
 
     /**
@@ -420,7 +467,7 @@ class AppSubscriber implements EventSubscriberInterface
 
 We have triggered the checkUserRights function based on a few EasyAdmin events. We have allowed the logged in user to edit his own profile irregardless of role's permission. Then, the for-loop does the magic of allowing or denying user to access different parts of the admin area based on the role key in easyadmin.config.manager service.
 
-Not that this would work because our AdminController dispatches the events, ie
+Note that this will work only if our AdminController dispatches the events, ie
 
 ```
 # src/AppBundle/Controller/AdminController.php
@@ -438,7 +485,7 @@ Not that this would work because our AdminController dispatches the events, ie
     }
 ```
 
-The menu display is not managed by the event subscriber. We simply need to change the twig abit.
+The menu display is not managed by the event subscriber. We simply need to change the twig a bit.
 
 ```
 # app/Resources/views/easy_admin/menu.html.twig
@@ -470,26 +517,47 @@ The menu display is not managed by the event subscriber. We simply need to chang
 
 Try logging in now as test1 and you will see that the menu and entities should be access controlled.
 
-![new user dashboard](images/new_dashboard.png)
+![](images/new_dashboard.png)
 
-Note that allowing non-admin to access UserLog is only for the sake of illustration.
+Note that the above method for allowing user permissions for EasyAdmin is just one of many ways to do it. Implementing a full solution needs a big code rewrite. One big area I can think of is to allow roles to define its actions. ie something like this:
+
+```
+easy_admin:
+    entities:
+        UserLog:
+            class: AppBundle\Entity\UserLog
+            label: admin.link.user_log
+            role: ROLE_ADMIN
+                show:
+                    actions: ['list', 'edit', 'delete']
+                list:
+                    actions: ['show', '-edit', '-delete']
+            role: ROLE_USER
+                show:
+                    actions: ['list', '-edit', '-delete']
+                list:
+                    actions: ['show', '-edit', '-delete']        
+```
+
+But this structure would require a lot of code change to the templates. We have enough to think about and will leave it for now.
 
 ## Update BDD (Optional)
 
-Normal users can now see the User Log link in the dashboard but cannot perform other actions other than listing the UserLog. Add this rule to the new BDD Test.
+Normal users can now see the Page list in the dashboard, perform all actions except delete. Add this rule to the new BDD Test.
 
 Write your test and make sure everything passes.
 
 ## Summary
 
-In this chapter, we have cleaned up config.yml and provided a custom solution to make EasyAdmin support user permissions in the admin area. It was a huge effort but could make life easy for people who wants to configure admin permissions easily.
+In this chapter, we have cleaned up config.yml and provided a custom solution to make EasyAdmin support user permissions in the admin area. It was a huge effort but not yet a full solution. However, it should make life easy for people who wants to configure admin permissions easily.
 
 ## Exercises
 
-* Try updating EasyAdmin templates for to support the "role" attribute.
+* Other than menu.html.twig, try updating other EasyAdmin view templates to support the "role" attribute. Is there a simple way to do it?
 
 ## References
 
 * [Prepend Config](http://symfony.com/doc/current/bundles/prepend_extension.html)
 * [Dependency Injection Component](https://symfony.com/doc/current/components/dependency_injection.html)
 * [Service Container](http://symfony.com/doc/current/service_container.html)
+* [Tagging Symfony Services](http://thorpesystems.com/blog/tagging-symfony-services/)

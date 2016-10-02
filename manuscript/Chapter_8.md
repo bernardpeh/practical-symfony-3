@@ -1,6 +1,6 @@
 # Chapter 8: Fixtures, Fixtures, Fixtures
 
-As of now, we could create and manage users via the command line (app/console fos:user:xxx) or using the basic CRUD UI that we have created. What if we messed up the data or if we want to reset the data with certain values. How can we do that efficiently? We need an automation mechanism to create consistent dummy data.
+As of now, we could create and manage users via the command line (bin/console fos:user:xxx) or using the basic CRUD UI that we have created. What if we messed up the data or if we want to reset the data with certain values. How can we do that efficiently? We need an automation mechanism to create consistent dummy data.
 
 ## Install DoctrineFixturesBundle
 
@@ -13,7 +13,7 @@ Install via composer
 Now that the data-fixtures-bundle is installed, we can update the kernel.
 
 ```
-# app/AppKernel.php
+# bin/AppKernel.php
 
 ...
 if (in_array($this->getEnvironment(), array('dev', 'test'))) {
@@ -29,7 +29,7 @@ We register the bundle under the array('dev', 'test') environment because we don
 To prove that the install is successful, we should have a new entry in the console
 
 ```
--> app/console | grep fixtures
+-> bin/console | grep fixtures
   doctrine:fixtures:load               Load data fixtures to your database.
 ```
 
@@ -154,7 +154,7 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, C
 Now, let us insert the fixtures by running the command line
 
 ```
--> app/console doctrine:fixtures:load -n
+-> bin/console doctrine:fixtures:load -n
 ```
 
 The "-n" option simply answer yes when prompted for data purging. Try it without the "-n" option for yourself. Verify that the data is inserted by logging into adminer and check the user table
@@ -174,7 +174,7 @@ $userManager = $this->container->get('fos_user.user_manager');
 We are trying to use the userManager class using the fos_user.user_manager service. Where is this class?
 
 ```
--> app/console debug:container | grep fos_user.user_manager
+-> bin/console debug:container | grep fos_user.user_manager
  fos_user.user_manager                            FOS\UserBundle\Doctrine\UserManager
 ```
 
@@ -188,12 +188,12 @@ Every time we want to work cleanly, we want to be able to run a script to reset 
 # scripts/resetapp
 
 #!/bin/bash
-rm -rf app/cache/*
-# app/console cache:clear --no-warmup
-app/console doctrine:database:drop --force
-app/console doctrine:database:create
-app/console doctrine:schema:create
-app/console doctrine:fixtures:load -n
+rm -rf var/cache/*
+# bin/console cache:clear --no-warmup
+bin/console doctrine:database:drop --force
+bin/console doctrine:database:create
+bin/console doctrine:schema:create
+bin/console doctrine:fixtures:load -n
 ```
 
 I prefer to use the "rm" command to delete all caches more than the app/console cache:clear command. I leave it up to you to decide which one you prefer. Make sure the script is executable

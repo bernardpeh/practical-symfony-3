@@ -126,7 +126,7 @@ git rm -rf src/Songbird/
 Let us check if the route is still there.
 
 ```
--> app/console debug:router | grep songbird
+-> bin/console debug:router | grep songbird
 ...
 songbird_page            GET      ANY    ANY  /songbird_page/
 songbird_page_list       GET      ANY    ANY  /songbird_page/list
@@ -208,7 +208,7 @@ and routing
 Let's say my initial is bpeh, let us check that the routes are working.
 
 ```
-app/console debug:router | grep bpeh
+bin/console debug:router | grep bpeh
 bpeh_page                GET      ANY    ANY  /bpeh_page/
 bpeh_page_list           GET      ANY    ANY  /bpeh_page/list
 bpeh_page_reorder        POST     ANY    ANY  /bpeh_page/reorder
@@ -241,7 +241,7 @@ This is a sign of relieve... Everything is working. Remember to commit your code
 
 ## Making the Bundle Extensible
 
-When this bundle is initialised in AppKernel.php, running "app/console doctrine:schema:create will create the default tables. We should be able to extend this bundle and modify the entity name and methods easily. The war is not over. There are still lots to be done!!
+When this bundle is initialised in AppKernel.php, running "bin/console doctrine:schema:create will create the default tables. We should be able to extend this bundle and modify the entity name and methods easily. The war is not over. There are still lots to be done!!
 
 Let us clean up the AppKernel and Route.
 
@@ -1823,7 +1823,7 @@ class PageMetaType extends BasePageMetaType
 Let us confirm the new routes are working...
 
 ```
--> app/console debug:router | grep page
+-> bin/console debug:router | grep page
      bpeh_page                        GET        ANY      ANY    /page/
      bpeh_page_list                   GET        ANY      ANY    /page/list
      bpeh_page_reorder                POST       ANY      ANY    /page/reorder

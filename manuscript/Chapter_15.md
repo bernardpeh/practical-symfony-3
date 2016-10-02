@@ -32,13 +32,13 @@ There is a popular [loggable doctrine extension](https://github.com/Atlantic18/D
 We will create a new entity called UserLog. The UserLog entity should have the following fields: id, username, current_url, referrer, action, data, created.
 
 ```
--> app/console doctrine:generate:entity --entity=AppBundle:UserLog --format=annotation --fields="username:string(255) current_url:text referrer:text action:string(255) data:text created:datetime" --no-interaction
+-> bin/console doctrine:generate:entity --entity=AppBundle:UserLog --format=annotation --fields="username:string(255) current_url:text referrer:text action:string(255) data:text created:datetime" --no-interaction
 ```
 
 Again, don't memorise this command. You can find out more about this command using
 
 ```
-app/console doctrine:generate:entity --help
+bin/console doctrine:generate:entity --help
 ```
 
 or from the [online documentation](http://symfony.com/doc/current/bundles/SensioGeneratorBundle/commands/generate_doctrine_entity.html)

@@ -41,7 +41,7 @@ No route found for "GET /"
 This is correct because the url is no longer configured. How can you be sure? Let us check it out from the command line
 
 ```
--> app/console debug:router
+-> bin/console debug:router
 
 [router] Current routes
  Name                     Method Scheme Host Path
@@ -90,7 +90,7 @@ and run the test again,
 
 ```
 # clear prod cache because test is running in prod env
--> app/console cache:clear --env=prod
+-> bin/console cache:clear --env=prod
 
 # remember to start selenium server
 -> vendor/bin/codecept run acceptance
@@ -116,7 +116,7 @@ In the runtest script,
 
 #!/bin/bash
 
-app/console cache:clear --no-warmup
+bin/console cache:clear --no-warmup
 vendor/bin/codecept run acceptance
 ```
 

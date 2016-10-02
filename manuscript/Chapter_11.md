@@ -146,7 +146,7 @@ Now the actual login file:
 Once we are done, we can get the assets over to the web dir.
 
 ```
--> app/console assets:install
+-> bin/console assets:install
 ```
 
 This command basically copies everything under the public dir of all bundles over to the document root dir (/web).
@@ -154,7 +154,7 @@ This command basically copies everything under the public dir of all bundles ove
 What if we are constantly updating our css and want to see updates in the browser? We can use symlink like so.
 
 ```
--> app/console assets:install --symlink
+-> bin/console assets:install --symlink
 ```
 
 unfortunately, running this command in the host will use the host dir structure which we don't want. We need the dir structure of the vm. Therefore, let us create an assetinstall script to shell into the vm and do the symlink.
@@ -163,7 +163,7 @@ unfortunately, running this command in the host will use the host dir structure 
 # scripts/assetsinstall
 
 #!/bin/bash
-vagrant ssh -c "cd /home/vagrant/symfony;app/console assets:install --symlink"
+vagrant ssh -c "cd /home/vagrant/symfony;bin/console assets:install --symlink"
 ```
 
 make the script executable and lets run it.
@@ -209,7 +209,7 @@ The password reset process is as follows:
 We will put a link on the login page to the request password page. We can find all the links from the debug:router command (a command you should be familiar by now)
 
 ```
--> app/console debug:router | grep fos
+-> bin/console debug:router | grep fos
  fos_user_security_login                  GET|POST ANY    ANY  /login
  fos_user_security_check                  POST     ANY    ANY  /login_check
  fos_user_security_logout                 GET      ANY    ANY  /logout

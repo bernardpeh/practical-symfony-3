@@ -140,16 +140,16 @@ done
 if [[ $CLEAR_CACHE ]]
 then
     rm -rf app/cache/*
-    # app/console cache:clear --env=prod --no-warmup
+    # bin/console cache:clear --env=prod --no-warmup
 fi
 
-app/console doctrine:database:drop --force
-app/console doctrine:database:create
-app/console doctrine:schema:create
+bin/console doctrine:database:drop --force
+bin/console doctrine:database:create
+bin/console doctrine:schema:create
 
 if [[ $LOAD_FIXTURES ]]
 then
-    app/console doctrine:fixtures:load -n
+    bin/console doctrine:fixtures:load -n
 fi
 
 # copy test data over to web folder

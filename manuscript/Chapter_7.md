@@ -9,7 +9,7 @@ You see the word "CRUD" appearing so many times because it is part of RAD. All f
 We will generate CRUD for the UserBundle.
 
 ```
--> app/console doctrine:generate:crud
+-> bin/console doctrine:generate:crud
 
 The Entity shortcut name: AppBundle:User
 
@@ -143,13 +143,13 @@ class UserType extends AbstractType
 Refresh the browser and if changes are not showing up, we need to delete the cache.
 
 ```
--> app/console cache:clear
+-> bin/console cache:clear
 ```
 
-This command is equivalent to "rm -rf app/cache/dev". It is a useful alternative to clear:cache. If no environment is set, the environment is set to develop. To delete prod cache,
+This command is equivalent to "rm -rf var/cache/dev". It is a useful alternative to clear:cache. If no environment is set, the environment is set to develop. To delete prod cache,
 
 ```
--> app/console cache:clear -e prod
+-> bin/console cache:clear -e prod
 ```
 
 Let us create 2 test users, say "test" and "test1"
@@ -175,7 +175,7 @@ No, because the CRUD that we have created automatically didn't know that the pas
 For the sake of curiousity, let us see all the FOSUserBundle service containers.
 
 ```
--> app/console debug:container | grep fos
+-> bin/console debug:container | grep fos
 
  fos_user.change_password.form.factory                              FOSUserBundleFormFactoryFormFactory
  fos_user.change_password.form.type                                 FOSUserBundleFormTypeChangePasswordFormType
@@ -443,17 +443,17 @@ The "@ORM\HasLifecycleCallbacks()" tells doctrine to run callback functions (in 
 Let us auto-generate the setters and getters for the new $modified and $created variables.
 
 ```
--> app/console doctrine:generate:entities AppBundle:User
+-> bin/console doctrine:generate:entities AppBundle:User
 ```
 
 Verify that the getters and setters have been added to src/AppBundle/Entity/User.php. The schema is now changed and we need to update it.
 
 ```
 # run this and you will see what the sql is doing
--> app/console doctrine:schema:update --dump-sql
+-> bin/console doctrine:schema:update --dump-sql
 
 # once you are comfortable with that, force update it
--> app/console doctrine:schema:update --force
+-> bin/console doctrine:schema:update --force
 ```
 
 Try adding a new user and see if adminer records the created and modified time correctly.

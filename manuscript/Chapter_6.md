@@ -70,6 +70,14 @@ Next we need to configure FOSUserBundle. Don't worry if certain directives doesn
 translator:      { fallbacks: ["%locale%"] }
 ...
 
+framework:
+    ...
+    session:
+        # http://symfony.com/doc/current/reference/configuration/framework.html#handler-id
+        # we have to use the system session storage because the default doesn't work with vagrant.
+        handler_id:  ~
+        # save_path:   "%kernel.root_dir%/../var/sessions/%kernel.environment%"
+        
 # fosuser config
 fos_user:
     db_driver: orm

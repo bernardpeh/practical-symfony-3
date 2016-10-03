@@ -490,8 +490,25 @@ As you would expect, it should be clear where the bottleneck was huh? See the bl
 
 I was merely scrapping the surface of blackfire. I suggest you do the [24 days of blackfire](https://blackfire.io/docs/24-days/index) tutorials if you want to dig in deeper.
 
-We are almost done, remember to do a git commit before moving on to the next chapter.
+## Fix Coding Standards with PHP-CS-Fixer
 
+[PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer) automatically fixes coding standards. Its always a good idea to use it to clean up your code before commiting.
+
+ ```
+ -> composer require friendsofphp/php-cs-fixer --dev
+ ```
+ 
+ once this php-cs-fixer is installed, we can use it from the command line like so
+ 
+ ```
+ -> vendor/bin/php-cs-fixer fix app/
+       1) AppKernel.php
+       2) autoload.php
+    Fixed all files in 0.914 seconds, 7.000 MB memory used
+ ```
+ 
+ Do it for the src directory as well. We can now commit all the fixed files.
+ 
 ## Summary
 
 In this chapter, we briefly discussed several optimisation strategies. We installed apc and minified css and js using gulpjs. We have also refactored the runtest script so that it doesn't clear the cache every time it starts a new test. lastly, we walked through troubleshooting using the web toolbar and blackfire.io.

@@ -85,23 +85,28 @@ We need to create the new upload folder
 but we should ignore in git. In .gitignore
 
 ```
-# .gitignore
-/web/bundles/
-/web/uploads/
-/app/bootstrap.php.cache
-/app/cache/*
 /app/config/parameters.yml
-/app/logs/*
-!app/cache/.gitkeep
-!app/logs/.gitkeep
-/app/phpunit.xml
 /build/
+/phpunit.xml
+/var/*
+!/var/cache
+/var/cache/*
+!var/cache/.gitkeep
+!/var/logs
+/var/logs/*
+!var/logs/.gitkeep
+!/var/sessions
+/var/sessions/*
+!var/sessions/.gitkeep
+!var/SymfonyRequirements.php
 /vendor/
 /bin/
 /composer.phar
-/composer.lock
-
-src/AppBundle/tests/_output/*
+src/AppBundle/Tests/_output/*
+tests/_output/*
+/web/bundles/
+/web/uploads/
+/var/bootstrap.php.cache
 ```
 
 ## Update Fixtures

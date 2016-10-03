@@ -2,7 +2,7 @@
 
 Upon reflection of what we have covered in the last 20 chapters, I think there are a lot of improvements that can be done. In particular, I feel that I wouldn't do justice to this book if I don't give an example of [Compiler Pass](http://symfony.com/doc/current/service_container/compiler_passes.html).
 
-This is an advance chapter. If you skipped all the chapters and came to this chapter by chance, I recommend you read up DI and DIC before continuing.
+This is an advance chapter. If you skipped all the chapters and came to this chapter by chance, I recommend you to read up DI and DIC before continuing.
 
 In this chapter, I like to introduce 2 improvements to the CMS using DI.
 

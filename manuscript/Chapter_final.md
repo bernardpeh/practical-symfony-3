@@ -18,8 +18,6 @@ Here are some suggestions:
 
 * Try Implement [ACL](http://symfony.com/doc/current/security/acl.html) for users.
 
-* Bundle SongBird up as a ready-to-install package.
-
 * Investigate the best practices to deploy your application to a reliable server and configure the production settings.
 
 * What if your application becomes popular and you are getting a lot of traffic? What are the options to optimise your application?

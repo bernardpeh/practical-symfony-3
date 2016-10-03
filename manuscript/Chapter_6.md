@@ -1,6 +1,6 @@
 # Chapter 6: The User Management System Part 1
 
-User Management System is a core part of any CMS. We will create this component using the popular [FOSUserBundle](https://github.com/FriendsOfSymfony/FOSUserBundle).
+User Management System is a core part of any CMS. We will create this feature using the popular [FOSUserBundle](https://github.com/FriendsOfSymfony/FOSUserBundle).
 
 ## Pre-setup
 

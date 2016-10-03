@@ -167,6 +167,7 @@ If you are already getting impatient and wants to see a demo of the completed pr
 -> cd songbird
 -> git checkout chapter_final
 -> composer update
+# wait a while if this is the first time you are running this command.
 -> vagrant up
 -> cd symfony
 -> composer update

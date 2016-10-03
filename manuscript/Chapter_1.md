@@ -15,7 +15,7 @@ You will need to equip yourself before diving in. Ideally, you have
 * Basic HTML, CSS and Javascript knowledge.
 * Basic Stylesheet Pre-processor language like LESS or SASS.
 * Basic Linux command line knowledge.
-* A good IDE. There are lots of them out there. I recommend [sublime text](www.sublimetext.com) or [PHP Storm](https://www.jetbrains.com/phpstorm/).
+* A good IDE. There are lots of them out there. [Sublime Text](www.sublimetext.com) is OK but [PHP Storm](https://www.jetbrains.com/phpstorm/) is way better for serious Symfony development.
 
 I hope the list doesn't scare you to get started.
 

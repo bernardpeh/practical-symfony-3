@@ -463,8 +463,7 @@ Remember to commit all your changes before moving on to the next chapter.
 
 ## Exercises
 
-* Remember all the twig files you have created in [chapter 11](https://github.com/bernardpeh/songbird/tree/chapter_11)
-? Update them to support i18n.
+* Remember all the twig files you have created in [chapter 11](https://github.com/bernardpeh/songbird/tree/chapter_11)? Update them to support i18n.
 
 * (Optional) Try creating translations in other languages other than french.
 

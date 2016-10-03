@@ -44,7 +44,7 @@ if [ -z "$*" ]; then
 fi
 
 # using symfony bundle generation script is a quick way to generate bundles but doesn't mean its the best way.
-app/console generate:bundle --namespace=$1/$2 --dir=src --bundle-name=$1$2 --format=annotation --no-interaction
+bin/console generate:bundle --namespace=$1/$2 --dir=src --bundle-name=$1$2 --format=annotation --no-interaction
 rm -rf src/$1/$2/Tests/*
 rm -rf src/$1/$2/Resources/views/Default
 rm src/$1/$2/Controller/DefaultController.php
@@ -87,13 +87,13 @@ Let us create the entities.
 For Page entity:
 
 ```
--> app/console generate:doctrine:entity --entity=SongbirdNestablePageBundle:Page --format=annotation --fields="slug:string(255) isPublished:boolean sequence:integer modified:datetime created:datetime" --no-interaction
+-> bin/console generate:doctrine:entity --entity=SongbirdNestablePageBundle:Page --format=annotation --fields="slug:string(255) isPublished:boolean sequence:integer modified:datetime created:datetime" --no-interaction
 ```
 
 and for PageMeta entity:
 
 ```
--> app/console generate:doctrine:entity --entity=SongbirdNestablePageBundle:PageMeta --format=annotation --fields="page_title:string(255) menu_title:string(255) locale:string(4) short_description:text content:text" --no-interaction
+-> bin/console generate:doctrine:entity --entity=SongbirdNestablePageBundle:PageMeta --format=annotation --fields="page_title:string(255) menu_title:string(255) locale:string(4) short_description:text content:text" --no-interaction
 ```
 
 We now need to update the relationship between the 2 entities:
@@ -222,7 +222,7 @@ There were some new [doctrine association annotations](http://docs.doctrine-proj
 We can now auto generate the stubs for the 2 entities:
 
 ```
--> app/console generate:doctrine:entities SongbirdNestablePageBundle --no-backup
+-> bin/console generate:doctrine:entities SongbirdNestablePageBundle --no-backup
 Generating entities for bundle "SongbirdNestablePageBundle"
   > generating Songbird\NestablePageBundle\Entity\Page
   > generating Songbird\NestablePageBundle\Entity\PageMeta
@@ -407,8 +407,8 @@ and the french version:
 We will now generate CRUD for the 2 entities in a quick way:
 
 ```
--> app/console g:doctrine:crud --entity=SongbirdNestablePageBundle:Page --route-prefix=songbird_page --with-write -n
--> app/console g:doctrine:crud --entity=SongbirdNestablePageBundle:PageMeta --route-prefix=songbird_pagemeta --with-write -n
+-> bin/console g:doctrine:crud --entity=SongbirdNestablePageBundle:Page --route-prefix=songbird_page --with-write -n
+-> bin/console g:doctrine:crud --entity=SongbirdNestablePageBundle:PageMeta --route-prefix=songbird_pagemeta --with-write -n
 ```
 
 We added the route-prefix to make sure our path is unique so that it can be reused with minimal changes.

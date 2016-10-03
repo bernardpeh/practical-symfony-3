@@ -27,24 +27,33 @@ The idea is to do **actual coding in your host** (main operating system) and let
 # Now you want to clone your new forked repo under your home dir.
 -> cd ~
 -> git clone git@github.com:your_username/songbird.git
+-> cd songbird
+-> git checkout chapter_3
 ```
 
-* run vagrant
+* * Bring up the VM
 
 ```
+# install homestead dependencies
+-> composer install
 # now we are going to bring up the virtual machine. This should take about 30 mins depending on your internet connnection. Have a cup of coffee.
-
 -> vagrant up
 
 # you will be prompted to enter admin password for mounting nfs.
 ...
 ```
 
-* You can now install symfony libraries:
+* add IP of your VM to your [host file](http://www.rackspace.com/knowledge_center/article/how-do-i-modify-my-hosts-file)
+
+```
+192.168.56.111 songbird.app adminer.app
+```
+
+* Symfony is in the repo already. Let us install the component libraries
 
 ```
 -> cd symfony
--> composer udpate
+-> composer install
 
 # when prompted, leave default settings except for the followings:
 # database_host: 192.168.56.111
@@ -55,13 +64,6 @@ The idea is to do **actual coding in your host** (main operating system) and let
 ...
 # We are using smtp port 1025 to catch all mails.
 # mailer_host: 127.0.0.1:1025
-...
-```
-
-* add IP of your VM to your [host file](http://www.rackspace.com/knowledge_center/article/how-do-i-modify-my-hosts-file)
-
-```
-192.168.56.111 songbird.app adminer.app
 ```
 
 * Open up browser and go to http://songbird.app/. Add the exception in the browser since the vm self-signed the ssl certificate. If you see an installation successful page, you are on the right track.
@@ -72,13 +74,15 @@ The idea is to do **actual coding in your host** (main operating system) and let
 
 * Also try http://adminer.app and you should see the adminer page as well.
 
+![](images/welcome_adminer.php)
+
 ## Summary
 
 In this chapter, we setup the development environment from a ready made instance of virtualbox (Homestead). We installed Symfony and configured the host to access SongBird from the host machine.
 
 ## Exercises (Optional)
 
-* Try running Symfony's build-in webserver. What command would you use?
+* Try running Symfony's build-in webserver. What command would you use? What are the pros and cons of using the build-in webserver?
 
 * Try using [docker](https://www.docker.com/) rather than [vagrant](https://www.vagrantup.com) for development. What are the pros and cons of each method?
 

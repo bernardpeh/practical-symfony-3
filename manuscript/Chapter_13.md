@@ -109,12 +109,12 @@ refresh your browser and have a look. If things are not working, remember to cle
 By default, we are using english, so you should see that the english version is translated. To see all the translations in english for the AppBundle,
 
 ```
--> app/console debug:translation en AppBundle
+-> bin/console debug:translation en AppBundle
 ```
 
 You should see a lot of missing translations for the FOSUserBundle. Don't worry about that for now.
 
-Tip: Again, don't remember this command. Just type in "app/console debug:translation" in the command line to see the options.
+Tip: Again, don't remember this command. Just type in "bin/console debug:translation" in the command line to see the options.
 
 What about french? How do we set the locale? Just update the parameters in the config.yml
 
@@ -257,7 +257,7 @@ The new language dropdown box allows user to select a language and if there is a
 and create a new controller from the command line.
 
 ```
--> app/console generate:controller --controller=AppBundle:Locale -n
+-> bin/console generate:controller --controller=AppBundle:Locale -n
 ```
 
 and the controller code in full:
@@ -304,14 +304,14 @@ class LocaleController extends Controller
 As you can see, the annotation defines the the new route /{_locale}/locale. To make sure that this route is working,
 
 ```
--> app/console debug:router | grep locale
+-> bin/console debug:router | grep locale
  app_set_locale                          GET      ANY    ANY  /{_locale}/locale
 ```
 
 The AdminController gets the request object and redirects the user to the referer if there is one. If not, it redirects the user to either the admin dashboard or the homepage depending if the user is logged in or not. Again, don't memorise security.authorization_checker. Google around, make intelligent guesses and use the command line to verify the containers.
 
 ```
--> app/console debug:container | grep security
+-> bin/console debug:container | grep security
 ...
 ```
 
@@ -377,7 +377,7 @@ To see what is going on with the events sequencing,
 
 ```
 # now view the event dispatcher list
--> app/console debug:event-dispatcher kernel.request
+-> bin/console debug:event-dispatcher kernel.request
 ```
 
 Look at the kernel.request section and you should see our custom event listener ranked 7, just above the kernel LocaleListener.

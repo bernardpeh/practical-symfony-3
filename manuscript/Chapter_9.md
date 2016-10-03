@@ -516,6 +516,7 @@ Under the "show" action, I should not see the created field. User should also be
 ```
 
 Noticed that easyadmin allows creation of isolated entity functions like "editUserAction". This is brilliant because updating this function won't affect other entities.
+
 ## Cleaning up
 
 Now let us do some cleaning up. Since we are now using EasyAdmin, a lot of files that we have generated using the command line are no longer needed. As you can see, automation is only good if you know what you are doing.

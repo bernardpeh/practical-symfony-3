@@ -182,12 +182,12 @@ We will update the resetapp script to copy the test_profile.jpg to the web folde
 # scripts/resetapp
 
 #!/bin/bash
-rm -rf app/cache/*
-# app/console cache:clear --no-warmup
-app/console doctrine:database:drop --force
-app/console doctrine:database:create
-app/console doctrine:schema:create
-app/console doctrine:fixtures:load -n
+rm -rf var/cache/*
+# bin/console cache:clear --no-warmup
+bin/console doctrine:database:drop --force
+bin/console doctrine:database:create
+bin/console doctrine:schema:create
+bin/console doctrine:fixtures:load -n
 
 # copy test data over to web folder
 cp src/AppBundle/Tests/_data/test_profile.jpg web/uploads/profiles/

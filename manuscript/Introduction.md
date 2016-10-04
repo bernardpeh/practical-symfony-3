@@ -18,17 +18,17 @@ This book is targeted at developers who are new to Symfony. If you are already a
 
 At the time of writing, there are already many CMS and a few popular Symfony ones out there. Symfony has the [cmf project](http://cmf.symfony.com/). Why built a new one? 
 
-We are not building a new CMS and SongBird is not trying to compete in the CMS space. SongBird exists to demonstrate the best practices in web development with Symfony and provide practical tutorials for people who want to try out Rapid Development with a modern day framework.
+We are not building a new CMS and SongBird is not trying to compete in the CMS space. SongBird exists to demonstrate the possibilities in web development with Symfony and provide practical tutorials for people who want to try out Rapid Development with a modern day framework.
 
 ## Is SongBird Reusable?
 
-Definitely. SongBird is not just a tutorial project, I use it often as a vanilla framework to kickstart projects. Its a hugh time saver because all common features have been build and configured already. Since I built the software, I have full knowledge of how the software works and know where to customise things should the need arises. 
+Definitely. SongBird is not just a tutorial project, You can use it as a vanilla framework to kickstart projects. Its a hugh time saver because all common features have been build and configured already. Since you assemble the software, you have better idea of how the software works and know where to customise things should the need arises. 
 
-You can also think of SongBird as a foundation to learn cmf. Once you are comfortable with the basic concepts of building a CMS, you are ready for more complex projects.
+You can also think of SongBird as a foundation to learn cmf. Once you are comfortable with the basics of building a CMS, you are ready for more complex projects.
 
 ## Conventions Used in This Book
 
-**Each git branch is a chapter**. Obviously, chapter_6 branch means it is Chapter 6. Otherwise stated, all path references assumes **~/songbird/symfony/** as the root folder. Always execute commands from the root foler.
+**Each git branch is a chapter**. Obviously, chapter_6 branch means it is Chapter 6. Otherwise stated, all path references assumes **~/songbird/symfony/** as the root folder. Always execute commands from the root folder.
 
 To executing commands, You will see a "->" before the command. For example
 
@@ -115,18 +115,18 @@ If you are already getting confused, here are some good [git resource](https://h
 
 I have organised the repository such that every chapter will have its own corresponding branch in the code. Feel free to jump between the different chapters and test out the code. However, remember to [stash](https://git-scm.com/book/en/v1/Git-Tools-Stashing) or commit your changes before switching to a new branch. Also remember to clear your cache if things are broken.
 
-Chapters that talk about [Codeception](http://codeception.com/) Testing Framework are optional. Feel free to skip them if you already have a testing framework in place.
+Chapters that talk about [Codeception Testing Framework](http://codeception.com/) are optional. Feel free to skip them if you already know testing.
 
 To clear the cache fully,
 
 ```
-app/console cache:clear --no-warmup
+bin/console cache:clear --no-warmup
 ```
 
 You are by default in the dev environment, this command is equivalent to
 
 ```
-rm -rf app/cache/dev
+rm -rf var/cache/dev
 ```
 
 ## Regenerating Bootstrap Cache
@@ -141,7 +141,7 @@ If you are getting errors on bootstrap.php.cache, you can regenerate it easily.
 
 Refer to [composer troubleshooting guide](https://getcomposer.org/doc/articles/troubleshooting.md) if you have problems using composer.
 
-A common issue is when you get allowed memory exhausted. A quick workaround is
+A common issue is when you get allowed memory exhausted error. A quick workaround is
 
 ```
 -> php -d memory_limit=-1 path_to_composer update
@@ -149,7 +149,7 @@ A common issue is when you get allowed memory exhausted. A quick workaround is
 
 ## Reinstalling Symfony
 
-Some directories are needed by Symfony but they are not version controlled (the /bin directory for eg). In case they have been deleted accidentally, reinstall the packages. The re-installation will not mess up with your existing code. That's the beauty of being modular.
+Some directories are needed by Symfony but they are not version controlled (eg. the /bin directory). In case they have been deleted accidentally, you can reinstall the packages. The re-installation process will not mess up with your existing code. That's the beauty of being modular.
 
 ```
 rm -rf vendor
@@ -158,7 +158,7 @@ composer update
 
 ## Installing the Demo (Optional)
 
-If you are already getting impatient and wants to see a demo of the completed project, you can
+If you are already getting impatient and wants to see a demo of the completed project, you can checkout the final chapter.
 
 ```
 # If you are new to web development, you might be unfamiliar with some of the commands here. Don't worry as they will be explained as you follow through the chapters sequentially.

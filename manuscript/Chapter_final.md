@@ -1,6 +1,6 @@
 # Final Chapter: Conclusion
 
-Congratulations for perservering for so long... It's been a long journey. In the previous chapters, we have created a simple CMS using a [modular](https://en.wikipedia.org/wiki/Modular_design) approach. The CMS is *really simple* but is secure, supports user logging and internalisation. While going through the exercises, we have explored different possibilities to create parts of the CMS.
+Congratulations for perservering for so long... It's been a long journey. In the previous chapters, we have created a simple CMS using a [modular](https://en.wikipedia.org/wiki/Modular_design) approach. The CMS is *really simple* but is secure, supports user logging and internalisation. While going through the exercises, we have explored possibilities to build different parts of the CMS bit by bit.
 
 So, what's next from here? Ready for more adventures?
 

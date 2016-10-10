@@ -31,11 +31,15 @@ The idea is to do **actual coding in your host** (main operating system) and let
 -> git checkout chapter_3
 ```
 
-* * Bring up the VM
+* [Generate ssh keys](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/) if you don't have one.
+
+* Bring up the VM
 
 ```
 # install homestead dependencies
+# do 'composer self-update' if your composer is old
 -> composer install
+
 # now we are going to bring up the virtual machine. This should take about 30 mins depending on your internet connnection. Have a cup of coffee.
 -> vagrant up
 
@@ -66,7 +70,7 @@ The idea is to do **actual coding in your host** (main operating system) and let
 # mailer_host: 127.0.0.1:1025
 ```
 
-* Open up browser and go to http://songbird.app/. Add the exception in the browser since the vm self-signed the ssl certificate. If you see an installation successful page, you are on the right track.
+* Open up browser and go to http://songbird.app/. The site will work with https as well, in which case you need to add the ssl exception in the browser since the vm is using self-signed certificate. If you see an installation successful page, you are on the right track.
 
 ![](images/welcome_page.png)
 

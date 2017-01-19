@@ -2,33 +2,33 @@
 
 Building an application is like building a Pyramid. You create each piece of functionality bit by bit. You test the functionality and make sure its stable before building the next piece. This cycle continues until you reach the peak - completion.
 
-Choosing the best framework for RAD (Rapid Application Development) has been a topic that has been debated to death. Today, there is no longer such a thing as "The Best Framework" because all modern day frameworks follow the best practice. However, there is such a thing called "The Best Practice". In fact, you could see similar develoment methodologies being used across all frameworks. So knowing one framework well means you can jump between other frameworks easily. Just as human evolves, different frameworks learn from each other and adapt very fast to new and better ways of doing things.
+Choosing the best framework for RAD (Rapid Application Development) has been a topic debated to death. Today, there is no longer such a thing as "The Best Framework" because all modern day frameworks follow the best practice. However, there is such a thing called "The Best Practice". In fact, you can see similar development methodologies being used across all frameworks. So knowing one framework well means you can jump between other frameworks easily. Just as human evolves, different frameworks learn from each other and adapt very fast to new and better technologies.
 
-At the time of writing, NodeJS and Rails continue to innovate with PHP closing in fast behind. PHP is the old veteran when comes to web development with the most frameworks in the market. The 2 frameworks that stood out from the pack at the time of writing were Laravel and Symfony. If you are looking to learn a new framework, I highly recommend Symfony because it is one of the more stable modern framework out there. Symfony components have been used by many popular projects including Composer, Behat, Codeception, Drupal and Laravel (just to name a few).
+At the time of writing, NodeJS continues to innovate with PHP closing in fast behind. PHP is the old veteran when comes to web development with the most frameworks in the market. The 2 frameworks that stood out from the pack were Laravel and Symfony. If you are looking to learn a new framework, I highly recommend Symfony because it is one of the more stable modern framework out there. Symfony components have been widely used by many popular projects including Composer, Behat, Codeception, Drupal and Laravel (just to name a few).
 
-Learning a new framework is never an easy task. Many people follow tutorials in google and read up all the documentation in [Symfony website](http://symfony.com) and still find it challenging to create a simple application. Why? Because there is too much theory and not enough real world practical examples. Worst still, you can get entangled in technical jargons and advance customisations easily. The fact that Symfony is an extremely flexible framework makes it even harder to master because there are so many ways to achieve the same goal. If you are new to MVC (Model-View-Controller) and RAD, you will find that Symfony has a steep learning curve.
+Learning Symfony is never an easy task. Many people follow tutorials in google, read up all the documentation in [Symfony website](http://symfony.com) and still find it challenging to create a simple application. Why? Because there is too much theory and not enough real world practical examples. Worst still, you can get entangled in technical jargons and advance customisations easily. The fact that Symfony is an extremely flexible framework makes it even harder to master because there are so many ways to achieve the same goal. If you are new to MVC (Model-View-Controller) and RAD, you will find that Symfony has a steep learning curve.
 
-This book aims to lower the learning curve by providing a step by step hands-on approach to guide developers who are new to Symfony to build a simple CMS (Let us call it "SongBird") using good industry practice. Hopefully after following all the chapters, your eyes will be opened to RAD and the unlimited possibilities with Symfony. 
+This book aims to lower the learning curve by providing a step by step hands-on approach to guide developers who are new to Symfony to build a simple CMS using good industry practice. Let us call the CMS "SongBird". Hopefully after following all the chapters, your eyes will be opened to RAD and the unlimited possibilities with Symfony. 
 
 ## Audience
 
-This book is targeted at developers who are new to Symfony. If you are already an seasoned PHP Developer, I hope you would pick up some hints here and there.
+This book is targeted at developers who are new to Symfony. If you are already a seasoned PHP Developer, I hope you would pick up some tips here and there.
 
 ## Why Re-invent the Wheel?
 
-At the time of writing, there are already many CMS and a few popular Symfony ones out there. Symfony has the [cmf project](http://cmf.symfony.com/). Why built a new one? 
+At the time of writing, there are already many CMS and a few popular Symfony ones out there. Symfony has the [CMF project](http://cmf.symfony.com/). Why built a new one? 
 
-We are not building a new CMS and SongBird is not trying to compete in the CMS space. SongBird exists to demonstrate the possibilities in web development with Symfony and provide practical tutorials for people who want to try out Rapid Development with a modern day framework.
+SongBird is really a tutorial project and not trying to compete in the CMS space.
 
 ## Is SongBird Reusable?
 
-Definitely. SongBird is not just a tutorial project, You can use it as a vanilla framework to kickstart projects. Its a hugh time saver because all common features have been build and configured already. Since you assemble the software, you have better idea of how the software works and know where to customise things should the need arises. 
+Definitely. SongBird is not just a tutorial CMS, you can use it as a vanilla framework to kickstart other Symfony projects. It will be a hugh time saver because all common features have been build and configured already. Since you are the one who creates the software, you will have better idea of how the software works and know where to customise things should the need arises. 
 
-You can also think of SongBird as a foundation to learn cmf. Once you are comfortable with the basics of building a CMS, you are ready for more complex projects.
+You can also think of SongBird as the foundation for the [CMF project](http://cmf.symfony.com/). Once you are comfortable with the basics of building a CMS, you are ready for more complex development.
 
 ## Conventions Used in This Book
 
-**Each git branch is a chapter**. Obviously, chapter_6 branch means it is Chapter 6. Otherwise stated, all path references assumes **~/songbird/symfony/** as the root folder. Always execute commands from the root folder.
+**Each git branch is a chapter**. Obviously, chapter_6 branch means it is Chapter 6. Otherwise stated, all path references assumes **~/songbird** as the root folder. Always execute commands from the root folder.
 
 To executing commands, You will see a "->" before the command. For example
 
@@ -40,23 +40,23 @@ Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
   (use "git checkout -- <file>..." to discard changes in working directory)
 
-	modified:   app/AppKernel.php
-	modified:   app/config/routing.yml
+	modified:   symfony/app/AppKernel.php
+	modified:   symfony/app/config/routing.yml
 
 Untracked files:
   (use "git add <file>..." to include in what will be committed)
 
-	src/Songbird/
+	symfony/src/myfolder/
 
 no changes added to commit (use "git add" and/or "git commit -a")
 ```
 
-This means that in the command line terminal, go to the ~/songbird/symfony/ folder and type in "git status".
+This means that in the command line terminal, go to the ~/songbird folder and type in "git status".
 
 Likewise, a code snippet like this
 
 ```
-# app/config/routing.yml
+# symfony/app/config/routing.yml
 ...
 Songbird_user:
     resource: "@SongbirdUserBundle/Controller/"
@@ -86,6 +86,7 @@ Commit all your changes in chapter 4 first.
 Then checkout chapter 5.
 
 ```
+# this command will create a new mychapter_5 branch based off your current branch
 -> git checkout -b mychapter_5
 ``` 
 
@@ -93,6 +94,7 @@ We use mychapter_x to differentiate between your work and my work. To look at al
 
 ```
 -> git branch -a
+
   mychapter_4
 * mychapter_5
   ...
@@ -120,13 +122,7 @@ Chapters that talk about [Codeception Testing Framework](http://codeception.com/
 To clear the cache fully,
 
 ```
-bin/console cache:clear --no-warmup
-```
-
-You are by default in the dev environment, this command is equivalent to
-
-```
-rm -rf var/cache/dev
+rm -rf symfony/var/cache/*
 ```
 
 ## Regenerating Bootstrap Cache
@@ -134,7 +130,7 @@ rm -rf var/cache/dev
 If you are getting errors on bootstrap.php.cache, you can regenerate it easily.
 
 ```
--> ./vendor/sensio/distribution-bundle/Resources/bin/build_bootstrap.php
+-> symfony/vendor/sensio/distribution-bundle/Resources/bin/build_bootstrap.php
 ```
 
 ## Composer Memory Errors
@@ -149,7 +145,7 @@ A common issue is when you get allowed memory exhausted error. A quick workaroun
 
 ## Reinstalling Symfony
 
-Some directories are needed by Symfony but they are not version controlled (eg. the /bin directory). In case they have been deleted accidentally, you can reinstall the packages. The re-installation process will not mess up with your existing code. That's the beauty of being modular.
+Some directories are needed by Symfony but they are not version controlled (eg. the bin directory). In case they have been deleted accidentally, you can reinstall the packages. The re-installation process will not mess up with your existing code. That's the beauty of being modular.
 
 ```
 rm -rf vendor
@@ -158,7 +154,7 @@ composer update
 
 ## Installing the Demo (Optional)
 
-If you are already getting impatient and wants to see a demo of the completed project, you can checkout the final chapter.
+If you are already getting impatient and wants to see a demo of the completed project, you can checkout the final chapter. Make sure you have docker and docker-compose installed.
 
 ```
 # If you are new to web development, you might be unfamiliar with some of the commands here. Don't worry as they will be explained as you follow through the chapters sequentially.
@@ -166,24 +162,24 @@ If you are already getting impatient and wants to see a demo of the completed pr
 -> git clone https://github.com/bernardpeh/songbird
 -> cd songbird
 -> git checkout chapter_final
--> composer update
-# wait a while if this is the first time you are running this command.
--> vagrant up
--> cd symfony
--> composer update
+-> cp .env.dist .env
+# update parameters in the .env file, then run
+-> docker-compose build
+-> docker-compose up -d
+# add ip to your host file
+-> sudo echo "127.0.0.1 songbird.app" >> /etc/hosts
 
-# when prompted, leave default settings except for the followings:
-# database_host: 192.168.56.111
+# update symfony/app/config/parameters.yml
+# your can find your db host from this command
+# docker network inspect songbird_default
+
+# database_host: your_db_host_from_docker_inspect
 # database_port: 3306
-# database_name: songbird
-# database_user: homestead
-# database_password: secret
-...
+# database_name: db_name_from_env_file
+# database_user: mysql_user_from_env_file
+# database_password: db_passwd_from_env_file
 # We are using smtp port 1025 to catch all mails.
 # mailer_host: 127.0.0.1:1025
-
-# add IP of your VM to your host file
-# eg. 192.168.56.111 songbird.app adminer.app
 
 # create the uploads dir
 mkdir -p web/uploads/featured_images
@@ -199,7 +195,7 @@ mkdir -p web/uploads/featured_images
 -> gulp
 ```
 
-Now go to http://songbird.app and you should see the homepage.
+Now go to http://songbird.app:8000 and you should see the homepage.
 
 ![](images/cms_final.png)
 

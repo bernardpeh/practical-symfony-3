@@ -1,6 +1,6 @@
 # Chapter 1: Survival Skills
 
-The 2 biggest Symfony resources on the web at the moment are "The Book" and "The Cookbook", both can be downloaded from [Symfony Documentation Page](http://symfony.com/doc/current/index.html). Cudos to Fabien and the team behind the books, making Symfony one of the best documented frameworks out there. Having said that, the content in these 2 books are hard to digest and almost impossible to follow unless you have good foundation in Object Oriented Programming. There are a lot to go through. Even if you are have the skills, you will need enough determination to read them. Even if you finish reading them, you still need to have enough practical experience to digest the theory.
+Without a doubt, the 2 biggest Symfony resources on the web at the moment are "The Book" and "The Cookbook", both can be downloaded from [Symfony Documentation Page](http://symfony.com/doc/current/index.html). Cudos to Fabien and the team behind the books, making Symfony one of the best documented frameworks out there. Having said that, the content in these 2 books are hard to digest and almost impossible to follow unless you have good foundation in Object Oriented Programming. There are a lot to go through. Even if you are have the skills, you will need enough determination to read them. Even if you finish reading them, you still need to have enough practical experience to digest the theory.
 
 I hope there is really a simple formula to become a Symfony ninja overnight...
 
@@ -21,7 +21,7 @@ I hope the list doesn't scare you to get started.
 
 ## Using the Command Line
 
-I suggest you to get comfortable with the command line. Many modern day frameworks uses command line to automate tasks. In this book, I'll be using a lot of command line but I suggest you not to memorise them. Always type "app/console" to see the options and then narrow in from there.
+I suggest you to get comfortable with the command line. Many modern day frameworks use command line to automate tasks. In this book, I'll be using a lot of command line but I suggest you not to memorise them. Always type "app/console" to see the options and then narrow in from there.
 
 For example, your app/console might look like this (doesn't matter if it doesn't at this point):
 
@@ -121,11 +121,11 @@ Available commands:
   yaml:lint                            Lints a file and outputs encountered errors
 ```
 
-Wow, that is a lot but don't worry, you will get used to the important ones after finishing this book.
+Wow, that is a lot but don't worry, you will get used to the important ones after finishing the book.
 
 ## Selling Your Soul to the Demon
 
-Many people use a [web framework](http://symfony.com/why-use-a-framework) to create internet applications nowadays. A framework speeds up web development by giving you automation tools to create commonly used features like user management system, form creation, admin dashboard, menus...etc. This means that you can create these features easily without knowing how they work. This is like buying a car without knowing how the car works. This is all good until if you want to customise the inner components or repair it. You could get someone to customise the car (hire a developer) or DIY.
+Many people use [web frameworks](http://symfony.com/why-use-a-framework) to create internet applications nowadays. A framework speeds up web development by giving you automation tools to create commonly used features like user management system, forms, pages, menus...etc. This means that you can create these features easily without knowing how they work. It is like buying a car without knowing how the car works. This is all good until if you want to customise the inner components or repair it. You could get someone to customise the car (hire a developer) or DIY.
 
 If you are a developer, there is value in learning how to built a CMS with Symfony. While building the CMS, you learn how to configure and customise all the bundles to make them work together. As the builder, you will know where to start troubleshooting when things go wrong.
 
@@ -133,7 +133,7 @@ Let's get the ball rolling...
 
 ## Summary
 
-This is a short chapter. We discussed the basic skills required to learn a modern day framework like Symfony. You were mentally prepared and being warned about the pros and cons of using a framework.
+This is a short chapter. We discussed the basic skills required to learn a modern day framework like Symfony. You were mentally prepared and warned about the pros and cons of using a framework.
 
 
 ## References

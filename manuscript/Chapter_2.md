@@ -4,19 +4,18 @@ In a nutshell, SongBird is a bare bone CMS (Content Management System) consistin
 
 * Admin Panel and Dashboard - A password protected administration area for administrators and users.
 * User Management System - For administrators to manage users of the system.
-* Multi-lingual Capability - No CMS is complete without this.
+* i18n Capability - Multi-lingual. No CMS is complete without this.
 * Page Management System - For managing the front-end menu, slug and content of the site.
-* Media Management System - For administrators to manage files and images.
 * User Logging Sytem - For logging user activities in the backend.
 * Frontend - The portal where the public interacts with the site. No login required.
 
-We will attempt to built the CMS using some popular modules available to cut down the development time. This is the best practice. However, that also means that we lose the fun of building some cool bundles ourselves. In view of that, we will attempt to build the Page management bundle and frontend ourselves.
+We will attempt to built the CMS using some popular modules available to cut down the development time. This is the best approach. However, that also means that we lose the fun of building some cool bundles ourselves. In view of that, we will attempt to build the Page management bundle and frontend ourselves.
 
 ## So What is the Plan?
 
 In this chapter we are going to define the scope of the software. People spend weeks to write a proper functional specification for a software like this. Functional Specification defines the scope of the project, provides an estimate of the amount of man hours required and duration to complete the job, gives people an idea of what the software is, what it can or can't do. It is also important to use that as a reference when writing test cases as well.
 
-Writing good functional spec is the most important part of the Software Development Life Cycle. In our case, we shall cut down the words and show only relevant information in developing SongBird.
+Writing good functional specs is the most important part of the Software Development Life Cycle. In our case, we shall cut down the words and show only relevant information in developing SongBird.
 
 ## Use Case Diagram
 

@@ -15,7 +15,8 @@ I will be writing acceptance tests in most cases. There are many frameworks for 
 ## Installation
 
 ```
--> composer require codeception/codeception ~2.1 --dev
+-> cd symfony
+-> composer require codeception/codeception --dev
 ```
 
 If everything is working, you will see composer adding the dependency in composer.json
@@ -26,29 +27,26 @@ If everything is working, you will see composer adding the dependency in compose
 # add the codeception line under require-dev
 "require-dev": {
     ...
-    "codeception/codeception": "~2.1"
+    "codeception/codeception": "^2.2"
 },
 ```
 
-Don't worry about the specific version number of the bundle for now. The reason I used these version number was because I tested it with them and they will work if you use them.
-
-Now we can run composer update and initialise codeception
+Now we can initialise codeception
 
 ```
--> composer update
 -> vendor/bin/codecept bootstrap
 ```
 
-Let us configure codecept acceptance test to work in Symfony.
+Let us configure the acceptance test.
 
 ```
-# tests/acceptance.suite.yml
+# symfony/tests/acceptance.suite.yml
 class_name: AcceptanceTester
 modules:
     enabled:
         - WebDriver:
-            url: 'http://songbird.app'
-            browser: chrome
+            url: 'http://songbird.app:8000'
+            browser: phantomjs
             window_size: 1024x768
             capabilities:
                 unexpectedAlertBehaviour: 'accept'
@@ -58,12 +56,23 @@ modules:
 
 Acceptance Testing is like Black Box Testing - We try to simulate real users interacting with our app. We ignore the inner workings of the code and only care if it works from the end user's point of view.
 
-Here, we are using [selenium](http://seleniumhq.org) webdriver to simulate browser testing ([chrome](https://www.google.com.au/intl/en/chrome/browser/desktop/index.html)). Codeception by default comes with PhpBrowser which doesn't support javascript. Selenium is slow but is the veteran when comes to acceptance testing. We could also use a headless browser like [phantomjs](http://phantomjs.org) which is faster but I found it buggy at the time of writing. In this book, I will be using selenium.
+Here, we are using [phantomjs](http://phantomjs.org) webdriver to simulate browser testing. Codeception by default comes with PhpBrowser which doesn't support javascript. [Selenium](http://www.seleniumhq.org/) is slow but is the veteran when comes to acceptance testing. Feel free to switch to selenium if you encounter problems.
 
 We can now generate the acceptance actions based on the updated acceptance suite:
 
 ```
+-> cd symfony
 -> vendor/bin/codecept build
+
+# we will now get all the codecept libraries for free
+
+Building Actor classes for suites: acceptance, functional, unit
+ -> AcceptanceTesterActions.php generated successfully. 0 methods added
+\AcceptanceTester includes modules: WebDriver, \Helper\Acceptance
+ -> FunctionalTesterActions.php generated successfully. 0 methods added
+\FunctionalTester includes modules: \Helper\Functional
+ -> UnitTesterActions.php generated successfully. 0 methods added
+\UnitTester includes modules: Asserts, \Helper\Unit
 ```
 
 ## The First Test
@@ -78,7 +87,7 @@ We know that the default Symfony comes with the AppBundle example. Let us now te
 The auto generated Cest class should look like this:
 
 ```
-# tests/acceptance/AppBundleCest.php
+# symfony/tests/acceptance/AppBundleCest.php
 
 class AppBundleCest
 {
@@ -98,7 +107,7 @@ Let us write our own test. All new Symfony installation homepage should have a s
 
 
 ```
-# tests/acceptance/AppBundleCest.php
+# symfony/tests/acceptance/AppBundleCest.php
 ...
 # replaced tryToTest function with InstallationTest function
 public function InstallationTest(AcceptanceTester $I)
@@ -115,35 +124,49 @@ Now run the test:
 -> vendor/bin/codecept run acceptance AppBundleCest
 ```
 
-and you should get an error complaining that there is no selenium server running...
+and you should get an error complaining that there is no selenium server or PhantomJS running...
 
 ```
-[Codeception\Exception\ConnectionException]
-  Curl error thrown for http POST to /session with params: {"desiredCapabilities":{"unexpectedAlertBehaviour
-  ":"accept","webStorageEnabled":true,"browserName":"chrome"}}
-  Failed to connect to 127.0.0.1 port 4444: Connection refused
+1) AppBundleCest: Check if Symfony is installed successfully.
+ Test  tests/acceptance/AppBundleCest.php:InstallationTest
+Can't connect to Webdriver at http://127.0.0.1:4444/wd/hub. Please make sure that Selenium Server or PhantomJS is running.
 
-  Please make sure that Selenium Server or PhantomJS is running.
+ERRORS!
+Tests: 1, Assertions: 0, Errors: 1.
 ```
 
-Install latest version of [Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html),  download [selenium standalone server](http://www.seleniumhq.org/download/) and [chrome driver](http://chromedriver.storage.googleapis.com/index.html). Remember to start selenium server in a **new terminal**.
+Download [phantomjs](http://phantomjs.org/download.html) and unzip. Remember to start run the phantomjs command in a **new terminal**.
 
 ```
 -> mkdir scripts
 -> cd scripts
-# download selenium server and chromedriver to this dir. In a new terminal, start selenium server. I am using v2.53.1 for example.
--> java -Dwebdriver.chrome.driver=./chromedriver -jar selenium-server-standalone-2.53.1.jar
+# download phantomjs to this dir. In a new terminal, start selenium server. I am using v2.53.1 for example.
+-> chmod u+x phantomjs 
+-> ./phantomjs --webdriver=4444
+
+[INFO  - 2017-01-20T05:36:49.610Z] GhostDriver - Main - running on port 4444
 ```
 
-On the previous terminal, run the acceptance test again. You should see selenium firing up a new chrome browser and running the test.
+On the previous terminal, run the acceptance test again. You should see the phantomjs terminal showing lots of logsand running the test.
 
 ```
 -> vendor/bin/codecept run acceptance AppBundleCest
-...
-# OK (1 test, 1 assertion)
+
+Codeception PHP Testing Framework v2.2.8
+Powered by PHPUnit 5.7.5 by Sebastian Bergmann and contributors.
+
+Acceptance Tests (1) ------------------------------------------------------------------------
+Testing acceptance
+✔ AppBundleCest: Check if symfony is installed successfully. (4.82s)
+---------------------------------------------------------------------------------------------
+
+
+Time: 5.86 seconds, Memory: 13.50MB
+
+OK (1 test, 1 assertion)
 ```
 
-The selenium server jar file is a binary. To make life easy, we are going to commit selenium-server-standalone-xxx.jar. We need to tell git not to convert the line endings (google for it if interested)
+The phantomjs file is a binary. To make life easy, we are going to commit it. We need to tell git not to convert the line endings (google for it if interested)
 
 ```
 # .gitattributes
@@ -152,20 +175,13 @@ The selenium server jar file is a binary. To make life easy, we are going to com
 # Denote all files that are truly binary and should not be modified.
 *.png binary
 *.jpg binary
-*.jar binary
 ```
 
 Don't forget to commit your code before moving on to the next chapter.
 
 ```
--> git status
-# see all files modified or created. Commit all of them
--> git add .gitignore
--> git add .gitattributes
--> git add composer.json
--> git add codeception.yml
--> git add tests
 -> git add scripts
+-> git add symfony
 -> git commit -m"added codeception and created basic test"
 # update remote repo so you dont lose it
 -> git push -u origin my_chapter4
@@ -173,19 +189,17 @@ Don't forget to commit your code before moving on to the next chapter.
 
 ## Summary
 
-In this chapter, we discussed the importance of testing and touched on TDD and BDD. In our context, we will be mainly writing BDD tests. We installed codeception and selenium and wrote a simple acceptance test that tests the app/example page.
+In this chapter, we discussed the importance of testing and touched on TDD and BDD. In our context, we will be mainly writing BDD tests. We installed codeception and phantomjs. Then, we wrote a simple acceptance test to tests the default symfony home page.
 
 ## Exercises (Optional)
 
-* Try configure codeception to allow running of different acceptance profile. Can you test with PhpBrowser or phantomjs easily? Do you see any benefit of doing that? See [advanced codeception](http://codeception.com/docs/07-AdvancedUsage) for help.
+* Try configure codeception to allow running of different acceptance profile. Can you test with PhpBrowser or selenium easily? Do you see any benefit of doing that? See [advanced codeception](http://codeception.com/docs/07-AdvancedUsage) for help.
 
 ## Resources
 
 * [TDD](https://en.wikipedia.org/wiki/Test-driven_development)
 
 * [BDD](https://en.wikipedia.org/wiki/Behavior-driven_development)
-
-* [PhantomJS](http://phantomjs.org/download.html)
 
 * [Codeception documentation](http://codeception.com/docs)
 

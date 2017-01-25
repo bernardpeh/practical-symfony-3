@@ -73,6 +73,13 @@ or it could mean a comment for you to action like
 -> git commit -m"update file changes"
 ```
 
+**All symfony commands** runs under the symfony dir, ie
+
+```
+# in the symfony dir
+-> bin/console debug:router
+```
+
 ## Learning Symfony
 
 If you are new to RAD and like to learn Symfony, I recommend you to go through the chapters in sequential order. Every time you are on a new chapter, create a new branch based on the previous chapter and try to add or update the code as suggested in the chapter. For example, you have just finished chapter 4 and going into chapter 5.

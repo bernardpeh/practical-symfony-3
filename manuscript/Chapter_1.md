@@ -26,7 +26,7 @@ I suggest you to get comfortable with the command line. Many modern day framewor
 For example, your app/console might look like this (doesn't matter if it doesn't at this point):
 
 ```
--> app/console
+-> bin/console
 
 ...
 

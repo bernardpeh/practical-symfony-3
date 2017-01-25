@@ -6,10 +6,10 @@ Since we are ready to build the application, let us remove the route for the def
 
 ## Modifying DefaultController.php
 
-Previously, we could access the route "/" because the route exists in DefaultController.php. Removing the @route annotation will remove the route. I simply took out the @.
+Previously, we could access the route "/" because the route exists in DefaultController.php. Removing the @route annotation will remove the route. A simple trick to do that is to take out the @.
 
 ```
-#  src/AppBundle/Controller/DefaultController.php
+#  symfony/src/AppBundle/Controller/DefaultController.php
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -32,7 +32,7 @@ class DefaultController extends Controller
 }
 ```
 
-Now, refresh http://songbird.app/app_dev.php and you should see a 404 error.
+Now, refresh http://songbird.app:8000/app_dev.php and you should see a 404 error.
 
 ```
 No route found for "GET /"
@@ -41,6 +41,7 @@ No route found for "GET /"
 This is correct because the url is no longer configured. How can you be sure? Let us check it out from the command line
 
 ```
+# in symfony
 -> bin/console debug:router
 
 [router] Current routes
@@ -71,8 +72,10 @@ To make sure that / route is correctly removed and not accidentally added again 
 
 
 ```
-# tests/acceptance/AppBundleCest.php
+# symfony/tests/acceptance/AppBundleCest.php
 ...
+# replace installationTest with removalTest
+
    /**
      * check that homepage is not active
      *
@@ -92,7 +95,7 @@ and run the test again,
 # clear prod cache because test is running in prod env
 -> bin/console cache:clear --env=prod
 
-# remember to start selenium server
+# remember to start phantomjs server before running this command
 -> vendor/bin/codecept run acceptance
 ...
 Time: 10.47 seconds, Memory: 11.50MB
@@ -105,6 +108,7 @@ OK (1 test, 1 assertion)
 We have to remember to clear the cache every time we run the test so that we don't test on the cached version. Let us automate this by creating a script in the scripts dir called "runtest" and make it executable.
 
 ```
+# in symfony
 -> touch scripts/runtest
 -> chmod u+x scripts/runtest
 ```
@@ -112,7 +116,7 @@ We have to remember to clear the cache every time we run the test so that we don
 In the runtest script,
 
 ```
-# scripts/runtest
+# symfony/scripts/runtest
 
 #!/bin/bash
 
@@ -120,28 +124,28 @@ bin/console cache:clear --no-warmup
 vendor/bin/codecept run acceptance
 ```
 
-We have to also remember to start selenium server before we run the test. To make our live easy, let us create a script to automate starting selenium
+We have to also remember to start phantomjs before we run the test. To make our live easy, let us create a script to automate starting phantomjs
 
 ```
--> touch scripts/start_selenium
--> chmod u+x start_selenium
+-> touch scripts/start_phantomjs
+-> chmod u+x scripts/start_phantomjs
 ```
 
-in start_selenium,
+in start_phantomjs,
 
 ```
-# scripts/start_selenium
+# symfony/scripts/start_phantomjs
 
 #!/bin/bash
 
-java -Dwebdriver.chrome.driver=scripts/chromedriver -jar scripts/selenium-server-standalone-2.53.1.jar
+scripts/phantomjs --webdriver=4444
 ```
 
 Now test your automation by running
 
 ```
 # open a new terminal
--> ./scripts/start_selenium
+-> ./scripts/start_phantomjs
 
 # back in your own terminal
 -> ./scripts/runtest
@@ -153,7 +157,7 @@ We are almost done. Remember to commit all your changes before moving on to the 
 
 ## Summary
 
-In this chapter, we have removed the default / route and updated our test criteria. We have also created a few bash scripts to automate the task of running codecept test. We will add more to this scripts in the future.
+In this chapter, we have removed the default / route and updated our test criteria. We have also created a few bash scripts to automate the task of running codecept test. We will add more to these scripts in the future.
 
 ## References
 
@@ -162,5 +166,3 @@ In this chapter, we have removed the default / route and updated our test criter
 * [BDD](https://en.wikipedia.org/wiki/Behavior-driven_development)
 
 * [PhantomJS](http://phantomjs.org/download.html)
-
-* [Codeception documentation](http://codeception.com/docs)

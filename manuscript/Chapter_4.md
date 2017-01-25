@@ -6,11 +6,11 @@ No application is complete without going through a rigorous testing process. Sof
 
 Today, many developers know [TDD](https://en.wikipedia.org/wiki/Test-driven_development) and [BDD](https://en.wikipedia.org/wiki/Behavior-driven_development). Test First Development ensures that your software is reliable but requires a lot of patience and extra work to implement it correctly. Think of it like a quality control process. The more checks you have, the less bugs your have. Of course, you can cost cut by not having checks and hope that your product is still bug free. This is quite unlikely especially if the software is complex.
 
-Personally, I prefer to write user stories and scenarios first (I like to think of them as pseudocode) rather than spending time coding the tests. Once I have the user stories and scenarios defined, I will jump in and code functionality A. When functionality A is completed, I will code the test cases and ensure they pass before moving on. I will repeat the cycle for functionality B before moving on to functionality C. The idea is to not break existing functionalities while adding on new functionalities.
+Personally, I prefer to write user stories and scenarios first rather than spending time coding the tests. Think of them as pseudocode. Once we have the user stories and scenarios defined, we will jump in and code functionality A. When functionality A is completed, we will code the test cases and ensure they pass before moving on. We will repeat the cycle for functionality B before moving on to functionality C. The idea is to not break existing functionalities while adding on new functionalities.
 
 Everyone's testing approach is different. You could implement your own approach.
 
-I will be writing acceptance tests in most cases. There are many frameworks for acceptance testing. [Behat](http://docs.behat.org/) and [Mink](http://mink.behat.org/) is the industrial standard at the moment. In this book, we will be using a bit of phpunit but mainly [Codeception](http://codeception.com/) as our testing framework.
+There are many frameworks for acceptance testing. [Behat](http://docs.behat.org/) and [Mink](http://mink.behat.org/) are the industrial standard at the moment. In this book, we will be using [Codeception](http://codeception.com/) to write acceptance tests in most cases. We will also be writing some functional test in phpunit.
 
 ## Installation
 
@@ -19,7 +19,7 @@ I will be writing acceptance tests in most cases. There are many frameworks for 
 -> composer require codeception/codeception --dev
 ```
 
-If everything is working, you will see composer adding the dependency in composer.json
+The "--dev" means we only need this in dev mode. If everything is working, you will see composer adding the dependency in composer.json
 
 ```
 # composer.json
@@ -61,7 +61,6 @@ Here, we are using [phantomjs](http://phantomjs.org) webdriver to simulate brows
 We can now generate the acceptance actions based on the updated acceptance suite:
 
 ```
--> cd symfony
 -> vendor/bin/codecept build
 
 # we will now get all the codecept libraries for free
@@ -138,6 +137,7 @@ Tests: 1, Assertions: 0, Errors: 1.
 Download [phantomjs](http://phantomjs.org/download.html) and unzip. Remember to start run the phantomjs command in a **new terminal**.
 
 ```
+-> cd symfony
 -> mkdir scripts
 -> cd scripts
 # download phantomjs to this dir. In a new terminal, start selenium server. I am using v2.53.1 for example.
@@ -166,7 +166,7 @@ Time: 5.86 seconds, Memory: 13.50MB
 OK (1 test, 1 assertion)
 ```
 
-The phantomjs file is a binary. To make life easy, we are going to commit it. We need to tell git not to convert the line endings (google for it if interested)
+Some files such as images are binary. To make life easy, we are going to commit phantomjs. We need to tell git not to convert the line endings (google for it if interested)
 
 ```
 # .gitattributes
@@ -180,7 +180,6 @@ The phantomjs file is a binary. To make life easy, we are going to commit it. We
 Don't forget to commit your code before moving on to the next chapter.
 
 ```
--> git add scripts
 -> git add symfony
 -> git commit -m"added codeception and created basic test"
 # update remote repo so you dont lose it
@@ -193,7 +192,7 @@ In this chapter, we discussed the importance of testing and touched on TDD and B
 
 ## Exercises (Optional)
 
-* Try configure codeception to allow running of different acceptance profile. Can you test with PhpBrowser or selenium easily? Do you see any benefit of doing that? See [advanced codeception](http://codeception.com/docs/07-AdvancedUsage) for help.
+* Try configure codeception to allow the running of different acceptance testing profiles. Can you test with PhpBrowser or selenium easily? Do you see any benefit of doing that? See [advanced codeception](http://codeception.com/docs/07-AdvancedUsage) for help.
 
 ## Resources
 

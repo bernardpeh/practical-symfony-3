@@ -36,6 +36,14 @@ The idea is to do **actual coding in your host** (main operating system) and let
 # update parameters in the .env file, then run
 -> docker-compose build
 -> docker-compose up -d
+
+# to confirm all the containers are fired up correctly
+-> docker-compose ps
+      Name                    Command              State               Ports             
+----------------------------------------------------------------------------------------
+songbird_db_1      docker-entrypoint.sh mysqld     Up      3306/tcp                      
+songbird_nginx_1   nginx                           Up      443/tcp, 0.0.0.0:8000->80/tcp 
+songbird_php_1     docker-php-entrypoint php-fpm   Up      0.0.0.0:9000->9000/tcp   
 ```
 
 * Add songbird.app to your host file.
@@ -63,7 +71,7 @@ The idea is to do **actual coding in your host** (main operating system) and let
 //     exit('You are not allowed to access this file. Check '.basename(__FILE__).' for more information.');
 // }
 ```
-* Now try this url http://songbird.app:8000/app_dev.php and you should see the same successful page but with a little icon/toolbar at the bottom of the page. That's right, you are now in dev mode. Why the "app_dev.php"? That is like the default page for the dev environment, something unique to Symfony.
+* Now try this url http://songbird.app:8000/app_dev.php and you should see the same successful page but with a little icon/toolbar at the bottom of the page. That's right, you are now in dev mode. Why the "app_dev.php"? That is like the default page for the dev environment, something unique to Symfony which we will always be using during development.
 
 * To check that everything is working, let us look at the logs
 
@@ -92,6 +100,20 @@ The idea is to do **actual coding in your host** (main operating system) and let
 ```
 
 Good, nginx and symfony is logging stuff.
+
+***Every time your machine restarts, remember to start docker, then run `docker-compose up -d` in the songbird folder to start the dev environment.***
+
+Finally, let us ignore .env in .gitignore
+
+```
+# .gitignore
+
+/.vagrant/
+.idea/
+logs/
+...
+/.env
+```
 
 ## Summary
 

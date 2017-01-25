@@ -1,6 +1,6 @@
 # Chapter 6: The User Management System Part 1
 
-User Management System is a core part of any CMS. We will create this feature using the popular [FOSUserBundle](https://github.com/FriendsOfSymfony/FOSUserBundle).
+User Management System is the core part of any CMS. We will create this feature using the popular [FOSUserBundle](https://github.com/FriendsOfSymfony/FOSUserBundle).
 
 ## Pre-setup
 
@@ -15,14 +15,8 @@ Make sure we are in the right branch. Let us branch off from the previous chapte
 Add the bundle in composer.json
 
 ```
+# in symfony
 -> composer require friendsofsymfony/user-bundle ~2.0@dev
-```
-
-Note that you can also install the bundle by editing composer.json directly and then
-
-```
--> composer update
-
 ```
 
 Now in AppKernel, we need to register the bundles
@@ -42,7 +36,7 @@ public function registerBundles()
 }
 ```
 
-AppBundle\User() will look for the User class in User.php (under the AppBundle namespace). We want the User class to inherit all properties of FOSUserBundle.
+AppBundle\User() will look for the User class in User.php (under the AppBundle namespace). We want the User class to inherit all properties of FOSUserBundle. Let us create User.php
 
 ```
 # src/AppBundle/User.php
@@ -61,7 +55,7 @@ class User extends Bundle
 }
 ```
 
-Next we need to configure FOSUserBundle. Don't worry if certain directives doesn't make sense. It will as you progress further. Note that yaml files cannot contain tabs.
+Next we need to configure FOSUserBundle. Don't worry if certain directives don't make sense. It will as you progress further. Note that yaml files cannot contain tabs.
 
 ```
 # app/config/config.yml
@@ -123,14 +117,31 @@ security:
           - { path: ^/admin/, role: ROLE_ADMIN }
 ```
 
+## Updating DB credentials
+
+```
+# symfony/app/config/parameters.yml
+
+# your db host is the container in your docker environment
+# run "docker network inspect songbird_default" if unsure
+database_host: 172.18.0.2
+
+# your db credentials is based on what you have in the .env file
+# run "docker-compose config" if unsure
+database_port: null
+database_name: songbird
+database_user: root
+database_password: root
+
+```
 ## Creating the User Entity
 
-Have a quick read if you are unfamiliar with [doctrine and entity](http://symfony.com/doc/current/book/doctrine.html). We will be talking about doctrine very often in this book.
+Have a quick read if you are unfamiliar with [doctrine and entity](http://symfony.com/doc/current/book/doctrine.html). We will be using doctrine very often in this book.
 
 Symfony allows us to automate lots of things using command line, including the creation of entities. We will create the user entity with 2 custom fields called firstname and lastname.
 
 ```
--> app/console generate:doctrine:entity
+-> docker-compose exec php bin/console generate:doctrine:entity
 
 # You will be prompted a series of questions.
 
@@ -151,20 +162,21 @@ Is nullable [false]: true
 Unique [false]:
 ```
 
-Once you are familiar with the command line, you should be able to generate the entity and other files without prompts and we will be doing that in the future chapters.
+You realised we have to use "docker-compose exec php" to run commands in the php container. Its ugly and we will automate that in a minute. Once you are familiar with the command line, you should be able to generate the entity and other files without prompts. We will be doing that in the future chapters.
 
 [FOSUserBundle Groups](https://github.com/FriendsOfSymfony/FOSUserBundle/blob/master/Resources/doc/groups.md) are useful when you want to group users together. For the sake of simplicity, we won't be using this feature. However, you should be able to add this feature in easily once you are comfortable with the Symfony workflow.
 
-Now, the entity class is generated under src/AppBundle/Entity folder. We need to extend the fosuserbundle and make the id protected because of inheritance. If you open up the file, you will see that the code has been created for you already.
+Now, the entity class is generated under src/AppBundle/Entity folder. We need to extend the fosuserbundle and make the id protected because of inheritance. If you open up the file, you will see that the code has been created for you already but we still need to make some changes in order for the entity inheritance to work. Refer to comments in the code.
 
 ```
 namespace AppBundle\Entity;
 
+# add baseuser
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * User
+ * User extending fos user
  *
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
@@ -172,6 +184,8 @@ use Doctrine\ORM\Mapping as ORM;
 class User extends BaseUser
 {
     /**
+     * Needs to be protected because of inheritance
+     *
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
@@ -289,7 +303,8 @@ fos_user_change_password:
 To check that the new routes have been installed correctly,
 
 ```
--> app/console debug:router | grep fos
+# in symfony
+-> bin/console debug:router | grep fos
 
  fos_user_security_login           GET|POST ANY    ANY  /login
  fos_user_security_check           POST     ANY    ANY  /login_check
@@ -307,7 +322,8 @@ To check that the new routes have been installed correctly,
 or we can use the router:match command to match the exact url and get more details
 
 ```
--> app/console router:match /profile/
+# in symfony
+-> bin/console router:match /profile/
 Route "fos_user_profile_show" matches
 
 [router] Route "fos_user_profile_show"
@@ -327,7 +343,7 @@ Options      compiler_class: Symfony\Component\Routing\RouteCompiler
 See how much work has done for you by inheriting the FOSUserBundle... This step allows you to use many default FOSUserBundle functionalities like password reset and user profile update without writing a single line of code! Now, let us test one of the routes by going to
 
 ```
-http://songbird.app/app_dev.php/login
+http://songbird.app:8000/app_dev.php/login
 ```
 
 ![](images/default_login.png)
@@ -337,14 +353,72 @@ You should see a simple login page.
 To verify that the schema is correct, let us generate it:
 
 ```
--> app/console doctrine:schema:create
+# in symfony
+-> docker-compose exec php bin/console doctrine:schema:create
+
+Creating database schema...
+Database schema created successfully!
 ```
 
-Login to http://adminer.app/ with username: homestead, password: secret and click on the songbird db. You should see there are 0 rows for the user and click on the user schema. You should see your firstname and lastname fields in additional to all the default FOSUserBundle fields.
+Let us check that the schema has indeed been created correctly.
 
-![](images/chapter_5_adminer.png)
+```
+-> docker-compose exec db mysql -uroot -proot songbird -e "describe user"
++-----------------------+--------------+------+-----+---------+----------------+
+| Field                 | Type         | Null | Key | Default | Extra          |
++-----------------------+--------------+------+-----+---------+----------------+
+| id                    | int(11)      | NO   | PRI | NULL    | auto_increment |
+| username              | varchar(180) | NO   |     | NULL    |                |
+| username_canonical    | varchar(180) | NO   | UNI | NULL    |                |
+| email                 | varchar(180) | NO   |     | NULL    |                |
+| email_canonical       | varchar(180) | NO   | UNI | NULL    |                |
+| enabled               | tinyint(1)   | NO   |     | NULL    |                |
+| salt                  | varchar(255) | YES  |     | NULL    |                |
+| password              | varchar(255) | NO   |     | NULL    |                |
+| last_login            | datetime     | YES  |     | NULL    |                |
+| confirmation_token    | varchar(180) | YES  | UNI | NULL    |                |
+| password_requested_at | datetime     | YES  |     | NULL    |                |
+| roles                 | longtext     | NO   |     | NULL    |                |
+| firstname             | varchar(255) | YES  |     | NULL    |                |
+| lastname              | varchar(255) | YES  |     | NULL    |                |
++-----------------------+--------------+------+-----+---------+----------------+
+```
 
-We are gearing up. Ready for more?
+Looks like we got the right fields. BUT, there is one very annoying problem. We have to type a lot to run commands in the containers. We need a console wrapper.
+
+## Console Wrapper
+
+When we access the containers in the symfony dir, there might be some warnings about environment variables not set, we just need to create a soft link in the .env file.
+
+```
+# in symfony
+-> ln -s ../.env .
+```
+
+We now need a very simple wrapper to run the console commands. Let us create a console wrapper.
+
+```
+# in symfony/scripts/console
+
+#!/bin/bash 
+docker-compose exec php bin/console $@
+```
+
+once the script is created, it needs to be executable.
+
+```
+# in symfony
+chmod u+x scripts/console
+```
+
+Let us try some commands
+
+```
+# you should not see an error
+scripts/console debug:router
+```
+
+We can now use scripts/console rather than bin/console to access the php container easily. We are gearing up. Ready for more?
 
 ## Summary
 

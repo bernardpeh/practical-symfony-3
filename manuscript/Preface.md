@@ -2,7 +2,7 @@
 
 This is a book documenting the creation of [SongBird](https://github.com/bernardpeh/songbird), a simple CMS created using [Symfony Full Stack](http://symfony.com/projects/symfonyfs) which itself consists of many [Symfony Components](http://symfony.com/components). Although the resources in symfony.com is great, they are often hard to digest and you need to piece all the code snippets up to build something useful. I wanted to write an application that covers different aspects of Symfony as much as possible. I believe this approach will be helpful for people who are new to Symfony. This idea was conceptuaised in early 2015 but the implementation turned out to be much longer that I thought - I had to upgrade Symfony from 2 to 3 and dropped SonataAdmin in favor of EasyAdmin when I was 90% done.
 
-The project was finally completed in Aug 2016 after much persistence and has gone through several revisions.
+The project was finally completed in Aug 2016 after much persistence and has gone through several revisions since.
 
 The objective of this project is to:
 

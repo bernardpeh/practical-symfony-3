@@ -132,6 +132,7 @@ database_port: null
 database_name: songbird
 database_user: root
 database_password: root
+mailer_host: 127.0.0.1
 
 ```
 ## Creating the User Entity

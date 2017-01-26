@@ -1,6 +1,6 @@
 # Chapter 7: The User Management System Part 2
 
-We have installed the FOSUserBundle but it looks like there is still a big chunk of functionality missing. How do we (C)reate, (R)ead, (U)pdate and (D)elete a user or group for example?
+We have installed the FOSUserBundle but it looks like there are still big chunks of functionalities missing. How do we (C)reate, (R)ead, (U)pdate and (D)elete a user or group for example?
 
 You see the word "CRUD" appearing so many times because it is part of RAD. All frameworks today come with auto CRUD generation.
 

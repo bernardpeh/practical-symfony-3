@@ -16,13 +16,15 @@ There are many frameworks for acceptance testing. [Behat](http://docs.behat.org/
 
 ```
 -> cd symfony
--> composer require codeception/codeception --dev
+# only thing about running docker is that for anything relating to db connection,
+# we need to execute commands in the docker instance. we will create a wrapper for this in the future
+-> docker exec php composer require codeception/codeception --dev
 ```
 
 The "--dev" means we only need this in dev mode. If everything is working, you will see composer adding the dependency in composer.json
 
 ```
-# composer.json
+# symfony/composer.json
 
 # add the codeception line under require-dev
 "require-dev": {

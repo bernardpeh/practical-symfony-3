@@ -9,7 +9,7 @@ You see the word "CRUD" appearing so many times because it is part of RAD. All f
 We will generate CRUD for the UserBundle.
 
 ```
--> bin/console doctrine:generate:crud
+-> scripts/console doctrine:generate:crud
 
 The Entity shortcut name: AppBundle:User
 
@@ -46,17 +46,17 @@ Generating the CRUD code: OK
 Now go to
 
 ```
-http://songbird.app/app_dev.php/user/
+http://songbird.app:8000/app_dev.php/user/
 ```
 
 ![](images/chapter_7_user_list.png)
 
 We haven't added any data yet. The database should be empty as per the previous chapter.
 
-Let us add some data. Go to
+Let us add some data. Click on "Create a new entry" or go to
 
 ```
-http://songbird.app/app_dev.php/user/new
+http://songbird.app:8000/app_dev.php/user/new
 ```
 
 and enter a dummy firstname and lastname, then click create.
@@ -69,13 +69,13 @@ I am going to skip through all technicalities for now and tell you where the ans
 # vendor/friendsofsymfony/user-bundle/Resources/config/validation.xml
 ...
 <property name="username">
-            <constraint name="NotBlank">
-                <option name="message">fos_user.username.blank</option>
-                <option name="groups">
-                    <value>Registration</value>
-                    <value>Profile</value>
-                </option>
-                ...
+    <constraint name="NotBlank">
+        <option name="message">fos_user.username.blank</option>
+        <option name="groups">
+            <value>Registration</value>
+            <value>Profile</value>
+        </option>
+        ...
 ```
 
 It is possible to create a new user from command line, the code is at:
@@ -99,11 +99,11 @@ class CreateUserCommand extends ContainerAwareCommand
                 new InputArgument('password', InputArgument::REQUIRED, 'The password'),
 ```
 
-You can infer from these lines that username, email and password are compulsory. How do we add these extra fields in the user form?
+Did you remember that the "fos:user:create" command is available under the `scripts/console` command? You can infer from these lines that username, email and password are compulsory. How do we add these extra fields in the user form?
 
 ## Adding Fields to the User Form
 
-The extra FOSUserBundle fields were not automatically added when we created the CRUD using the command line. The automated CRUD creation process cannot pick up inheritance yet (I hope one day it will), so we have to create the fields manually.
+The extra FOSUserBundle fields were not automatically added when we created the CRUD using the command line. The automated CRUD creation process cannot pick up inheritance yet (I hope one day it will). We have to create the fields manually.
 
 ```
 # src/AppBundle/Form/UserType.php
@@ -146,7 +146,7 @@ Refresh the browser and if changes are not showing up, we need to delete the cac
 -> bin/console cache:clear
 ```
 
-This command is equivalent to "rm -rf var/cache/dev". It is a useful alternative to clear:cache. If no environment is set, the environment is set to develop. To delete prod cache,
+This `cache:clear` command is equivalent to "rm -rf var/cache/dev". It is a useful alternative to clear:cache. If no environment is set, the environment is set to develop. To delete prod cache,
 
 ```
 -> bin/console cache:clear -e prod
@@ -160,22 +160,27 @@ We can now list them by going to /user
 
 ![](images/chapter_7_list_users.png)
 
-Now verify that the new data is inserted into the user table visually by looking at adminer.
+Now verify that the new data is inserted into the user table by running some sql
 
 ```
-http://adminer.app/
-```
+-> scripts/mysql "select id,username,password from user"
 
-![](images/chapter_7_user_passwd_exposed.png)
++----+----------+----------+
+| id | username | password |
++----+----------+----------+
+|  1 | test     | test     |
+|  2 | test1    | test1    |
++----+----------+----------+
+```
 
 **Wow**, why was the password exposed? shouldn't the password be encrypted automatically?
 
-No, because the CRUD that we have created automatically didn't know that the password was supposed to be encrypted before inserting into the db. Fortunately, FOSUserBundle has a service container that can help us with this. Don't worry about the word "services" for now as we will cover this in the following chapters.
+No, because the CRUD that we have created previously didn't know that the password was supposed to be encrypted before inserting into the db. Fortunately, FOSUserBundle has a service container that can help us with this. The word ***service*** is important in Symfony. Don't worry about it for now as we will cover this in the following chapters.
 
 For the sake of curiousity, let us see all the FOSUserBundle service containers.
 
 ```
--> bin/console debug:container | grep fos
+-> ./scripts/console debug:container | grep fos
 
  fos_user.change_password.form.factory                              FOSUserBundleFormFactoryFormFactory
  fos_user.change_password.form.type                                 FOSUserBundleFormTypeChangePasswordFormType
@@ -219,9 +224,10 @@ The logic for all user related actions is stored in FOS\UserBundle\Doctrine\User
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // CHANGE HERE
             $userManager = $this->get('fos_user.user_manager');
             $user->setPlainPassword($user->getPassword());
-            $userManager->updateUser($$user);
+            $userManager->updateUser($user);
             // $em = $this->getDoctrine()->getManager();
             // $em->persist($user);
             // $em->flush();
@@ -244,9 +250,10 @@ The logic for all user related actions is stored in FOS\UserBundle\Doctrine\User
     public function editAction(Request $request, User $user)
     {
         $deleteForm = $this->createDeleteForm($user);
-        $editForm = $this->createForm('AppBundle\Form\UserType', $user, array('passwordRequired' => false));
+        $editForm = $this->createForm('AppBundle\Form\UserType', $user);
         $editForm->handleRequest($request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
+            // CHANGE HERE
             $userManager = $this->get('fos_user.user_manager');
             // we get the values that user submitted
             $user->setPlainPassword($request->request->get('user')['password']['first']);
@@ -267,11 +274,20 @@ The logic for all user related actions is stored in FOS\UserBundle\Doctrine\User
 ...
 ```
 
-The persist and flush statement in doctrine is a standard way to prepare and save queries to db. I commented it off because if you look at the updateUser function in FOS\UserBundle\Doctrine\UserManager, this part was already done.
+The persist and flush statement in doctrine is a standard way to prepare and save queries to db. We have commented it off because if you look at the updateUser function in FOS\UserBundle\Doctrine\UserManager, this part was already done.
 
-Let us try creating a new user called "test3" and view it again in adminer
+Let us try creating a new user called "test3" and view it again in mysql
 
-![](images/chapter_7_encrypted_passwd.png)
+```
+-> ./scripts/mysql "select id,username,password from user"
++----+----------+--------------------------------------------------------------+
+| id | username | password                                                     |
++----+----------+--------------------------------------------------------------+
+|  1 | test     | test                                                         |
+|  2 | test1    | test1                                                        |
+|  4 | test3    | $2y$13$ovAu1e0C.eLof9KDsXVKP.bFFGxb82.mHf156i6PXI.XwjP9EwBr2 |
++----+----------+--------------------------------------------------------------+
+```
 
 The test3 user password is now encrypted. Update the password of another user and you will see that the encryption is working.
 
@@ -298,22 +314,10 @@ Let us pass a passwordRequired variable into the UserType class. If the variable
     public function editAction(Request $request, User $user)
     {
         $deleteForm = $this->createDeleteForm($user);
+        // ADD a new passwordRequired variable to the UserType Class
         $editForm = $this->createForm('AppBundle\Form\UserType', $user, array('passwordRequired' => false));
         $editForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
-
-            return $this->redirectToRoute('user_edit', array('id' => $user->getId()));
-        }
-
-        return $this->render('user/edit.html.twig', array(
-            'user' => $user,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
+        ...
     }
 ...
 ```
@@ -345,6 +349,7 @@ class UserType extends AbstractType
             ->add('password', RepeatedType::class, array(
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
+                // New passwordRequired variable
                 'required' => $options['passwordRequired'],
                 'first_options'  => array('label' => 'Password'),
                 'second_options' => array('label' => 'Repeat Password'),
@@ -359,6 +364,7 @@ class UserType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'AppBundle\Entity\User',
+            // Add new variable
             'passwordRequired' => true,
         ));
     }
@@ -388,7 +394,7 @@ If the password field is null, it means that user doesn't want to update the pas
 
 ## Updating Doctrine Fields Automatically
 
-We like to have 2 more fields. We like to know when the user is being created and when it is being updated. How do we do that? HasLifeCycleCallBacks() is the magic.
+We like to have 2 more fields. We like to know when the user is being created and updated. How do we do that? HasLifeCycleCallBacks annotation is the magic.
 
 ```
 # src/AppBundle/Entity/User.php
@@ -427,14 +433,14 @@ class User extends BaseUser
 	    }
 	}
 
-        /**
-         * @ORM\PreUpdate
-         */
-        public function preUpdate()
-        {
-            // update the modified time
-            $this->setModified(new \DateTime());
-        }
+    /**
+     * @ORM\PreUpdate
+     */
+    public function preUpdate()
+    {
+        // update the modified time
+        $this->setModified(new \DateTime());
+    }
 ...
 ```
 
@@ -443,56 +449,31 @@ The "@ORM\HasLifecycleCallbacks()" tells doctrine to run callback functions (in 
 Let us auto-generate the setters and getters for the new $modified and $created variables.
 
 ```
--> bin/console doctrine:generate:entities AppBundle:User
+-> scripts/console doctrine:generate:entities --no-backup AppBundle:User
 ```
 
-Verify that the getters and setters have been added to src/AppBundle/Entity/User.php. The schema is now changed and we need to update it.
+The --no-backup option tells the command not to back up your original entity file.
+
+Verify that the new getters and setters for $created and $modified have been added to src/AppBundle/Entity/User.php. The schema is now changed and we need to update it.
 
 ```
 # run this and you will see what the sql is doing
--> bin/console doctrine:schema:update --dump-sql
+-> scripts/console doctrine:schema:update --dump-sql
 
 # once you are comfortable with that, force update it
--> bin/console doctrine:schema:update --force
+-> scripts/console doctrine:schema:update --force
 ```
 
-Try adding a new user and see if adminer records the created and modified time correctly.
-
-## Making Fields Non Compulsory
-
-Noticed that when we add or edit a user, all the fields are compulsory. What if we want the first and last name to be non compulsory? We can do that easily with ORM annotation.
+Try adding a new user and see if the created and modified time have been updated.
 
 ```
-# src/AppBundle/Entity/User.php
-...
-/**
- * @var integer
- *
- * @ORMColumn(name="id", type="integer")
- * @ORMId
- * @ORMGeneratedValue(strategy="AUTO")
- */
-protected $id;
-
-/**
- * @var string
- *
- * @ORM\Column(name="firstname", type="string", length=255, nullable=true)
- */
-private $firstname;
-
-/**
- * @var string
- *
- * @ORM\Column(name="lastname", type="string", length=255, nullable=true)
- */
-private $lastname;
-...
+-> ./scripts/mysql "select id,password,modified,created from user"
++----+--------------------------------------------------------------+---------------------+---------------------+
+| id | password                                                     | modified            | created             |
++----+--------------------------------------------------------------+---------------------+---------------------+
+|  1 | $2y$13$.yitE0Zj6kK9zJ6DYS7X0eYZMY7MfRR97OCwvTbjn59tfr4dPuOZG | 2017-01-27 06:39:08 | 2017-01-27 06:38:17 |
++----+--------------------------------------------------------------+---------------------+---------------------+
 ```
-
-Note that the variables should be private unless you want people to extend your class. "Id" needs to be protected not private because we are overriding the parent's variable.
-
-Now try editing an entry and leave the first or last name empty. You should not get any error alerts.
 
 ## Deleting Users
 
@@ -500,22 +481,43 @@ No problem. This should work out of the box. Test it out in your browser to conv
 
 ## Cleaning Up
 
-let us clean up the Controller by deleting the DefaultController.php and its related files
+let us clean up the Controller by deleting the DefaultController.php
 
 ```
--> rm src/AppBundle/Entity/User.php~
 -> git rm src/AppBundle/Controller/DefaultController.php
--> git rm -rf src/AppBundle/Resources/views/Default
--> git rm src/AppBundle/Tests/Controller/DefaultControllerTest.php
 ```
 
-Run a quick test again and make sure that whatever you have done doesn't break anything. If the test doesn't work, you will need to recreate the database and create a new admin user in /user/new.
+and we need to update our runtest script
 
-You will soon realised that you need a consistent set of test data to make testing easier. This is why data fixtures are so important.
+```
+# symfony/scripts/runtest
+
+#!/bin/bash
+
+scripts/console cache:clear --no-warmup
+vendor/bin/codecept run acceptance
+```
+
+Run a quick test again and make sure that whatever you have done doesn't break anything. Still remember how to do it?
+
+```
+# in one terminal
+-> ./scripts/start_phantomjs
+
+# in the next terminal
+-> ./scripts/runtest
+...
+
+Time: 2.78 seconds, Memory: 13.50MB
+
+OK (1 test, 1 assertion)
+```
+
+You will soon realised you need a consistent set of test data to make testing easier. That is why data fixtures are so important.
 
 ## Summary
 
-We have created User CRUD using command line, digged into the code and fixed up a few things. Even though things still doesn't work out of the box, we owed a lot to RAD to help us create a user management system in a short time. In reality, most admin packages should allow you to configure user management system out of the box. It is still a good practice for us to go through it.
+We have created User CRUD using command line, digged into the code and fixed up a few things. Even though things still doesn't work out of the box, we owed a lot to RAD to help us create a user management system in a short time. In reality, most CMS should allow you to configure user management system out of the box. It is still a good practice for us to go through it.
 
 In addition to the basic CRUD, we have added 4 extra fields (firstname, lastname, created, modified). Unlike username, email and password fields, the firstname and lastname fields are not compulsory. On the edit page, the password field is also not compulsory.
 

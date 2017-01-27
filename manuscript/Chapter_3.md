@@ -19,7 +19,7 @@ The idea is to do **actual coding in your host** (main operating system) and let
 
 * Get the [symfony](http://symfony.com/doc/current/setup.html) command line
 
-* Install symfony
+* Install symfony command line installer
 
 ```
 -> symfony new songbird

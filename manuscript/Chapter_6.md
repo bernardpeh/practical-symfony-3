@@ -16,7 +16,7 @@ Add the bundle in composer.json
 
 ```
 # in symfony
--> composer require friendsofsymfony/user-bundle ~2.0@dev
+-> docker-compose exec php composer require friendsofsymfony/user-bundle ~2.0@dev
 ```
 
 Now in AppKernel, we need to register the bundles
@@ -387,7 +387,7 @@ Let us check that the schema has indeed been created correctly.
 
 Looks like we got the right fields. BUT, there is one very annoying problem. We have to type a lot to run commands in the containers. We need a console wrapper.
 
-## Console Wrapper
+## Wrapper Scripts
 
 When we access the containers in the symfony dir, there might be some warnings about environment variables not set, we just need to create a soft link in the .env file.
 
@@ -405,7 +405,7 @@ We now need a very simple wrapper to run the console commands. Let us create a c
 docker-compose exec php bin/console $@
 ```
 
-once the script is created, it needs to be executable.
+once the console script is created, it needs to be executable.
 
 ```
 # in symfony
@@ -419,11 +419,47 @@ Let us try some commands
 scripts/console debug:router
 ```
 
-We can now use scripts/console rather than bin/console to access the php container easily. We are gearing up. Ready for more?
+Let us do the same for the composer command
+
+```
+# in symfony/scripts/composer
+
+#!/bin/bash 
+docker-compose exec php composer $@
+```
+
+and 
+
+```
+# in symfony
+chmod u+x scripts/composer
+```
+
+Finally, we will create another for the mysql command
+
+```
+# in symfony/scripts/mysql
+
+#!/bin/bash 
+
+MYSQL_DATABASE=`grep MYSQL_DATABASE .env | cut -d= -f 2`
+MYSQL_ROOT_PASSWORD=`grep MYSQL_ROOT_PASSWORD .env | cut -d= -f 2`
+
+docker-compose exec db mysql -uroot -p$MYSQL_ROOT_PASSWORD $MYSQL_DATABASE -e "$@"
+```
+
+now we allow executable bit to this script.
+
+```
+# in symfony
+chmod u+x scripts/mysql
+```
+
+We can now use some wrapper scripts to access the php container easily. We are gearing up. Ready for more?
 
 ## Summary
 
-In this chapter, we have installed FOSUserBundle and extended it in AppBundle. We have verified that the installation was correct by looking at the default login page and database schema.
+In this chapter, we have installed FOSUserBundle and extended it in AppBundle. We have verified that the installation was correct by looking at the default login page and database schema. We also created some helper scripts to help accessing the docker instance a bit easier.
 
 Remember to commit all your changes before moving on.
 

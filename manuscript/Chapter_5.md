@@ -145,10 +145,10 @@ Now test your automation by running
 
 ```
 # open a new terminal
--> ./scripts/start_phantomjs
+-> scripts/start_phantomjs
 
 # back in your own terminal
--> ./scripts/runtest
+-> scripts/runtest
 ...
 OK (1 test, 1 assertion)
 ```

@@ -180,7 +180,7 @@ No, because the CRUD that we have created previously didn't know that the passwo
 For the sake of curiousity, let us see all the FOSUserBundle service containers.
 
 ```
--> ./scripts/console debug:container | grep fos
+-> scripts/console debug:container | grep fos
 
  fos_user.change_password.form.factory                              FOSUserBundleFormFactoryFormFactory
  fos_user.change_password.form.type                                 FOSUserBundleFormTypeChangePasswordFormType
@@ -279,7 +279,7 @@ The persist and flush statement in doctrine is a standard way to prepare and sav
 Let us try creating a new user called "test3" and view it again in mysql
 
 ```
--> ./scripts/mysql "select id,username,password from user"
+-> scripts/mysql "select id,username,password from user"
 +----+----------+--------------------------------------------------------------+
 | id | username | password                                                     |
 +----+----------+--------------------------------------------------------------+
@@ -467,7 +467,7 @@ Verify that the new getters and setters for $created and $modified have been add
 Try adding a new user and see if the created and modified time have been updated.
 
 ```
--> ./scripts/mysql "select id,password,modified,created from user"
+-> scripts/mysql "select id,password,modified,created from user"
 +----+--------------------------------------------------------------+---------------------+---------------------+
 | id | password                                                     | modified            | created             |
 +----+--------------------------------------------------------------+---------------------+---------------------+
@@ -502,10 +502,10 @@ Run a quick test again and make sure that whatever you have done doesn't break a
 
 ```
 # in one terminal
--> ./scripts/start_phantomjs
+-> scripts/start_phantomjs
 
 # in the next terminal
--> ./scripts/runtest
+-> scripts/runtest
 ...
 
 Time: 2.78 seconds, Memory: 13.50MB

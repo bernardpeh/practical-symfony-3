@@ -11,7 +11,7 @@ It wouldn't be fun if we just use the ready made solution. In this and the next 
 As usual, let us add the required bundles in the composer.json file
 
 ```
--> composer require javiereguiluz/easyadmin-bundle ^1.15
+-> scripts/composer require javiereguiluz/easyadmin-bundle ^1.16.5
 ```
 
 and remember to activate the required bundles in AppKernel.php
@@ -49,7 +49,7 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
-    - {resource: easyadmin/ }
+    - { resource: easyadmin/ }
 ...
 ```
 and routing file
@@ -66,7 +66,7 @@ easy_admin_bundle:
 If everything goes well, there will be new routes added
 
 ```
--> app/console debug:router | grep admin
+-> scripts/console debug:router | grep admin
    easyadmin                        ANY        ANY      ANY    /admin/
    admin                            ANY        ANY      ANY    /admin/
 ```
@@ -74,7 +74,7 @@ If everything goes well, there will be new routes added
 We will install the default styles from the bundle
 
 ```
-app/console assets:install
+-> scripts/console assets:install --symlink
 ```
 
 Say for now, we want ROLE_USER to access the admin dashboard.
@@ -90,28 +90,7 @@ Say for now, we want ROLE_USER to access the admin dashboard.
         - { path: ^/admin/, role: ROLE_USER }
 ```
 
-Now, try logging in
-
-```
-http://songbird.app/app_dev.php/admin
-```
-
-By default, the admin page requires ROLE_ADMIN and above (see app/config/security.yml). So let us login as the administrator
-
-```
-username: admin
-password: admin
-```
-
-wow, we can now see the admin dashboard. If you have accidentally deleted or modified the admin user, remember that you can reset the db with the "scripts/resetapp" script.
-
-![](images/admin_dashboard1.png)
-
-Looks pretty empty huh?
-
-## Integrate FOSUserBundle and EasyAdminBundle
-
-Create a new admin controller
+Let us create the new admin controller
 
 ```
 #src/AppBundle/Controller/AdminController.php
@@ -138,8 +117,28 @@ class AdminController extends BaseAdminController
 }
 ```
 
-services.yml is important because that is where the dependency injection happens. Without it, we can't hook additional services to our bundle.
-Let us create a dummy one for now.
+Now, try logging in
+
+```
+http://songbird.app:8000/app_dev.php/admin
+```
+
+By default, the admin page requires ROLE_ADMIN and above (see app/config/security.yml). So let us login as the administrator
+
+```
+username: admin
+password: admin
+```
+
+wow, we can now see the admin dashboard. If you have accidentally deleted or modified the admin user, remember that you can reset the db with `scripts/resetapp`.
+
+![](images/admin_dashboard1.png)
+
+Looks pretty empty huh?
+
+## Services
+
+services.yml is important because that is where we define reusable components. Let us create a dummy one for now.
 
 ```
 # src/AppBundle/Resources/config/services.yml
@@ -152,7 +151,7 @@ Next, we need to create the a yml [service extension](http://symfony.com/doc/cur
 
 ```
 -> mkdir -p src/AppBundle/DependencyInjection
--> touch AppExtension.php
+-> touch src/AppBundle/DependencyInjection/AppExtension.php
 ```
 
 and AppExtensions.php contains
@@ -253,8 +252,6 @@ easy_admin:
                     - { property: 'email', type: 'email', type_options: { trim: true } }
                     - roles
                     - enabled
-                    - locked
-                    - expired
             show:
                   actions: ['edit', '-delete', '-list']
                   fields:
@@ -280,16 +277,13 @@ easy_admin:
                   - firstname
                   - lastname
                   - enabled
-                  - locked
-                  - expired
                   - roles
                   - { property: 'last_login', type: 'datetime' }
 ```
 
-We have trimmed down all the fields to include only the relevant ones.
+Thanks to easyadmin, we have just created CRUD with this yaml file. We have trimmed down all the fields to include only the relevant ones. Note the plainPassword field - We have created 2 password fields with just a simple configuration.
 
-Navigate the site and make sure they are looking good. Looking at adminer, you can see that the password has also been encrypted correctly, indicating that the AdminController's preUpdate function is working.
-
+Navigate the site and make sure they are looking good. Looking at mysql, you can see that the password has also been encrypted correctly, indicating that the AdminController's preUpdate function is working.
 
 ## Redirecting Users to Dashboard After Login
 
@@ -310,9 +304,9 @@ Easy.
 
 ## User Roles and Security
 
-What if we want ROLE_USER to login to /admin as well but restrict them to certain areas only?
+What if we want ROLE_USER to login to /admin but restrict them to certain areas only?
 
-We need to subscribe to some events so that we can add some rules based on user's role. Remember the services.yml? Dependency Injection will save the day.
+We need to subscribe to some events so that we can add some rules based on user's role. Remember the services.yml? It will save the day.
 
 ```
 # src/AppBundle/Resources/services.yml
@@ -334,7 +328,6 @@ Let's now create the AppSubscriber class
 
 namespace AppBundle\EventListener;
 
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -363,6 +356,9 @@ class AppSubscriber implements EventSubscriberInterface
         return array(
             EasyAdminEvents::PRE_LIST => 'checkUserRights',
             EasyAdminEvents::PRE_EDIT => 'checkUserRights',
+            EasyAdminEvents::PRE_SHOW => 'checkUserRights',
+            EasyAdminEvents::PRE_NEW => 'checkUserRights',
+            EasyAdminEvents::PRE_DELETE => 'checkUserRights'
         );
     }
 
@@ -384,7 +380,8 @@ class AppSubscriber implements EventSubscriberInterface
         $entity = $this->container->get('request_stack')->getCurrentRequest()->query->get('entity');
         $action = $this->container->get('request_stack')->getCurrentRequest()->query->get('action');
         $user_id = $this->container->get('request_stack')->getCurrentRequest()->query->get('id');
-        // if user management
+
+        // if user management, only allow ownself to edit and see ownself
         if ($entity == 'User') {
             // if edit and show
             if ($action == 'edit' || $action == 'show') {
@@ -397,9 +394,7 @@ class AppSubscriber implements EventSubscriberInterface
 
         // throw exception in all cases
         throw new AccessDeniedException();
-
     }
-
 }
 ...
 ```
@@ -409,19 +404,19 @@ Basically, we have created a checkUserRights function to ensure that other than 
 Try logging in as test1:test1 (user id = 2) and see own profile
 
 ```
-http://songbird.app/app_dev.php/admin/?action=show&entity=User&id=2
+http://songbird.app:8000/app_dev.php/admin/?action=show&entity=User&id=2
 ```
 
-If you try to see other people's profile, you should get an access denied error.
+If test1 tries to see other people's profile, we should get an access denied error.
 
 ```
-http://songbird.app/app_dev.php/admin/?action=show&entity=User&id=3
+http://songbird.app:8000/app_dev.php/admin/?action=show&entity=User&id=3
 ```
 
-or view the user list url
+User list url should give us access denied as well.
 
 ```
-http://songbird.app/app_dev.php/admin/?action=list&entity=User
+http://songbird.app:8000/app_dev.php/admin/?action=list&entity=User
 ```
 
 There is one more thing we need to clean up. If I login as ROLE_USER, I should not be able to see certain fields.
@@ -434,106 +429,65 @@ Under the "show" action, I should not see the created field. User should also be
 # src/AppBundle/Controller/AdminController.php
     ....
      /**
-       * @return \Symfony\Component\HttpFoundation\Response
-       */
-    public function showUserAction()
-        {
-
-            $id = $this->request->query->get('id');
-            $easyadmin = $this->request->attributes->get('easyadmin');
-            $entity = $easyadmin['item'];
-
-            $fields = $this->entity['show']['fields'];
-
-            if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
-                unset($fields['created']);
-            }
-
-            $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
-
-            return $this->render($this->entity['templates']['show'], array(
-                'entity' => $entity,
-                'fields' => $fields,
-                'delete_form' => $deleteForm->createView(),
-            ));
-        }
-
-   /**
-     * The method that is executed when the user performs a 'edit' action on an entity.
-     *
-     * @return RedirectResponse|Response
-     */
-    protected function editUserAction()
-    {
-        $id = $this->request->query->get('id');
-        $easyadmin = $this->request->attributes->get('easyadmin');
-        $entity = $easyadmin['item'];
-
-        if ($this->request->isXmlHttpRequest() && $property = $this->request->query->get('property')) {
-            $newValue = 'true' === strtolower($this->request->query->get('newValue'));
-            $fieldsMetadata = $this->entity['list']['fields'];
-
-            if (!isset($fieldsMetadata[$property]) || 'toggle' !== $fieldsMetadata[$property]['dataType']) {
-                throw new \RuntimeException(sprintf('The type of the "%s" property is not "toggle".', $property));
-            }
-
-            $this->updateEntityProperty($entity, $property, $newValue);
-
-            return new Response((string)$newValue);
-        }
-
-        $fields = $this->entity['edit']['fields'];
-
-        $editForm = $this->createEditForm($entity, $fields);
-        if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
-            $editForm->remove('enabled');
-            $editForm->remove('roles');
-            $editForm->remove('locked');
-            $editForm->remove('expired');
-        }
-
-        $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
-
-        $editForm->handleRequest($this->request);
-        if ($editForm->isValid()) {
-            $this->preUpdateUserEntity($entity);
-            $this->em->flush();
-
-            $refererUrl = $this->request->query->get('referer', '');
-
-            return !empty($refererUrl)
-                ? $this->redirect(urldecode($refererUrl))
-                : $this->redirect($this->generateUrl('easyadmin', array('action' => 'show', 'entity' => $this->entity['name'], 'id' => $id)));
-        }
-
-        return $this->render($this->entity['templates']['edit'], array(
-            'form' => $editForm->createView(),
-            'entity_fields' => $fields,
-            'entity' => $entity,
-            'delete_form' => $deleteForm->createView(),
-        ));
-    }
+      * when edit user action
+      * 
+      * @return Response|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+      */
+     protected function editUserAction()
+     {
+         $id = $this->request->query->get('id');
+         $easyadmin = $this->request->attributes->get('easyadmin');
+         $entity = $easyadmin['item'];
+ 
+         if ($this->request->isXmlHttpRequest() && $property = $this->request->query->get('property')) {
+             $newValue = 'true' === strtolower($this->request->query->get('newValue'));
+             $fieldsMetadata = $this->entity['list']['fields'];
+ 
+             if (!isset($fieldsMetadata[$property]) || 'toggle' !== $fieldsMetadata[$property]['dataType']) {
+                 throw new \RuntimeException(sprintf('The type of the "%s" property is not "toggle".', $property));
+             }
+ 
+             $this->updateEntityProperty($entity, $property, $newValue);
+ 
+             return new Response((string)$newValue);
+         }
+ 
+         $fields = $this->entity['edit']['fields'];
+ 
+         $editForm = $this->createEditForm($entity, $fields);
+         if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
+             $editForm->remove('enabled');
+             $editForm->remove('roles');
+             $editForm->remove('locked');
+             $editForm->remove('expired');
+         }
+ 
+         $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
+ 
+         $editForm->handleRequest($this->request);
+         if ($editForm->isValid()) {
+             $this->preUpdateUserEntity($entity);
+             $this->em->flush();
+ 
+             $refererUrl = $this->request->query->get('referer', '');
+ 
+             return !empty($refererUrl)
+                 ? $this->redirect(urldecode($refererUrl))
+                 : $this->redirect($this->generateUrl('easyadmin', array('action' => 'show', 'entity' => $this->entity['name'], 'id' => $id)));
+         }
+ 
+         return $this->render($this->entity['templates']['edit'], array(
+             'form' => $editForm->createView(),
+             'entity_fields' => $fields,
+             'entity' => $entity,
+             'delete_form' => $deleteForm->createView(),
+         ));
+     }
 ```
 
-Noticed that easyadmin allows creation of isolated entity functions like "editUserAction". This is brilliant because updating this function won't affect other entities.
+Easyadmin allows creation of isolated entity functions like "editUserAction". This is brilliant because updating this function won't affect other entities.
 
 ## Cleaning up
-
-Now let us do some cleaning up. Since we are now using EasyAdmin, a lot of files that we have generated using the command line are no longer needed. As you can see, automation is only good if you know what you are doing.
-
-```
-git rm src/AppBundle/Controller/UserController.php
-git rm src/AppBundle/Controller/DefaultController.php
-git rm src/AppBundle/Form/UserType.php
-git rm -rf app/Resources/views/default
-git rm -rf src/AppBundle/Tests/Controller/UserControllerTest.php
-git rm -rf src/AppBundle/Tests/Controller/DefaultControllerTest.php
-# All efforts gone? Don't worry, we will write new tests in the next chapter
-git rm -rf tests
-git rm codeception.yml
-# add all changes
-git add .
-```
 
 Since we are not going to use FOSUserBundle /profile url to change update user profile, let us remove it from the routing.yml
 
@@ -549,9 +503,24 @@ Since we are not going to use FOSUserBundle /profile url to change update user p
 #    prefix: /profile
 ```
 
+Now let us do some cleaning up. Since we are now using EasyAdmin, a lot of files that we have generated using the command line are no longer needed. As you can see, automation is only good if you know what you are doing.
+
+```
+git rm src/AppBundle/Controller/UserController.php
+git rm src/AppBundle/Form/UserType.php
+git rm -rf app/Resources/views/default
+git rm -rf src/AppBundle/Tests/Controller/UserControllerTest.php
+git rm -rf src/AppBundle/Tests/Controller/DefaultControllerTest.php
+# All efforts gone? Don't worry, we will write new tests in the next chapter
+git rm -rf tests
+git rm codeception.yml
+# add all changes
+git add .
+```
+
 ## Summary
 
-We have installed a popular Admin system called EasyAdminBundle. We then integrated FOSUserBundle with EasyAdminBundle and customised some fields. We have also configured the security of the system such that unless the logged in user is a super admin, the user can only update his own profile.
+We have installed a popular Admin system called EasyAdminBundle. We then integrated FOSUserBundle with EasyAdminBundle and customised some fields. We have also configured the security of the system such that unless the logged in user is a super admin, the user can only see or update his own profile.
 
 Remember to commit your changes before moving on to the next chapter.
 

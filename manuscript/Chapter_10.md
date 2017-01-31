@@ -65,7 +65,7 @@ We will break the individual story down with user scenarios.
 
 |**Scenario Id**|Given**|**When**|Then**|
 |10.4.1|Show my profile|I go to "/admin/?action=show&entity=User&id=2"|I should see test1@songbird.app|
-|10.4.2|Hid uneditable fields|I go to "/admin/?action=edit&entity=User&id=2"|I should not see enabled, locked and roles fields|
+|10.4.2|Hid uneditable fields|I go to "/admin/?action=edit&entity=User&id=2"|I should not see enabled and roles fields|
 |10.4.3|Update Firstname Only|I go to "/admin/?action=edit&entity=User&id=2" And update firstname only And Submit|I should see content updated|
 |10.4.4|Update Password Only|I go to "/admin/?action=edit&entity=User&id=2" And update password And Submit And Logout And Login Again|I should see content updated And be able to login with the new password|
 
@@ -83,28 +83,28 @@ We will break the individual story down with user scenarios.
 |10.6.1|List all profiles|I go to "/admin/?action=list&entity=User" url|I should see a list of all users in a table|
 |10.6.2|Show test3 user|I go to "/admin/?action=show&entity=User&id=4" url|I should see test3 user details|
 |10.6.3|Edit test3 user|I go to "/admin/?action=edit&entity=User&id=4" url And update lastname|I should see test3 lastname updated on the "List all users" page|
-|10.6.4|Create and Delete new user|I got to "/admin/?action=new&entity=User" And fill in the required fields And Submit And Delete the new user|I should see the new user created and deleted again in the listing page.|
+|10.6.4|Create and Delete new user|I go to "/admin/?action=new&entity=User" And fill in the required fields And Submit And Delete the new user|I should see the new user created and deleted again in the listing page.|
 
 ## Creating the Cest Class
 
-Since we have already deleted the test directory, let us create a new test dir.
+Since we have already deleted the test directory, let us create the testing framework under src/AppBundle
 
 ```
--> cd src/AppBundle
--> ../../vendor/bin/codecept bootstrap
--> ../../vendor/bin/codecept build
+# in symfony dir
+-> vendor/bin/codecept bootstrap src/AppBundle
+-> vendor/bin/codecept build -c src/AppBundle
 ```
 
 and update the acceptance file again
 
 ```
-# src/AppBundle/Tests/acceptance.suite.yml
+# src/AppBundle/tests/acceptance.suite.yml
 class_name: AcceptanceTester
 modules:
     enabled:
         - WebDriver:
-            url: 'http://songbird.app'
-            browser: chrome
+            url: 'http://songbird.app:8000'
+            browser: phantomjs
             window_size: 1024x768
             capabilities:
                 unexpectedAlertBehaviour: 'accept'
@@ -112,7 +112,7 @@ modules:
         - \Helper\Acceptance
 ```
 
-Codeception is really flexible in the way we create the test scenarios. Take User Story 1 for example, we will break the user story down into directories and the scenario into cest class:
+Codeception is really flexible in the way we create the test scenarios. Take User Story 1 for example, we can break the user story down into directories and scenarios into cest class. Let us create the files:
 
 ```
 -> vendor/bin/codecept generate:cest acceptance As_Test1_User/IWantToLogin -c src/AppBundle
@@ -126,7 +126,7 @@ Codeception is really flexible in the way we create the test scenarios. Take Use
 We will create a common class in the bootstrap and define all the constants we need for the test.
 
 ```
-# src/AppBundle/Tests/acceptance/_bootstrap.php
+# src/AppBundle/tests/acceptance/_bootstrap.php
 
 define('ADMIN_USERNAME', 'admin');
 define('ADMIN_PASSWORD', 'admin');
@@ -134,7 +134,7 @@ define('TEST1_USERNAME', 'test1');
 define('TEST1_PASSWORD', 'test1');
 define('TEST2_USERNAME', 'test2');
 define('TEST2_PASSWORD', 'test2');
-// test3 Account is disabled? See data fixtures to confirm.
+// test3 Account is disabled. See data fixtures to confirm.
 define('TEST3_USERNAME', 'test3');
 define('TEST3_PASSWORD', 'test3');
 
@@ -154,7 +154,7 @@ class Common
 Let us try creating story 10.6
 
 ```
-# src/AppBundle/Tests/acceptance/As_An_Admin/IWantToManageAllUsersCest.php
+# src/AppBundle/tests/acceptance/As_An_Admin/IWantToManageAllUsersCest.php
 
 namespace As_An_Admin;
 use \AcceptanceTester;
@@ -182,6 +182,7 @@ class IWantToManageAllUsersCest
     public function listAllProfiles(AcceptanceTester $I)
     {
         $I->amOnPage('/admin/?action=list&entity=User');
+        // the magic of xpath
         $I->canSeeNumberOfElements('//table/tbody/tr',4);
     }
 }
@@ -194,16 +195,16 @@ Noticed the [xpath](https://msdn.microsoft.com/en-us/library/ms256086(v=vs.110).
 
 This is the xpath for the show button. How do we know where it is located? We can inspect the elements with the developer tool (available in many browser).
 
-You also noticed that the login class is protected rather than public. Protected class won't be executed when we run the "runtest" command but we can use it as a pre-requisite when testing listAppProfiles scenario for example, ie the @before login annotation.
+You also noticed that the login class is protected rather than public. **Protected class won't be executed** when we run the "runtest" command but we can use it as a pre-requisite when testing listAppProfiles scenario for example, ie the @before login annotation.
 
 listAllProfiles function goes to the user listing page and checks for 4 rows in the table. How do I know about the amOnPage and canSeeNumberOfElements functions? Remembered you ran the command "/bin/codecept build" before? This command generates the AcceptanceTester class to be used in the Cest class. All the functions of the AcceptanceTester class can be found in the "src/AppBundle/Tests/_support/_generated/AcceptanceTesterActions.php" class.
 
-In the test, I used the user listing url directly rather than clicking on the "User Management" link. *Simulating user clicks should be the way to go because you are simulating user behaviour*. We will update the test again once we work on the UI updated.
+In the test, I used the user listing url directly rather than clicking on the "User Management" link. We should be simulating user clicking on the "User Management" link instead. We will update the test again once we work on the updated UI.
 
 Let us update the runtest script
 
 ```
-# scripts/runtest
+# symfony/scripts/runtest
 
 #!/bin/bash
 
@@ -214,28 +215,28 @@ vendor/bin/codecept run acceptance $@ -c src/AppBundle
 and update the gitignore path
 
 ```
-# .gitignore
+# symfony/.gitignore
 ...
-src/AppBundle/Tests/_output/*
+src/AppBundle/tests/_output/*
 ```
 
 Then, run the test only for scenario 10.6.1
 
 ```
 # remember to start selenium server in a separate terminal
--> scripts/start_selenium
+-> scripts/start_phantomjs
 # switch to a new terminal and run the test
 -> scripts/runtest As_An_Admin/IWantToManageAllUsersCest.php:listAllProfiles
 ...
 OK (1 test, 1 assertion)
 ```
 
-Looking good, what if the test fails and you want to look at the logs? The log files are all in the "Tests/_output/" directory.
+Looking good, what if the test fails and you want to look at the logs? The log files are all in the "src/AppBundle/tests/_output/" directory.
 
 Let us write another test for scenario 10.6.2. We will simulate clicking on test3 show button and check the page is loading fine.
 
 ```
-# src/AppBundle/Tests/acceptance/As_An_Admin/IWantToManageAllUsersCest.php
+# src/AppBundle/tests/acceptance/As_An_Admin/IWantToManageAllUsersCest.php
 ...
    /**
     * Scenario 10.6.2
@@ -338,13 +339,13 @@ and scenario 10.6.4
 
 createNewUser test is a bit longer. I hope the comments are self explainatory.
 
-Let's run the test just for this scenario
+Let's run the test just for this scenario.
 
 ```
 -> scripts/runtest As_An_Admin/IWantToManageAllUsersCest.php:createAndDeleteNewUser
 ```
 
-Feeling confident? We can run all the test together now
+Feeling confident? We can run all the test together.
 
 ```
 -> scripts/runtest
@@ -357,21 +358,26 @@ Creating database schema...
 Database schema created successfully!
   > purging database
   > loading [1] AppBundle\DataFixtures\ORM\LoadUserData
-Codeception PHP Testing Framework v2.1.1
-Powered by PHPUnit 4.7.7 by Sebastian Bergmann and contributors.
+Codeception PHP Testing Framework v2.2.8
+Powered by PHPUnit 5.7.5 by Sebastian Bergmann and contributors.
 
-Acceptance Tests (9) -----------------------------------------------------
+Acceptance Tests (9) ------------------------------------------
 Testing acceptance
 ✔ IWantToLoginCest: Try to test (0.00s)
-✔ IWantToManageAllUsersCest: List all profiles (5.89s)
-✔ IWantToManageAllUsersCest: Show test3 user (2.35s)
-✔ IWantToManageAllUsersCest: Edit test3 user (6.33s)
-✔ IWantToManageAllUsersCest: Create and delete new user (6.29s)
+✔ IWantToManageAllUsersCest: List all profiles (26.24s)
+✔ IWantToManageAllUsersCest: Show test3 user (16.23s)
+✔ IWantToManageAllUsersCest: Edit test3 user (37.66s)
+✔ IWantToManageAllUsersCest: Create and delete new user (30.73s)
 ✔ IDontWantToManageOtherProfilesCest: Try to test (0.00s)
 ✔ IWantToLoginCest: Try to test (0.00s)
 ✔ IWantToManageMyOwnProfileCest: Try to test (0.00s)
 ✔ IDontWantTologinCest: Try to test (0.00s)
---------------------------------------------------------------------------
+----------------------------------------------------------------
+
+
+Time: 1.86 minutes, Memory: 15.00MB
+
+OK (9 tests, 7 assertions)
 ```
 
 Want more detail output? Try this
@@ -406,9 +412,9 @@ $I->canSeeElement('//div[contains(@class, "alert-success")]');
 
 We have only written the BDD tests for user story 10.6. Are you ready to write acceptance tests for the other user stories?
 
-Writing tests can be a boring process but essential if you want your software to be robust. A tip to note is that every scenario must have a closure so that it is self-contained. The idea is that you can run a test scenario by itself without affecting the rest of the scenarios. For example, if you change a password in a scenario, you have to remember to change it back so that you can run the next test without worrying that the password has been changed. Alternatively, you could reset the db after every test but this would make running all the tests longer.  There are also other ways you can achieve this. How can you do it such that it doesn't affect performance?
+Writing tests can be a boring process but essential if you want your software to be robust. A tip to note is that every scenario must have a closure so that it is self-contained. The idea is that you can run a test scenario by itself without affecting the rest of the scenarios. For example, if you change a password in a scenario, you have to remember to change it back so that you can run the next test without worrying that the password being changed. Alternatively, you could reset the db after every test but this could make running all the tests longer.  There are also other ways to achieve this. How could you do it so that it doesn't affect performance?
 
-The workflow in this book is just one of many ways to write BDD tests. At the time of writing, many people uses [behat](http://docs.behat.org/en/v3.0/).
+The workflow in this book is just one of many ways to write BDD tests. It is worth knowing that at the time of writing, many people uses [behat](http://docs.behat.org/en/v3.0/).
 
 ## Summary
 
@@ -418,7 +424,7 @@ Remember to commit your changes before moving on the next chapter.
 
 ## Exercises
 
-* Write acceptance test for User Stories 10.1, 10.2, 10.3, 10.4 and 10.5.
+* Write acceptance test for User Stories 10.1, 10.2, 10.3, 10.4 and 10.5 and make sure all test passes.
 
 * (Optional) Can you think of other business rules for user management? Try adding your own CEST.
 

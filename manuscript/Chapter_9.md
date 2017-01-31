@@ -262,8 +262,6 @@ easy_admin:
                     - email
                     - roles
                     - enabled
-                    - locked
-                    - expired
                     - { property: 'last_login', type: 'datetime' }
                     - modified
                     - created
@@ -427,7 +425,35 @@ Under the "show" action, I should not see the created field. User should also be
 
 ```
 # src/AppBundle/Controller/AdminController.php
+
+use JavierEguiluz\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
+
     ....
+     /**
+      * @return \Symfony\Component\HttpFoundation\Response
+      */
+     public function showUserAction()
+     {
+         $this->dispatch(EasyAdminEvents::PRE_SHOW);
+         $id = $this->request->query->get('id');
+         $easyadmin = $this->request->attributes->get('easyadmin');
+         $entity = $easyadmin['item'];
+ 
+         $fields = $this->entity['show']['fields'];
+ 
+         if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
+             unset($fields['created']);
+         }
+ 
+         $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
+ 
+         return $this->render($this->entity['templates']['show'], array(
+             'entity' => $entity,
+             'fields' => $fields,
+             'delete_form' => $deleteForm->createView(),
+         ));
+     }
+         
      /**
       * when edit user action
       * 
@@ -435,6 +461,7 @@ Under the "show" action, I should not see the created field. User should also be
       */
      protected function editUserAction()
      {
+         $this->dispatch(EasyAdminEvents::PRE_EDIT);
          $id = $this->request->query->get('id');
          $easyadmin = $this->request->attributes->get('easyadmin');
          $entity = $easyadmin['item'];
@@ -458,8 +485,6 @@ Under the "show" action, I should not see the created field. User should also be
          if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
              $editForm->remove('enabled');
              $editForm->remove('roles');
-             $editForm->remove('locked');
-             $editForm->remove('expired');
          }
  
          $deleteForm = $this->createDeleteForm($this->entity['name'], $id);

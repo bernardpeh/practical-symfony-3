@@ -179,7 +179,7 @@ If you are already getting impatient and wants to see a demo of the completed pr
 -> sudo echo "127.0.0.1 songbird.app" >> /etc/hosts
 
 # update symfony/app/config/parameters.yml
-# your can find your db host from this command
+# your can find your db and mailcatcher host from this command
 # "docker network inspect songbird_default"
 
 # database_host: your_db_host_from_docker_inspect
@@ -187,7 +187,9 @@ If you are already getting impatient and wants to see a demo of the completed pr
 # database_name: db_name_from_env_file
 # database_user: mysql_user_from_env_file
 # database_password: db_passwd_from_env_file
-# mailer_host: '127.0.0.1:1025'
+# mailer_host: 'your_mailcatcher_host_from_docker_inspect:1025'
+# mailer_user: null
+# mailer_password: null
 
 # create the uploads dir
 mkdir -p web/uploads/featured_images

@@ -220,7 +220,7 @@ Try changing admin_path to something else and check if all the routes have been 
 
 ## Update BDD Test (Optional)
 
-Now that we have defined the admin layout, we should add new BDD tests to the dashboard cest to test on the dashboard and left menu.
+Now that we have defined the admin layout, we should update BDD tests for seeMyDashboardContent to test on the dashboard content.
 
 |**Scenario Id**|**Given**|**When**|**Then**|
 |10.1.2|See my dashboard content|I login correctly|I should not see the text "User Management" and should see the text "Dear test1"|
@@ -229,7 +229,7 @@ Now that we have defined the admin layout, we should add new BDD tests to the da
 |**Scenario Id**|**Given**|**When**|**Then**|
 |10.2.2|See my dashboard content|I login correctly|I should see the text "User Management" and "Dear Admin"|
 
-Also with the left menu installed, we should be clicking on the links rather than going to the page directly. In all the "cest", replace all amOnPage methods to "click" method.
+Also with the left menu installed, we should be clicking on the links rather than going to the page directly. In all the test files, replace all amOnPage methods to "click" method.
 
 ```
 # go to page directly
@@ -239,7 +239,7 @@ $I->amOnPage('/admin/?action=list&entity=User');
 $I->click('User Management');
 ```
 
-Update all the tests to click on links rather than going to the url directly and I will leave this part to you. Once you are confident that all your tests are correct, run it and fix it till everything passes.
+Once you are confident that all your tests are correct, run it and fix it till everything passes.
 
 ## Summary
 

@@ -119,6 +119,8 @@ logs/
 
 In this chapter, we setup the development environment using docker. We have installed Symfony and configured the host to access SongBird from the host machine.
 
+**Note: Docker can be slow on mac. Using SSD Helps**
+
 Remember to commit all your changes before moving on.
 
 ## Exercises (Optional)

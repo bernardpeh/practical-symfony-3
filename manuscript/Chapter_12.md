@@ -11,7 +11,7 @@ Its easy to change the theme colour and add our own custom css. For the sake of 
 
 easy_admin:
   design:
-    brand_color: '#d9d9d9'
+    brand_color: '#5493ca'
     assets:
       css:
         - /bundles/app/css/style.css
@@ -107,7 +107,7 @@ login and then refresh the browser.
 Normal users should not see the left entities menus. Let us extend the menu.html.twig and put a filter.
 
 ```
-# app/Resources/easy_admin/menu.html.twig
+# app/Resources/EasyAdminBundle/views/default/menu.html.twig
 
 {%  extends '@EasyAdmin/default/menu.html.twig' %}
 
@@ -132,7 +132,7 @@ Normal users should not see the left entities menus. Let us extend the menu.html
 {% endblock main_menu %}
 ```
 
-This way of filtering menu access is rather stupid but serves ok as an exercise for now. We will talk about a better way to user manage our admin area in the later chapters. Let us also create a profile link for the user link on the top right
+This way of filtering menu access is rather *stupid* and serves just as an exercise for now. We will talk about a better way to user manage our admin area in the later chapters. Let us also create a profile link for the user link on the top right
 
 ```
 # app/Resources/EasyAdminBundle/views/default/dashboard.html.twig

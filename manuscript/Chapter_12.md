@@ -27,29 +27,42 @@ and create a new css
 }
 ```
 
-Next, We will overwrite admin layout and create our own logo. Noticed that instead of creating a new twig layout file from scratch, we have extended the EasyAdmin layout and only change the parts that we were interested in. Nice!
+Next, We will will overwrite layout.html.twig by copying it into our own views dir.
 
 ```
-# app/Resources/EasyAdminBundle/views/default/dashboard.html.twig
+-> cp vendor/javiereguiluz/easyadmin-bundle/Resources/views/default/layout.html.twig app/Resources/EasyAdminBundle/views/default/
+```
 
-{%  extends '@EasyAdmin/default/layout.html.twig' %}
+We will change the logo and top menu. The top menu will include a link to edit the user and logout.
+
+```
+# app/Resources/EasyAdminBundle/views/default/layout.html.twig
+
+...
 
 {% block header_logo %}
     <a class="logo {{ easyadmin_config('site_name')|length > 14 ? 'logo-long' }}" title="{{ easyadmin_config('site_name')|striptags }}" href="{{ path('easyadmin') }}">
         <img src="/bundles/app/images/logo.png" />
     </a>
 {% endblock header_logo %}
-
+...
 {% block user_menu %}
     <span class="sr-only">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</span>
-    <i class="hidden-xs fa fa-user"></i>
-    {% if app.user|default %}
-        {{ app.user.username|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) }}
-    {% else %}
-        {{ 'user.anonymous'|trans(domain = 'EasyAdminBundle') }}
-    {% endif %}
+    <i class="hidden-xs fa fa-user">
+        {% if app.user %}
+            <a href="{{ path('easyadmin') }}/?entity=User&action=show&id={{ app.user.id }}">{{ app.user.username|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) }}</a>
+        {% else %}
+            {{ 'user.anonymous'|trans(domain = 'EasyAdminBundle') }}
+        {% endif %}
+    </i>
     <i class="hidden-xs fa fa-sign-out"><a href="{{ path('fos_user_security_logout') }}">Logout</a></i>
 {% endblock user_menu %}
+```
+
+Let us create the dashboard content.
+
+```
+{%  extends '@EasyAdmin/default/layout.html.twig' %}
 
 {% block main %}
 <p>
@@ -66,9 +79,11 @@ Next, We will overwrite admin layout and create our own logo. Noticed that inste
 {% endblock %}
 ```
 
+Noticed how I extended the layout.html.twig and just change the relevant blocks?
+
 ## Your Dashboard
 
-Let us now create a new dashboard page via the standard way. We need a new route
+Let us now create a new dashboard page via the standard way. We need a new route.
 
 ```
 # src/AppBundle/Controller/AdminController.php
@@ -104,51 +119,46 @@ login and then refresh the browser.
 
 ## Menu Tweaking
 
-Normal users should not see the left entities menus. Let us extend the menu.html.twig and put a filter.
+Normal users should not see the left entities menus. Again, let us copy the menu.html.twig modify it.
 
+```
+-> cp vendor/javiereguiluz/easyadmin-bundle/Resources/views/default/menu.html.twig app/Resources/EasyAdminBundle/views/default/
+```
+
+and the actual menu.html.twig
 ```
 # app/Resources/EasyAdminBundle/views/default/menu.html.twig
 
-{%  extends '@EasyAdmin/default/menu.html.twig' %}
+...
 
-{% block main_menu %}
-    {% if is_granted('ROLE_SUPER_ADMIN') %}
-        {% for item in easyadmin_config('design.menu') %}
-            <li class="{{ item.type == 'divider' ? 'header' }} {{ item.children is not empty ? 'treeview' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.index0 ? 'active' }} {{ app.request.query.get('submenuIndex')|default(-1) != -1 ? 'submenu-active' }}">
-                {{ helper.render_menu_item(item) }}
+{% block main_menu_before %}{% endblock %}
 
-                {% if item.children|default([]) is not empty %}
-                    <ul class="treeview-menu">
-                        {% for subitem in item.children %}
-                            <li class="{{ subitem.type == 'divider' ? 'header' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.parent.loop.index0 and app.request.query.get('submenuIndex')|default(-1) == loop.index0 ? 'active' }}">
-                                {{ helper.render_menu_item(subitem) }}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </li>
-        {% endfor %}
-    {% endif %}
-{% endblock main_menu %}
+<ul class="sidebar-menu">
+    {% block main_menu %}
+        {% if is_granted('ROLE_SUPER_ADMIN') %}
+            {% for item in easyadmin_config('design.menu') %}
+                <li class="{{ item.type == 'divider' ? 'header' }} {{ item.children is not empty ? 'treeview' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.index0 ? 'active' }} {{ app.request.query.get('submenuIndex')|default(-1) != -1 ? 'submenu-active' }}">
+                    {{ helper.render_menu_item(item, _entity_config.translation_domain|default('messages')) }}
+
+                    {% if item.children|default([]) is not empty %}
+                        <ul class="treeview-menu">
+                            {% for subitem in item.children %}
+                                <li class="{{ subitem.type == 'divider' ? 'header' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.parent.loop.index0 and app.request.query.get('submenuIndex')|default(-1) == loop.index0 ? 'active' }}">
+                                    {{ helper.render_menu_item(subitem, _entity_config.translation_domain|default('messages')) }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        {% endif %}
+    {% endblock main_menu %}
+</ul>
+
+{% block main_menu_after %}{% endblock %}
 ```
 
-This way of filtering menu access is rather *stupid* and serves just as an exercise for now. We will talk about a better way to user manage our admin area in the later chapters. Let us also create a profile link for the user link on the top right
-
-```
-# app/Resources/EasyAdminBundle/views/default/dashboard.html.twig
-
-{% block user_menu %}
-    <span class="sr-only">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</span>
-    <i class="hidden-xs fa fa-user">
-    {% if app.user %}
-        <a href="{{ path('easyadmin') }}/?entity=User&action=show&id={{ app.user.id }}">{{ app.user.username|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) }}</a>
-    {% else %}
-        {{ 'user.anonymous'|trans(domain = 'EasyAdminBundle') }}
-    {% endif %}
-        </i>
-    <i class="hidden-xs fa fa-sign-out"><a href="{{ path('fos_user_security_logout') }}">Logout</a></i>
-{% endblock user_menu %}
-```
+This way of filtering menu access is rather *stupid* and serves just as an exercise for now. We will describe a better way to user manage our admin area in the later chapters. 
 
 ## Removing hardcoding of admin prefix
 
@@ -239,7 +249,7 @@ The admin area is now looking more polished.
 
 ## Exercises
 
-* Try creating another Sonata block yourself. (Optional)
+* Try creating another url and view yourself. (Optional)
 
 * Review and Update BDD for all admin and test1 user stories. (Optional)
 

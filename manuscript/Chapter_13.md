@@ -1,8 +1,8 @@
 # Chapter 13: Internalisation
 
-No CMS is complete with being being able to support multiple languages ([i18n](https://en.wikipedia.org/wiki/Internationalization_and_localization)). So far we have been typing english directly into the twig templates. This is quick and easy but its not the best practice. What if we are marketing our software to the french market? Wouldn't it be nice if the interface can be in french rather than english? Even though its time consuming to create translations for every term that we use, it is worth the effort if you want to make your software international.
+No CMS is complete with being being able to support multiple languages ([i18n](https://en.wikipedia.org/wiki/Internationalization_and_localization)). So far we have been typing english directly into the twig templates. This is quick and easy but not the best practice. What if we are marketing our software to the french market? Wouldn't it be nice if the interface could be in french rather than english? Its time consuming to create translations for every term that we use but its worth the effort if you want to make your software global.
 
-What about [Google Translate](http://translate.google.com.au)? Google translate is never accurate and should not be used for professional purposes. Internalisation is something you want to work on early in the software development phase rather than later.
+What about [Google Translate](http://translate.google.com.au)? This should be the last option and not be used for professional purposes. Internalisation is something you want to work on early in the software development phase rather than later.
 
 ## Define User Story
 
@@ -19,6 +19,14 @@ What about [Google Translate](http://translate.google.com.au)? Google translate 
 ## Translations for the AppBundle
 
 let us create the translation files in the AppBundle. The naming convention for the file is domain.language_prefix.file_format, eg app.en.xlf.
+
+Let us create the translation directory.
+
+```
+-> mkdir -p src/AppBundle/Resources/translations
+```
+
+and the actual app.en.xlf
 
 ```
 # src/AppBundle/Resources/translations/app.en.xlf
@@ -81,7 +89,7 @@ How do we get the twig files to do the translation? You would have seen glimpse 
 Let us update the dashboard template.
 
 ```
-# app/Resources/easy_admin/dashboard.html.twig
+# /app/Resources/EasyAdminBundle/views/default/dashboard.html.twig
 
 ...
 {% block main %}
@@ -103,18 +111,18 @@ Let us update the dashboard template.
 refresh your browser and have a look. If things are not working, remember to clear the cache.
 
 ```
--> ./scripts/resetapp
+-> scripts/resetapp
 ```
 
 By default, we are using english, so you should see that the english version is translated. To see all the translations in english for the AppBundle,
 
 ```
--> bin/console debug:translation en AppBundle
+-> scripts/console debug:translation en AppBundle
 ```
 
 You should see a lot of missing translations for the FOSUserBundle. Don't worry about that for now.
 
-Tip: Again, don't remember this command. Just type in "bin/console debug:translation" in the command line to see the options.
+Tip: Again, don't remember this command. Just type in "scripts/console debug:translation" in the command line to see the options.
 
 What about french? How do we set the locale? Just update the parameters in the config.yml
 
@@ -131,26 +139,52 @@ Now refresh the dashboard and you should see the welcome block translated.
 
 Its french. Viola!
 
-How do we make the language dynamic? Perhaps we should have a selector on the top menu for users to select the language and persists throughout the session.
-
-What about the menu?
+How do we make the language dynamic? Perhaps we should have a selector on the top menu for users to select the language and persists it throughout the session.
 
 Let us update the translation files
 
 ```
-# app/Resources/translations/messages.fr.yml
+# src/AppBundle/Resources/translations/app.en.xlf
 
-admin.link.user_management: Gestion des utilisateurs
-admin.link.profile: Mon profil
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            ...
+            <trans-unit id="4">
+                <source>admin.link.user_management</source>
+                <target>User Management</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>admin.link.profile</source>
+                <target>My Profile</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
 ```
 
 and
 
 ```
-# app/Resources/translations/messages.en.yml
+# src/AppBundle/Resources/translations/app.fr.xlf
 
-admin.link.user_management: User Management
-admin.link.profile: My Profile
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            ...
+            <trans-unit id="4">
+                <source>admin.link.user_management</source>
+                <target>Gestion des utilisateurs</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>admin.link.profile</source>
+                <target>Mon profil</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
 ```
 
 and
@@ -163,6 +197,35 @@ and
             class: AppBundle\Entity\User
             label: admin.link.user_management
             ...
+```
+
+Now let us update the menu translation in menu.html.twig
+
+```
+# app/Resources/EasyAdminBundle/views/default/menu.html.twig
+...
+<ul class="sidebar-menu">
+    {% block main_menu %}
+        {% if is_granted('ROLE_SUPER_ADMIN') %}
+            {% for item in easyadmin_config('design.menu') %}
+                <li class="{{ item.type == 'divider' ? 'header' }} {{ item.children is not empty ? 'treeview' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.index0 ? 'active' }} {{ app.request.query.get('submenuIndex')|default(-1) != -1 ? 'submenu-active' }}">
+
+                    {{ helper.render_menu_item(item, 'app') }}
+
+                    {% if item.children|default([]) is not empty %}
+                        <ul class="treeview-menu">
+                            {% for subitem in item.children %}
+                                <li class="{{ subitem.type == 'divider' ? 'header' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.parent.loop.index0 and app.request.query.get('submenuIndex')|default(-1) == loop.index0 ? 'active' }}">
+                                    {{ helper.render_menu_item(subitem, _entity_config.translation_domain|default('messages')) }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        {% endif %}
+    {% endblock main_menu %}
+</ul>
 ```
 
 ## Sticky Locale
@@ -191,29 +254,17 @@ We have created a variable called supported_lang (consisting of an array) and pa
 Now in the layout twig
 
 ```
-# app/Resources/easy_admin/layout.html.twig
+# app/Resources/EasyAdminBundle/views/default/easy_admin/layout.html.twig
 
 ...
-{% block page_title %}
-    {{ 'dashboard.welcome.title' | trans({}, 'app') }}
-{% endblock %}
+<title>
+    {% block page_title %}
+        {{ 'dashboard.welcome.title' | trans({}, 'app') }}
+    {% endblock %}            
+</title>
 
 {% set urlPrefix = (app.environment == 'dev') ? '/app_dev.php/' : '/' %}
-
-{% block head_javascript %}
-    {{ parent() }}
-    <script>
-        $(function() {
-            // select the box based on locale
-            $('#lang').val('{{ app.request.getLocale() }}');
-            // redirect user if user change locale
-            $('#lang').change(function() {
-                window.location='{{ urlPrefix }}'+$(this).val()+'/locale';
-            });
-        });
-    </script>
-{% endblock head_javascript %}
-
+...
 {% block user_menu %}
     <i class="fa fa-language" aria-hidden="true">
         <select id="lang" name="lang">
@@ -229,8 +280,20 @@ Now in the layout twig
         {{ 'user.anonymous'|trans(domain = 'EasyAdminBundle') }}
     {% endif %}
         </i>
-    <i class="hidden-xs fa fa-sign-out"><a href="{{ path('fos_user_security_logout') }}">Logout</a></i>
+    <i class="hidden-xs fa fa-sign-out"><a href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></i>
 {% endblock user_menu %}
+...
+{% block body_javascript %}
+    <script>
+        // select the box based on locale
+        var lang = document.getElementById('lang');
+        lang.value = '{{ app.request.getLocale() }}';
+        // redirect user if user change locale
+        lang.addEventListener('change', function () {
+            window.location = '{{ urlPrefix }}' + document.getElementById('lang').value + '/locale';
+        });
+    </script>
+{% endblock body_javascript %}
 ```
 
 Note that we have made logic and css tweaks to the top nav. The new CSS is as follows:
@@ -257,10 +320,16 @@ The new language dropdown box allows user to select a language and if there is a
 and create a new controller from the command line.
 
 ```
--> bin/console generate:controller --controller=AppBundle:Locale -n
+-> scripts/console generate:controller --controller=AppBundle:Locale -n
 ```
 
-and the controller code in full:
+Tip: This command can save you some time but not much in this case. You don't have to memorise it. Always use the "help" option if unsure, ie
+
+```
+scripts/console help generate:controller
+```
+
+The controller code in full:
 
 ```
 # src/AppBundle/Controller/LocaleController.php
@@ -304,14 +373,14 @@ class LocaleController extends Controller
 As you can see, the annotation defines the the new route /{_locale}/locale. To make sure that this route is working,
 
 ```
--> bin/console debug:router | grep locale
+-> scripts/console debug:router | grep locale
  app_set_locale                          GET      ANY    ANY  /{_locale}/locale
 ```
 
 The AdminController gets the request object and redirects the user to the referer if there is one. If not, it redirects the user to either the admin dashboard or the homepage depending if the user is logged in or not. Again, don't memorise security.authorization_checker. Google around, make intelligent guesses and use the command line to verify the containers.
 
 ```
--> bin/console debug:container | grep security
+-> scripts/console debug:container | grep security
 ...
 ```
 
@@ -319,7 +388,7 @@ We said that the controller is the place where magic happens... but where is the
 
 Basically, what we need to do is to hook on to the kernel.request event and modify some logic there. The symfony cookbook has good information on [sticky sessions](http://symfony.com/doc/current/cookbook/session/locale_sticky_session.html).
 
-We have create an event subscriber before. Let us create an event listener this time round.
+We have create an event subscriber before. As a practice, let us create an event listener this time round.
 
 ```
 # src/AppBundle/Resources/config/services.yml
@@ -377,10 +446,10 @@ To see what is going on with the events sequencing,
 
 ```
 # now view the event dispatcher list
--> bin/console debug:event-dispatcher kernel.request
+-> scripts/console debug:event-dispatcher kernel.request
 ```
 
-Look at the kernel.request section and you should see our custom event listener ranked 7, just above the kernel LocaleListener.
+Look at the kernel.request section and you should see our custom event listener ranked just above the kernel LocaleListener.
 
 Can you use the AppSubscriber class that we have created to do the same job?
 
@@ -390,6 +459,7 @@ Now, clear the cache and refresh the browser. Try changing the locale dropdown a
 ```
 -> ./scripts/resetapp
 ```
+
 ![dashboard with translation](images/dashboard_with_translation1.png)
 
 Try changing the priority to 15 of kernel.event_listener tag and see what happens?
@@ -399,23 +469,32 @@ Try changing the priority to 15 of kernel.event_listener tag and see what happen
 Let us create the cest file based on the User Story.
 
 ```
+# in symfony
 -> vendor/bin/codecept generate:cest acceptance As_Test1_User/IWantToSwitchLanguageCest -c src/AppBundle
 ```
 
 now within the cest file:
 
 ```
-#src/AppBundle/Tests/acceptance/As_Test1_User/IWantToSwitchLanguageCest.php
+#src/AppBundle/tests/acceptance/As_Test1_User/IWantToSwitchLanguageCest.php
 
 namespace As_Test1_User;
 use \AcceptanceTester;
 use \Common;
 
+/**
+ * AS test1 user
+ * I want to be able to switch language
+ * SO THAT I can choose my preferred language anytime.
+ *
+ * Class IWantToSwitchLanguageCest
+ * @package As_Test1_User
+ */
 class IWantToSwitchLanguageCest
 {
     public function _before(AcceptanceTester $I)
     {
-        Common::login($I, TEST1_USERNAME, TEST1_PASSWORD);
+	    Common::login($I, TEST1_USERNAME, TEST1_PASSWORD);
     }
 
     public function _after(AcceptanceTester $I)
@@ -423,6 +502,10 @@ class IWantToSwitchLanguageCest
     }
 
     /**
+     * GIVEN Locale in french
+     * WHEN I login and switch language to french
+     * THEN I should be able to see the dashboard in french till I switched back to english
+     *
      * Scenario 13.1.1
      */
     public function localeInFrench(AcceptanceTester $I)
@@ -430,12 +513,15 @@ class IWantToSwitchLanguageCest
         // switch to french
         $I->selectOption('//select[@id="lang"]', 'fr');
         // I should be able to see "my profile" in french
+        $I->waitForText('Déconnexion');
         $I->canSee('Déconnexion');
         $I->click('test1');
         // now in show profile page
-        $I->canSee("Éditer");
+        $I->waitForText('Éditer');
+        $I->canSee('Éditer');
         // now switch back to english
         $I->selectOption('//select[@id="lang"]', 'en');
+        $I->waitForText('Edit');
         $I->canSee('Edit');
     }
 }

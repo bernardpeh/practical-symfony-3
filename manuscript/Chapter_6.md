@@ -77,6 +77,9 @@ fos_user:
     db_driver: orm
     firewall_name: main
     user_class: AppBundle\Entity\User
+    from_email:
+        address: admin@songbird.app
+        sender_name: Songbird
 ```
 
 and setup the security and firewall, your file should look like this

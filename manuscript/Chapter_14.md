@@ -4,6 +4,8 @@ Our CMS should allow uploading of files. Let's say we want to allow user to uplo
 
 ## Update User Stories
 
+Let us update the user stories that we have created before.
+
 **Story ID 10.6: As an admin user, I want to manage all users, so that I can control user access of the system.**
 
 |**Scenario Id**|**Given**|**When**|**Then**|
@@ -376,11 +378,11 @@ and our db credentials
 
 actor: Tester
 paths:
-    tests: Tests
-    log: Tests/_output
-    data: Tests/_data
-    support: Tests/_support
-    envs: Tests/_envs
+    tests: tests
+    log: tests/_output
+    data: tests/_data
+    support: tests/_support
+    envs: tests/_envs
 settings:
     bootstrap: _bootstrap.php
     colors: true
@@ -391,10 +393,11 @@ extensions:
 modules:
     config:
         Db:
-            dsn: 'mysql:host=192.168.56.111;dbname=songbird'
-            user: 'homestead'
-            password: 'secret'
-            dump: Tests/_data/dump.sql
+            dsn: 'mysql:host=inspect_from_your_db;dbname=songbird'
+            user: 'root'
+            password: 'root'
+            dump: tests/_data/dump.sql
+
 ```
 
 now run the build to update the acceptance library
@@ -407,7 +410,7 @@ You should now have lots of new functions to use in AcceptanceTesterActions.php.
 
 Write the stories in this chapter as a practice. Again, get all the test to pass before moving to the next chapter.
 
-> Tip: To test a file upload, put a file under src/AppBundle/Tests/_data folder and you can then use the attachFile function like so
+> Tip 1: To test a file upload, put a file under src/AppBundle/Tests/_data folder and you can then use the attachFile function like so
 
 ```
 $I->waitForElementVisible('//input[@type="file"]');
@@ -430,3 +433,5 @@ In this chapter, we have integrated VichuploadBundle with EasyAdminBundle. We ma
 ## References
 
 * [EasyAdmin Vich Uploader](https://github.com/bernardpeh/EasyAdminBundle/blob/master/Resources/doc/tutorials/upload-files-and-images.md)
+
+* [Codeception DB Module](http://codeception.com/docs/modules/Db)

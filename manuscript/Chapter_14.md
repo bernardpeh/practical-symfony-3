@@ -21,7 +21,7 @@ Our CMS should allow uploading of files. Let's say we want to allow user to uplo
 Add the vich uploaded bundle to composer
 
 ```
--> composer require vich/uploader-bundle ^1.2
+-> ./scripts/composer require vich/uploader-bundle ^1.4
 ```
 
 In config.yml, we need to add a few parameters
@@ -62,19 +62,119 @@ public function registerBundles()
 ...
 ```
 
+We have to add new image fields to the user table.
 
+```
+# src/AppBundle/Entity/User.php
 
-let us reset the app
+namespace AppBundle\Entity;
+
+use FOS\UserBundle\Model\User as BaseUser;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
+/**
+ * User
+ *
+ * @ORM\Table(name="user")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
+ * @ORM\HasLifecycleCallbacks()
+ * @Vich\Uploadable
+ */
+class User extends BaseUser
+{
+    ...
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @var string
+     */
+    private $image = '';
+    /**
+     * @Vich\UploadableField(mapping="profile_images", fileNameProperty="image")
+     * @var File
+     */
+    private $imageFile;
+    
+    ...
+
+    /**
+     * @param File|null $image
+     */
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+        // at least 1 field needs to change for doctrine to save
+        if ($image) {
+            $this->setModified(new \DateTime());
+        }
+    }
+    /**
+     * @return File
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+    /**
+     * @param $image
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+    /**
+     * @return string
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+    ...
+```
+
+Since we have changed the entity, we have to remember to log the db changes so that we can deploy the db changes to production easily.
+
+```
+-> ./scripts/console doctrine:migrations:diff
+Generated new migration class to "/var/www/symfony/app/../src/AppBundle/DoctrineMigrations/Version20170208142520.php" from schema differences.
+...
+```
+
+Looks good, we can now reset the app
 
 ```
 -> ./scripts/resetapp
 ```
 
-go to adminer and verify that the new image field has been added.
+We can now verify that the new image field has been added.
 
-![](images/new_image_field.png)
+```
+-> ./scripts/mysql "show columns from user"
 
-
++-----------------------+--------------+------+-----+---------+----------------+
+| Field                 | Type         | Null | Key | Default | Extra          |
++-----------------------+--------------+------+-----+---------+----------------+
+| id                    | int(11)      | NO   | PRI | NULL    | auto_increment |
+| username              | varchar(180) | NO   |     | NULL    |                |
+| username_canonical    | varchar(180) | NO   | UNI | NULL    |                |
+| email                 | varchar(180) | NO   |     | NULL    |                |
+| email_canonical       | varchar(180) | NO   | UNI | NULL    |                |
+| enabled               | tinyint(1)   | NO   |     | NULL    |                |
+| salt                  | varchar(255) | YES  |     | NULL    |                |
+| password              | varchar(255) | NO   |     | NULL    |                |
+| last_login            | datetime     | YES  |     | NULL    |                |
+| confirmation_token    | varchar(180) | YES  | UNI | NULL    |                |
+| password_requested_at | datetime     | YES  |     | NULL    |                |
+| roles                 | longtext     | NO   |     | NULL    |                |
+| firstname             | varchar(255) | YES  |     | NULL    |                |
+| lastname              | varchar(255) | YES  |     | NULL    |                |
+| modified              | datetime     | NO   |     | NULL    |                |
+| created               | datetime     | NO   |     | NULL    |                |
+| image                 | varchar(255) | NO   |     | NULL    |                |
++-----------------------+--------------+------+-----+---------+----------------+
+```
 
 We need to create the new upload folder
 
@@ -85,28 +185,10 @@ We need to create the new upload folder
 but we should ignore in git. In .gitignore
 
 ```
-/app/config/parameters.yml
-/build/
-/phpunit.xml
-/var/*
-!/var/cache
-/var/cache/*
-!var/cache/.gitkeep
-!/var/logs
-/var/logs/*
-!var/logs/.gitkeep
-!/var/sessions
-/var/sessions/*
-!var/sessions/.gitkeep
-!var/SymfonyRequirements.php
-/vendor/
-/bin/
-/composer.phar
-src/AppBundle/Tests/_output/*
-tests/_output/*
+...
 /web/bundles/
 /web/uploads/
-/var/bootstrap.php.cache
+...
 ```
 
 ## Update Fixtures
@@ -176,21 +258,21 @@ Let us update the Image field to help us with automate testing.
     ...
 ```
 
-We will update the resetapp script to copy the test_profile.jpg to the web folder
+Just create any pic called test_profile.jpg and put it in the src/AppBundle/tests/_data dir. If you run out of ideas, you can use the jpg from my branch. We will update the resetapp script to copy the test_profile.jpg to the web folder.
 
 ```
 # scripts/resetapp
 
 #!/bin/bash
 rm -rf var/cache/*
-# bin/console cache:clear --no-warmup
-bin/console doctrine:database:drop --force
-bin/console doctrine:database:create
-bin/console doctrine:schema:create
-bin/console doctrine:fixtures:load -n
+# scripts/console cache:clear --no-warmup
+scripts/console doctrine:database:drop --force
+scripts/console doctrine:database:create
+scripts/console doctrine:schema:create
+scripts/console doctrine:fixtures:load -n
 
 # copy test data over to web folder
-cp src/AppBundle/Tests/_data/test_profile.jpg web/uploads/profiles/
+cp src/AppBundle/tests/_data/test_profile.jpg web/uploads/profiles/
 ```
 
 ## Update UI
@@ -201,16 +283,10 @@ Let us update the UI to include the image field.
 # app/config/easyadmin/user.yml
 
 easy_admin:
-    design:
-        brand_color: '#337ab7'
-        assets:
-            css:
-              - /bundles/app/css/style.css
-
     entities:
         User:
             class: AppBundle\Entity\User
-            label: admin.link.user_management
+            label: 'User Management'
             # for new user
             new:
                 fields:
@@ -233,8 +309,6 @@ easy_admin:
                     - { property: 'imageFile', type: 'vich_image' }
                     - roles
                     - enabled
-                    - locked
-                    - expired
             show:
                   actions: ['edit', '-delete', '-list']
                   fields:
@@ -246,8 +320,6 @@ easy_admin:
                     - email
                     - roles
                     - enabled
-                    - locked
-                    - expired
                     - { property: 'last_login', type: 'datetime' }
                     - modified
                     - created
@@ -262,17 +334,16 @@ easy_admin:
                   - firstname
                   - lastname
                   - enabled
-                  - locked
-                  - expired
                   - roles
                   - { property: 'last_login', type: 'datetime' }
 ```
 
-Let us resetapp and have a look
+Let us resetapp, login and have a look
 
 ```
 -> ./scripts/resetapp
 ```
+
 ## Update BDD (Optional)
 
 In this chapter, we might need other modules like Db and Filesystem. Let us update our acceptance config file

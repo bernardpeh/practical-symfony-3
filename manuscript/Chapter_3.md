@@ -14,16 +14,10 @@ The idea is to do **actual coding in your host** (main operating system) and let
 -> cd ~
 -> git clone git@github.com:your_username/songbird.git
 -> cd songbird
--> git checkout chapter_2
+-> git checkout chapter_3
 ```
 
 * Get the [symfony](http://symfony.com/doc/current/setup.html) command line
-
-* Install symfony command line installer
-
-```
--> symfony new songbird
-```
 
 * Install [docker](https://docs.docker.com/engine/installation/)
 
@@ -41,7 +35,7 @@ The idea is to do **actual coding in your host** (main operating system) and let
 -> docker-compose ps
       Name                    Command              State               Ports             
 ----------------------------------------------------------------------------------------
-songbird_db_1      docker-entrypoint.sh mysqld     Up      3306/tcp                      
+songbird_db_1      docker-entrypoint.sh mysqld     Up      0.0.0.0:8006->3306/tcp                      
 songbird_nginx_1   nginx                           Up      443/tcp, 0.0.0.0:8000->80/tcp 
 songbird_php_1     docker-php-entrypoint php-fpm   Up      0.0.0.0:9000->9000/tcp   
 ```

@@ -9,7 +9,7 @@ You see the word "CRUD" appearing so many times because it is part of RAD. All f
 We will generate CRUD for the UserBundle.
 
 ```
--> scripts/console doctrine:generate:crud
+-> ./scripts/console doctrine:generate:crud
 
 The Entity shortcut name: AppBundle:User
 
@@ -143,13 +143,13 @@ class UserType extends AbstractType
 Refresh the browser and if changes are not showing up, we need to delete the cache.
 
 ```
--> bin/console cache:clear
+-> ./scripts/console cache:clear
 ```
 
 This `cache:clear` command is equivalent to "rm -rf var/cache/dev". It is a useful alternative to clear:cache. If no environment is set, the environment is set to develop. To delete prod cache,
 
 ```
--> bin/console cache:clear -e prod
+-> ./scripts/console cache:clear -e prod
 ```
 
 Let us create 2 test users, say "test" and "test1"
@@ -163,7 +163,7 @@ We can now list them by going to /user
 Now verify that the new data is inserted into the user table by running some sql
 
 ```
--> scripts/mysql "select id,username,password from user"
+-> ./scripts/mysql "select id,username,password from user"
 
 +----+----------+----------+
 | id | username | password |
@@ -180,7 +180,7 @@ No, because the CRUD that we have created previously didn't know that the passwo
 For the sake of curiousity, let us see all the FOSUserBundle service containers.
 
 ```
--> scripts/console debug:container | grep fos
+-> ./scripts/console debug:container | grep fos
 
  fos_user.change_password.form.factory                              FOSUserBundleFormFactoryFormFactory
  fos_user.change_password.form.type                                 FOSUserBundleFormTypeChangePasswordFormType
@@ -279,7 +279,7 @@ The persist and flush statement in doctrine is a standard way to prepare and sav
 Let us try creating a new user called "test3" and view it again in mysql
 
 ```
--> scripts/mysql "select id,username,password from user"
+-> ./scripts/mysql "select id,username,password from user"
 +----+----------+--------------------------------------------------------------+
 | id | username | password                                                     |
 +----+----------+--------------------------------------------------------------+
@@ -449,7 +449,7 @@ The "@ORM\HasLifecycleCallbacks()" tells doctrine to run callback functions (in 
 Let us auto-generate the setters and getters for the new $modified and $created variables.
 
 ```
--> scripts/console doctrine:generate:entities --no-backup AppBundle:User
+-> ./scripts/console doctrine:generate:entities --no-backup AppBundle:User
 ```
 
 The --no-backup option tells the command not to back up your original entity file.
@@ -458,16 +458,16 @@ Verify that the new getters and setters for $created and $modified have been add
 
 ```
 # run this and you will see what the sql is doing
--> scripts/console doctrine:schema:update --dump-sql
+-> ./scripts/console doctrine:schema:update --dump-sql
 
 # once you are comfortable with that, force update it
--> scripts/console doctrine:schema:update --force
+-> ./scripts/console doctrine:schema:update --force
 ```
 
 Try adding a new user and see if the created and modified time have been updated.
 
 ```
--> scripts/mysql "select id,password,modified,created from user"
+-> ./scripts/mysql "select id,password,modified,created from user"
 +----+--------------------------------------------------------------+---------------------+---------------------+
 | id | password                                                     | modified            | created             |
 +----+--------------------------------------------------------------+---------------------+---------------------+
@@ -495,16 +495,12 @@ and we need to update our runtest script
 #!/bin/bash
 
 scripts/console cache:clear --no-warmup
-vendor/bin/codecept run acceptance
+docker-compose exec php vendor/bin/codecept run acceptance
 ```
 
 Run a quick test again and make sure that whatever you have done doesn't break anything. Still remember how to do it?
 
 ```
-# in one terminal
--> scripts/start_phantomjs
-
-# in the next terminal
 -> scripts/runtest
 ...
 

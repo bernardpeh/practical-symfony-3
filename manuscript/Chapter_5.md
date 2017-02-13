@@ -42,7 +42,7 @@ This is correct because the url is no longer configured. How can you be sure? Le
 
 ```
 # in symfony
--> bin/console debug:router
+-> docker-compose exec php bin/console debug:router
 
 [router] Current routes
  Name                     Method Scheme Host Path
@@ -65,6 +65,14 @@ This is correct because the url is no longer configured. How can you be sure? Le
 ```
 
 Looks like there is no trace of the / path. This is all good but to do a proper job, we have to make sure that this logic is remembered in the future. We need to record this logic in a test.
+
+Hang on, did you realise how ugly the command line is? 
+
+`docker-compose exec php bin/console debug:router`
+
+What we are doing here is that we are trying to access `bin/console` within the php docker instance. If you have php 7 installed in your host, you could run `bin/console` straight away and achieve the same results.
+
+We will create a much simple wrapper around the docker commands in a minute.
 
 ## Making sure the / route is removed
 
@@ -93,10 +101,10 @@ and run the test again,
 
 ```
 # clear prod cache because test is running in prod env
--> bin/console cache:clear --env=prod
+-> docker-compose exec php bin/console cache:clear --env=prod
 
 # remember to start phantomjs server before running this command
--> vendor/bin/codecept run acceptance
+-> docker-compose exec php vendor/bin/codecept run acceptance
 ...
 Time: 10.47 seconds, Memory: 11.50MB
 
@@ -120,35 +128,14 @@ In the runtest script,
 
 #!/bin/bash
 
-bin/console cache:clear --no-warmup
-vendor/bin/codecept run acceptance
-```
-
-We have to also remember to start phantomjs before we run the test. To make our live easy, let us create a script to automate starting phantomjs
-
-```
--> touch scripts/start_phantomjs
--> chmod u+x scripts/start_phantomjs
-```
-
-in start_phantomjs,
-
-```
-# symfony/scripts/start_phantomjs
-
-#!/bin/bash
-
-scripts/phantomjs --webdriver=4444
+docker-compose exec php bin/console cache:clear --no-warmup
+docker-compose exec php vendor/bin/codecept run acceptance
 ```
 
 Now test your automation by running
 
 ```
-# open a new terminal
--> scripts/start_phantomjs
-
-# back in your own terminal
--> scripts/runtest
+-> ./scripts/runtest
 ...
 OK (1 test, 1 assertion)
 ```

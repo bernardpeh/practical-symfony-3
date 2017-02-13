@@ -110,7 +110,7 @@ use Symfony\Component\HttpFoundation\Request;
 now copy the assets to the web dir from command line.
 
 ```
--> scripts/console assets:install --symlink
+-> ./scripts/console assets:install --symlink
 ```
 
 login and then refresh the browser.

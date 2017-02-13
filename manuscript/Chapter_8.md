@@ -7,7 +7,7 @@ As of now, we could create and manage users via the command line (scripts/consol
 Install via composer
 
 ```
--> scripts/composer require doctrine/doctrine-fixtures-bundle ^2.3 --dev
+-> ./scripts/composer require doctrine/doctrine-fixtures-bundle ^2.3 --dev
 ```
 
 Now that the data-fixtures-bundle is installed, we can update the kernel.
@@ -29,7 +29,7 @@ We register the bundle under the array('dev', 'test') environment because we don
 To prove that the install is successful, we should have a new entry in the console
 
 ```
--> scipts/console | grep fixtures
+-> ./scipts/console | grep fixtures
   doctrine:fixtures:load               Load data fixtures to your database.
 ```
 
@@ -154,13 +154,13 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, C
 Now, let us insert the fixtures by running the command line
 
 ```
--> scripts/console doctrine:fixtures:load -n
+-> ./scripts/console doctrine:fixtures:load -n
 ```
 
 The "-n" option simply answer yes when prompted for data purging. Try it without the "-n" option for yourself. Verify that the data is inserted by running a simple query
 
 ```
--> scripts/mysql "select * from user"
+-> ./scripts/mysql "select * from user"
 ```
 
 The nice thing about creating fixtures is that you learn a lot about the Entity when you insert the data. Take the FOSUserBundle for example, you need to know about the userManager in order to create encrypted passwords correctly. This knowledge is valuable when writing test cases.
@@ -174,11 +174,11 @@ $userManager = $this->container->get('fos_user.user_manager');
 We are trying to use the userManager class using the fos_user.user_manager service. Where is this class?
 
 ```
--> scripts/console debug:container | grep fos_user.user_manager
+-> ./scripts/console debug:container | grep fos_user.user_manager
  fos_user.user_manager                            FOS\UserBundle\Doctrine\UserManager
  
  # you can know a great deal about this service from
--> scripts/console debug:container fos_user.user_manager
+-> ./scripts/console debug:container fos_user.user_manager
 
 Information for Service "fos_user.user_manager"
 ===============================================
@@ -215,7 +215,7 @@ Doctrine migrations allow us to migrate db changes easily. This is important esp
 Let us start the installation:
 
 ```
--> scripts/composer require doctrine/doctrine-migrations-bundle "^1.0"
+-> ./scripts/composer require doctrine/doctrine-migrations-bundle "^1.0"
 ```
 
 and update AppKernel
@@ -259,7 +259,7 @@ If the installation is successful, you should see some new migrations commands a
 and
 
 ```
--> scripts/console doctrine:migrations:status
+-> ./scripts/console doctrine:migrations:status
 
  == Configuration
 
@@ -284,7 +284,7 @@ and
 Its the first time we are using it, so we need to generate the initial migration class
 
 ```
--> scripts/console doctrine:migrations:generate
+-> ./scripts/console doctrine:migrations:generate
    Generated new migration class to "/var/www/symfony/app/../src/AppBundle/DoctrineMigrations/Version20170128004532.php"
 ```
 
@@ -340,7 +340,7 @@ What is "$@"? In bash, it means putting in the command line options that was pas
 ```
 # remember to scripts/start_phantomjs in a new terminal if not done.
 
--> scripts/runtest AppBundleCest.php:RemovalTest
+-> ./scripts/runtest AppBundleCest.php:RemovalTest
 
 ...
 Acceptance Tests (1) 

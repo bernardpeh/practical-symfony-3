@@ -103,7 +103,9 @@ class_name: AcceptanceTester
 modules:
     enabled:
         - WebDriver:
-            url: 'http://songbird.app:8000'
+            url: 'http://songbird.app'
+            host: 172.25.0.5
+            port: 4444
             browser: phantomjs
             window_size: 1024x768
             capabilities:
@@ -209,7 +211,7 @@ Let us update the runtest script
 #!/bin/bash
 
 scripts/resetapp
-vendor/bin/codecept run acceptance $@ -c src/AppBundle
+docker-compose exec php vendor/bin/codecept run acceptance $@ -c src/AppBundle
 ```
 
 and update the gitignore path
@@ -223,10 +225,7 @@ src/AppBundle/tests/_output/*
 Then, run the test only for scenario 10.6.1
 
 ```
-# remember to start selenium server in a separate terminal
--> scripts/start_phantomjs
-# switch to a new terminal and run the test
--> scripts/runtest As_An_Admin/IWantToManageAllUsersCest.php:listAllProfiles
+-> ./scripts/runtest As_An_Admin/IWantToManageAllUsersCest.php:listAllProfiles
 ...
 OK (1 test, 1 assertion)
 ```
@@ -257,7 +256,7 @@ Let us write another test for scenario 10.6.2. We will simulate clicking on test
 run the test now
 
 ```
--> scripts/runtest As_An_Admin/IWantToManageAllUsersCest.php:showTest3User
+-> ./scripts/runtest As_An_Admin/IWantToManageAllUsersCest.php:showTest3User
 ```
 
 and you should get a success message.
@@ -298,7 +297,7 @@ We will now write the test for scenario 10.6.3
 Run the test now to make sure everything is ok before moving on.
 
 ```
--> scripts/runtest As_An_Admin/IWantToManageAllUsersCest.php:editTest3User
+-> ./scripts/runtest As_An_Admin/IWantToManageAllUsersCest.php:editTest3User
 ```
 
 and scenario 10.6.4
@@ -342,13 +341,13 @@ createNewUser test is a bit longer. I hope the comments are self explainatory.
 Let's run the test just for this scenario.
 
 ```
--> scripts/runtest As_An_Admin/IWantToManageAllUsersCest.php:createAndDeleteNewUser
+-> ./scripts/runtest As_An_Admin/IWantToManageAllUsersCest.php:createAndDeleteNewUser
 ```
 
 Feeling confident? We can run all the test together.
 
 ```
--> scripts/runtest
+-> ./scripts/runtest
 
 Dropped database for connection named `songbird`
 Created database `songbird` for connection named default

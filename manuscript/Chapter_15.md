@@ -32,18 +32,19 @@ There is a popular [loggable doctrine extension](https://github.com/Atlantic18/D
 We will create a new entity called UserLog. The UserLog entity should have the following fields: id, username, current_url, referrer, action, data, created.
 
 ```
--> bin/console doctrine:generate:entity --entity=AppBundle:UserLog --format=annotation --fields="username:string(255) current_url:text referrer:text action:string(255) data:text created:datetime" --no-interaction
+-> ./scripts/console doctrine:generate:entity --entity=AppBundle:UserLog --format=annotation --fields="username:string(255) current_url:text referrer:text(nullable=true) action:string(255) data:text(nullable=true) created:datetime" --no-interaction
 ```
 
 Again, don't memorise this command. You can find out more about this command using
 
 ```
-bin/console doctrine:generate:entity --help
+-> ./scripts/console doctrine:generate:entity --help
 ```
 
 or from the [online documentation](http://symfony.com/doc/current/bundles/SensioGeneratorBundle/commands/generate_doctrine_entity.html)
 
 In the entity, note that we are populating the username field from the user entity but not creating a constraint between the 2 entities. The reason for that is that when we delete the user, we still want to keep the user entries. We haven't really gone through doctrine yet. You can read more about association mapping [here](http://doctrine-orm.readthedocs.org/projects/doctrine-orm/en/latest/reference/association-mapping.html) if we want them to be related. We will touch on doctrine again in the later chapters.
+
 ```
 # src/AppBundle/Entity/UserLog.php
 
@@ -265,7 +266,7 @@ class UserLog
 }
 ```
 
-Noticed we have added "nullable=true" to both the data and referrer fields. Next, we will create a new service to subscribe to the kernel.request event.
+Next, we will intercept the kernel.request event.
 
 ```
 # src/AppBundle/EventListener/AppSubscriber.php
@@ -287,30 +288,35 @@ use Symfony\Component\HttpKernel\KernelEvents;
     }
     ...
 
+    /**
+     * We will log request to db on every url change
+     * 
+     * @param GetResponseEvent $event
+     */
     public function onKernelRequest(GetResponseEvent $event)
-        {
-            $request = $event->getRequest();
-            $current_url = $request->server->get('REQUEST_URI');
-            // ensures we track admin only.
-            $admin_path = $this->container->getParameter('admin_path');
+    {
+        $request = $event->getRequest();
+        $current_url = $request->server->get('REQUEST_URI');
+        // ensures we track admin only.
+        $admin_path = $this->container->getParameter('admin_path');
 
-            // only log admin area and only if user is logged in. Dont log search by filter
-            if (!is_null($this->container->get('security.token_storage')->getToken()) && preg_match('/\/'.$admin_path.'\//', $current_url)
-                && ($request->query->get('filter') === null) && !preg_match('/\/userlog\//', $current_url)) {
+        // only log admin area and only if user is logged in. Dont log search by filter
+        if (!is_null($this->container->get('security.token_storage')->getToken()) && preg_match('/\/'.$admin_path.'\//', $current_url)
+            && ($request->query->get('filter') === null) && !preg_match('/\/userlog\//', $current_url)) {
 
-                $em = $this->container->get('doctrine.orm.entity_manager');
-                $log = new UserLog();
-                $log->setData(json_encode($request->request->all()));
-                $log->setUsername($this->container->get('security.token_storage')->getToken()->getUser()
-                    ->getUsername());
-                $log->setCurrentUrl($current_url);
-                $log->setReferrer($request->server->get('HTTP_REFERER'));
-                $log->setAction($request->getMethod());
-                $log->setCreated(new \DateTime('now'));
-                $em->persist($log);
-                $em->flush();
-            }
+            $em = $this->container->get('doctrine.orm.entity_manager');
+            $log = new UserLog();
+            $log->setData(json_encode($request->request->all()));
+            $log->setUsername($this->container->get('security.token_storage')->getToken()->getUser()
+                ->getUsername());
+            $log->setCurrentUrl($current_url);
+            $log->setReferrer($request->server->get('HTTP_REFERER'));
+            $log->setAction($request->getMethod());
+            $log->setCreated(new \DateTime('now'));
+            $em->persist($log);
+            $em->flush();
         }
+    }
         ...
 ```
 
@@ -335,7 +341,10 @@ and the translation.
 ```
 # src/AppBundle/Resources/translations/app.en.xlf
 ...
-admin.link.user_log: User Log
+        <trans-unit id="6">
+            <source>admin.link.user_log</source>
+            <target>User Log</target>
+        </trans-unit>
 ...
 ```
 
@@ -344,11 +353,22 @@ and the french version
 ```
 # src/AppBundle/Resources/translations/app.fr.xlf
 ...
-admin.link.user_log: Connexion utilisateur
+        <trans-unit id="6">
+            <source>admin.link.user_log</source>
+            <target>Connexion utilisateur</target>
+        </trans-unit>
 ...
 ```
 
 Now reset the db, re-login again, click on the user log menu and you will see the new menu on the left.
+
+There were db changes, let us chapter the change.
+
+```
+./scripts/console doctrine:migrations:diff
+```
+
+and we can reset the db now.
 
 ```
 -> ./scripts/resetapp

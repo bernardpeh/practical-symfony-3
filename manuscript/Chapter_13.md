@@ -89,7 +89,7 @@ How do we get the twig files to do the translation? You would have seen glimpse 
 Let us update the dashboard template.
 
 ```
-# /app/Resources/EasyAdminBundle/views/default/dashboard.html.twig
+# app/Resources/EasyAdminBundle/views/default/dashboard.html.twig
 
 ...
 {% block main %}
@@ -111,13 +111,13 @@ Let us update the dashboard template.
 refresh your browser and have a look. If things are not working, remember to clear the cache.
 
 ```
--> scripts/resetapp
+-> ./scripts/resetapp
 ```
 
 By default, we are using english, so you should see that the english version is translated. To see all the translations in english for the AppBundle,
 
 ```
--> scripts/console debug:translation en AppBundle
+-> ./scripts/console debug:translation en AppBundle
 ```
 
 You should see a lot of missing translations for the FOSUserBundle. Don't worry about that for now.
@@ -320,13 +320,13 @@ The new language dropdown box allows user to select a language and if there is a
 and create a new controller from the command line.
 
 ```
--> scripts/console generate:controller --controller=AppBundle:Locale -n
+-> ./scripts/console generate:controller --controller=AppBundle:Locale -n
 ```
 
 Tip: This command can save you some time but not much in this case. You don't have to memorise it. Always use the "help" option if unsure, ie
 
 ```
-scripts/console help generate:controller
+-> ./scripts/console help generate:controller
 ```
 
 The controller code in full:
@@ -373,14 +373,14 @@ class LocaleController extends Controller
 As you can see, the annotation defines the the new route /{_locale}/locale. To make sure that this route is working,
 
 ```
--> scripts/console debug:router | grep locale
+-> ./scripts/console debug:router | grep locale
  app_set_locale                          GET      ANY    ANY  /{_locale}/locale
 ```
 
 The AdminController gets the request object and redirects the user to the referer if there is one. If not, it redirects the user to either the admin dashboard or the homepage depending if the user is logged in or not. Again, don't memorise security.authorization_checker. Google around, make intelligent guesses and use the command line to verify the containers.
 
 ```
--> scripts/console debug:container | grep security
+-> ./scripts/console debug:container | grep security
 ...
 ```
 
@@ -446,7 +446,7 @@ To see what is going on with the events sequencing,
 
 ```
 # now view the event dispatcher list
--> scripts/console debug:event-dispatcher kernel.request
+-> ./scripts/console debug:event-dispatcher kernel.request
 ```
 
 Look at the kernel.request section and you should see our custom event listener ranked just above the kernel LocaleListener.

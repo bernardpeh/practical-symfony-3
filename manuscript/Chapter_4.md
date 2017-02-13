@@ -18,7 +18,7 @@ There are many frameworks for acceptance testing. [Behat](http://docs.behat.org/
 -> cd symfony
 # only thing about running docker is that for anything relating to db connection,
 # we need to execute commands in the docker instance. we will create a wrapper for this in the future
--> docker exec php composer require codeception/codeception --dev
+-> docker-compose exec php composer require codeception/codeception --dev
 ```
 
 The "--dev" means we only need this in dev mode. If everything is working, you will see composer adding the dependency in composer.json
@@ -47,7 +47,9 @@ class_name: AcceptanceTester
 modules:
     enabled:
         - WebDriver:
-            url: 'http://songbird.app:8000'
+            url: 'http://songbird.app'
+            host: 172.25.0.5
+            port: 4444
             browser: phantomjs
             window_size: 1024x768
             capabilities:
@@ -58,7 +60,7 @@ modules:
 
 Acceptance Testing is like Black Box Testing - We try to simulate real users interacting with our app. We ignore the inner workings of the code and only care if it works from the end user's point of view.
 
-Here, we are using [phantomjs](http://phantomjs.org) webdriver to simulate browser testing. Codeception by default comes with PhpBrowser which doesn't support javascript. [Selenium](http://www.seleniumhq.org/) is slow but is the veteran when comes to acceptance testing. Feel free to switch to selenium if you encounter problems.
+Here, we are using the headless browser - [phantomjs](http://phantomjs.org) to connect to the webserver at 172.25.0.5 (see the docker-compose.yml file). Codeception by default comes with PhpBrowser which doesn't support javascript. [Selenium](http://www.seleniumhq.org/) is slow but is the veteran when comes to acceptance testing. Feel free to switch to selenium if you encounter problems.
 
 We can now generate the acceptance actions based on the updated acceptance suite:
 
@@ -119,40 +121,17 @@ public function InstallationTest(AcceptanceTester $I)
 }
 ```
 
+We have been running the codecept command from the host machine. That is fine but we should really be running the command in the php docker container. In the symfony dir, we need to softlink the .env file as we are going to run docker commands in that dir. If not, you will get a bunch of environment variables not found error.
+
+```
+# in the symfony dir
+-> ln -s ../.env
+```
+
 Now run the test:
 
 ```
--> vendor/bin/codecept run acceptance AppBundleCest
-```
-
-and you should get an error complaining that there is no selenium server or PhantomJS running...
-
-```
-1) AppBundleCest: Check if Symfony is installed successfully.
- Test  tests/acceptance/AppBundleCest.php:InstallationTest
-Can't connect to Webdriver at http://127.0.0.1:4444/wd/hub. Please make sure that Selenium Server or PhantomJS is running.
-
-ERRORS!
-Tests: 1, Assertions: 0, Errors: 1.
-```
-
-Download [phantomjs](http://phantomjs.org/download.html) and unzip. Remember to start run the phantomjs command in a **new terminal**.
-
-```
--> cd symfony
--> mkdir scripts
--> cd scripts
-# download phantomjs to this dir. In a new terminal, start selenium server. I am using v2.53.1 for example.
--> chmod u+x phantomjs 
--> ./phantomjs --webdriver=4444
-
-[INFO  - 2017-01-20T05:36:49.610Z] GhostDriver - Main - running on port 4444
-```
-
-On the previous terminal, run the acceptance test again. You should see the phantomjs terminal showing lots of logsand running the test.
-
-```
--> vendor/bin/codecept run acceptance AppBundleCest
+-> docker-compose exec php vendor/bin/codecept run acceptance AppBundleCest
 
 Codeception PHP Testing Framework v2.2.8
 Powered by PHPUnit 5.7.5 by Sebastian Bergmann and contributors.
@@ -168,7 +147,7 @@ Time: 5.86 seconds, Memory: 13.50MB
 OK (1 test, 1 assertion)
 ```
 
-Some files such as images are binary. To make life easy, we are going to commit phantomjs. We need to tell git not to convert the line endings (google for it if interested)
+Some files such as images are binary. We need to tell git not to convert the line endings (google for it if interested)
 
 ```
 # .gitattributes
@@ -190,7 +169,7 @@ Don't forget to commit your code before moving on to the next chapter.
 
 ## Summary
 
-In this chapter, we discussed the importance of testing and touched on TDD and BDD. In our context, we will be mainly writing BDD tests. We installed codeception and phantomjs. Then, we wrote a simple acceptance test to tests the default symfony home page.
+In this chapter, we discussed the importance of testing and touched on TDD and BDD. In our context, we will be mainly writing BDD tests. We installed codeception and wrote a simple acceptance test to tests the default symfony home page.
 
 ## Exercises (Optional)
 

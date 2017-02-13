@@ -170,7 +170,7 @@ If you are already getting impatient and wants to see a demo of the completed pr
 -> cd songbird
 -> git checkout chapter_final
 -> cp .env.dist .env
-# update parameters in the .env file, then run
+# update SYMFONY_APP_PATH parameters in the .env file, then run
 -> cd symfony
 -> docker-compose build
 -> docker-compose up -d
@@ -179,15 +179,13 @@ If you are already getting impatient and wants to see a demo of the completed pr
 -> sudo echo "127.0.0.1 songbird.app" >> /etc/hosts
 
 # update symfony/app/config/parameters.yml
-# your can find your db and mailcatcher host from this command
-# "docker network inspect songbird_default"
 
-# database_host: your_db_host_from_docker_inspect
+# database_host: 172.25.0.2
 # database_port: 3306
-# database_name: db_name_from_env_file
-# database_user: mysql_user_from_env_file
-# database_password: db_passwd_from_env_file
-# mailer_host: 'your_mailcatcher_host_from_docker_inspect:1025'
+# database_name: songbird
+# database_user: root
+# database_password: root
+# mailer_host: '172.25.0.6:1025'
 # mailer_user: null
 # mailer_password: null
 

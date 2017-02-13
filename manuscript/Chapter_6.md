@@ -126,8 +126,8 @@ security:
 # symfony/app/config/parameters.yml
 
 # your db host is the container in your docker environment
-# run "docker network inspect songbird_default" if unsure
-database_host: 172.18.0.2
+# run "docker network inspect songbird_mynet" if unsure
+database_host: 172.25.0.2
 
 # your db credentials is based on what you have in the .env file
 # run "docker-compose config" if unsure
@@ -388,16 +388,9 @@ Let us check that the schema has indeed been created correctly.
 +-----------------------+--------------+------+-----+---------+----------------+
 ```
 
-Looks like we got the right fields. BUT, there is one very annoying problem. We have to type a lot to run commands in the containers. We need a console wrapper.
+Looks like we got the right fields. Let us now create a console wrapper to make our life easier.
 
 ## Wrapper Scripts
-
-When we access the containers in the symfony dir, there might be some warnings about environment variables not set, we just need to create a soft link in the .env file.
-
-```
-# in symfony
--> ln -s ../.env .
-```
 
 We now need a very simple wrapper to run the console commands. Let us create a console wrapper.
 
@@ -419,7 +412,7 @@ Let us try some commands
 
 ```
 # you should not see an error
-scripts/console debug:router
+./scripts/console debug:router
 ```
 
 Let us do the same for the composer command
@@ -428,7 +421,7 @@ Let us do the same for the composer command
 # in symfony/scripts/composer
 
 #!/bin/bash 
-docker-compose exec php composer $@
+docker-compose exec php composer "$@"
 ```
 
 and 

@@ -89,7 +89,7 @@ class User extends BaseUser
     ...
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      * @var string
      */
     private $image = '';
@@ -393,10 +393,11 @@ extensions:
 modules:
     config:
         Db:
-            dsn: 'mysql:host=inspect_from_your_db;dbname=songbird'
+            dsn: 'mysql:host=172.25.0.2;dbname=songbird'
             user: 'root'
             password: 'root'
             dump: tests/_data/dump.sql
+            populate: false
 
 ```
 

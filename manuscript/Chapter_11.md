@@ -152,7 +152,7 @@ Now the actual login file:
 Once we are done, we can get the assets over to the web dir.
 
 ```
--> scripts/console assets:install --symlink
+-> ./scripts/console assets:install --symlink
 ```
 
 This command basically [soft linked](https://en.wikipedia.org/wiki/Symbolic_link) everything under the public dir of all bundles over to the document root dir (/web).
@@ -170,11 +170,14 @@ When using docker, installing a new service is easy (don't need to worry about d
 ```
 # docker-compose.yml
 ...
-  mailcatcher:
-    image: yappabe/mailcatcher
-    ports:
-      - 1025:1025
-      - 1080:1080
+    mailcatcher:
+        image: yappabe/mailcatcher
+        ports:
+          - 1025:1025
+          - 1080:1080
+        networks:
+            mynet:
+                ipv4_address: 172.25.0.6
 ```
 
 Now let us fire up the new container
@@ -182,9 +185,6 @@ Now let us fire up the new container
 # under songbird dir
 -> docker-compose down
 -> docker-compose up -d
-
-# this command will give you an overview of all your docker ips
--> docker network inspect songbird_default
 ```
 
 We also need to make sure swiftmailer is configured to talk to the new mailcatcher host
@@ -201,7 +201,7 @@ parameters:
     mailer_transport: smtp
     
     # port 1025 is the mailcatcher sending port    
-    mailer_host: your_mailcatcher_host_from_docker_inspect:1025
+    mailer_host: '172.25.0.6:1025'
     mailer_user: null
     mailer_password: null
     secret: mysecret
@@ -223,7 +223,7 @@ The password reset process is as follows:
 We will put a link on the login page to the request password page. We can find all the links from the debug:router command (a command you should be familiar by now)
 
 ```
--> scripts/console debug:router | grep fos
+-> ./scripts/console debug:router | grep fos
   fos_user_security_login          GET|POST   ANY      ANY    /login                             
   fos_user_security_check          POST       ANY      ANY    /login_check                       
   fos_user_security_logout         GET|POST   ANY      ANY    /logout                            
@@ -500,15 +500,17 @@ class_name: AcceptanceTester
 modules:
     enabled:
         - WebDriver:
-            url: 'http://songbird.app:8000'
+            url: 'http://songbird.app'
+            host: 172.25.0.5
+            port: 4444
             browser: phantomjs
             window_size: 1024x768
             capabilities:
                 unexpectedAlertBehaviour: 'accept'
                 webStorageEnabled: true
         - MailCatcher:
-                    url: 'http://songbird.app'
-                    port: '1080'        
+                url: 'http://172.25.0.6'
+                port: '1080'
         - \Helper\Acceptance
 ```
 

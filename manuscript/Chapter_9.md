@@ -11,7 +11,7 @@ It wouldn't be fun if we just use the ready made solution. In this and the next 
 As usual, let us add the required bundles in the composer.json file
 
 ```
--> scripts/composer require javiereguiluz/easyadmin-bundle ^1.16.5
+-> ./scripts/composer require javiereguiluz/easyadmin-bundle ^1.16.5
 ```
 
 and remember to activate the required bundles in AppKernel.php
@@ -66,7 +66,7 @@ easy_admin_bundle:
 If everything goes well, there will be new routes added
 
 ```
--> scripts/console debug:router | grep admin
+-> ./scripts/console debug:router | grep admin
    easyadmin                        ANY        ANY      ANY    /admin/
    admin                            ANY        ANY      ANY    /admin/
 ```
@@ -74,7 +74,7 @@ If everything goes well, there will be new routes added
 We will install the default styles from the bundle
 
 ```
--> scripts/console assets:install --symlink
+-> ./scripts/console assets:install --symlink
 ```
 
 Say for now, we want ROLE_USER to access the admin dashboard.
@@ -536,6 +536,7 @@ git rm src/AppBundle/Form/UserType.php
 git rm -rf app/Resources/views/default
 git rm -rf src/AppBundle/Tests/Controller/UserControllerTest.php
 git rm -rf src/AppBundle/Tests/Controller/DefaultControllerTest.php
+
 # All efforts gone? Don't worry, we will write new tests in the next chapter
 git rm -rf tests
 git rm codeception.yml

@@ -2,7 +2,7 @@
 
 So that we speak the same language throughout the book, we need a dev (development) environment that it is consistent in everyone's host. We will use [docker](https://www.docker.com/) for this purpose.
 
-The idea is to do **actual coding in your host** (main operating system) and let docker runs the NGINX web server, and DB (MYSQL). Note that 99% of the time, you don't need to touch the docker instances except to make sure that they are all up and running.
+The idea is to do **actual coding in your host** (main operating system) and let docker other services like the web server, MYSQL ... etc. Note that 99% of the time, you don't need to touch the docker instances except to make sure that they are all up and running.
 
 ## Installation
 
@@ -27,7 +27,8 @@ The idea is to do **actual coding in your host** (main operating system) and let
 
 ```
 -> cp .env.dist .env
-# update parameters in the .env file, then run
+
+# update parameters in the .env file if you want, then run
 -> docker-compose build
 -> docker-compose up -d
 
@@ -37,7 +38,8 @@ The idea is to do **actual coding in your host** (main operating system) and let
 ----------------------------------------------------------------------------------------
 songbird_db_1      docker-entrypoint.sh mysqld     Up      0.0.0.0:8006->3306/tcp                      
 songbird_nginx_1   nginx                           Up      443/tcp, 0.0.0.0:8000->80/tcp 
-songbird_php_1     docker-php-entrypoint php-fpm   Up      0.0.0.0:9000->9000/tcp   
+songbird_php_1     docker-php-entrypoint php-fpm   Up      0.0.0.0:9000->9000/tcp
+...
 ```
 
 * Add songbird.app to your host file.
@@ -121,11 +123,11 @@ Remember to commit all your changes before moving on.
 
 * Try running Symfony's build-in webserver. What command would you use? What are the pros and cons of using the build-in webserver?
 
-* How many ways are there to install Symfony?
+* Delete the symfony dir. Reinstall Symfony following the [Symfony Installation](https://symfony.com/doc/current/book/installation.html) instructions.
+ 
+* How many ways are there to install Symfony? What are the pros and cons of each?
 
 ## References
 
-* [Symfony Installation](https://symfony.com/doc/current/book/installation.html)
-
-* [Homestead with Symfony](http://symfony.com/doc/current/cookbook/workflow/homestead.html)
+* [Docker Compose](https://docs.docker.com/compose/)
 

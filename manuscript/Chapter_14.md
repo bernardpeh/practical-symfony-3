@@ -366,7 +366,7 @@ modules:
         - MailCatcher:
             url: 'http://songbird.app'
             port: '1080'
-        - FileSystem:
+        - Filesystem:
         - Db:
         - \Helper\Acceptance
 ```

@@ -1,98 +1,40 @@
 # Chapter 16: Improving Performance and Troubleshooting
 
-If your site uses a lot of javascript and css, another good optimisation strategy is to merge the css and js into just one file each. That way, its one http request rather multiple, improving the loading time. There are also tools to find out where bottlenecks are and fix them.
+If your site uses a lot of javascript and css, one good optimisation strategy is to merge the css and js into just one file each. That way, its one http request rather multiple, improving the loading time. There are also tools to find out where bottlenecks are and fix them.
 
-## Install APC and Blackfire
+## Install Blackfire
 
-Since we are using Homestead to run our vm, apc is already enabled. We only need to configure blackfire.
+Head to [blackfire.io](http://blackfire.io) (another great product by sensiolabs) and sign up for an account. In https://blackfire.io/account, get the client and server (id and token). Enter them in .env.
 
-For the installation to work correctly, go to [blackfire.io](http://blackfire.io) (another great product by sensiolabs) and sign up for an account. In https://blackfire.io/account, get the client and server (id and token). Enter them in Homestead.yaml.
+We only need to configure blackfire.
 
 ```
-# ../Homestead.yaml
+# .env
+# Blackfire io
+BLACKFIRE_SERVER_ID=your_id
+BLACKFIRE_SERVER_TOKEN=your_id
+```
+
+Let us add the blackfire image to docker-compose. 
+
+```
 ...
-blackfire:
-    - id: your-server-id
-      token: your-server-token
-      client-id: your-client-id
-      client-token: your-client-token
-...
-...
+    blackfire:
+       image: blackfire/blackfire
+       environment:
+            - BLACKFIRE_SERVER_ID=${BLACKFIRE_SERVER_ID}
+            - BLACKFIRE_SERVER_TOKEN=${BLACKFIRE_SERVER_TOKEN}
+       networks:
+           mynet:
+               ipv4_address: 172.25.0.7
+...               
 ```
 
-now reprovision the vm and blackfire will be installed automatically.
+and bring up the image
 
 ```
--> vagrant reload --provision
-```
-
-Once the reprovisioning is done, apc and blackfire is available for use. To check that they have been installed successfully, shell into the vm and check the phpinfo
-
-```
-->` vagrant ssh
--> php -i | grep apc
--> php -i | grep blackfire
-# at this point, you should see the apc and blackfire extension being installed successfuly
-```
-
-Let us configure songbird to use apc in production settings.
-
-```
-# app/config/config_prod.yml
-...
-
-# Uncomment these lines
-
-framework:
-    validation:
-        cache: validator.mapping.cache.apc
-    serializer:
-        cache: serializer.mapping.cache.apc
-
-doctrine:
-    orm:
-        metadata_cache_driver: apc
-        result_cache_driver: apc
-        query_cache_driver: apc
-...
-```
-
-in web/app.php add the apc lines.
-
-```
--> # web/app.php
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\ClassLoader\ApcClassLoader;
-
-/**
- * @var Composer\Autoload\ClassLoader
- */
-$loader = require __DIR__.'/../app/autoload.php';
-include_once __DIR__.'/../app/bootstrap.php.cache';
-
-$apcLoader = new ApcClassLoader(sha1('songbird'), $loader);
-$loader->unregister();
-$apcLoader->register(true);
-
-$kernel = new AppKernel('prod', true);
-$kernel->loadClassCache();
-//$kernel = new AppCache($kernel);
-
-
-
-// When using the HttpCache, you need to call the method in your front controller instead of relying on the configuration parameter
-//Request::enableHttpMethodParameterOverride();
-$request = Request::createFromGlobals();
-$response = $kernel->handle($request);
-$response->send();
-$kernel->terminate($request, $response);
-```
-
-How do you know songbird prod is using apc? Navigate to the prod url, ie http://songbird.app and then check on the cache files.
-
-```
--> grep -ir ApcCache app/cache/prod | wc
-      18      78    2708
+-> docker-compose down
+-> docker-compose up -d
 ```
 
 ## Upgrade ResetApp Script
@@ -108,7 +50,7 @@ What we need is a an optional switch to allow deleting or cache or not. Maybe ev
 
 usage()
 {
-cat &lt;&lt; EOF
+cat << EOF
 
 usage: $0 [options]
 
@@ -143,17 +85,17 @@ then
     # bin/console cache:clear --env=prod --no-warmup
 fi
 
-bin/console doctrine:database:drop --force
-bin/console doctrine:database:create
-bin/console doctrine:schema:create
+scripts/console doctrine:database:drop --force
+scripts/console doctrine:database:create
+scripts/console doctrine:schema:create
 
 if [[ $LOAD_FIXTURES ]]
 then
-    bin/console doctrine:fixtures:load -n
+    scripts/console doctrine:fixtures:load -n
 fi
 
 # copy test data over to web folder
-cp src/AppBundle/Tests/_data/test_profile.jpg web/uploads/profiles/
+cp src/AppBundle/tests/_data/test_profile.jpg web/uploads/profiles/
 ```
 
 We will now use the "resetapp -c" instead to clear the db only when resetting tests.
@@ -163,7 +105,20 @@ We will now use the "resetapp -c" instead to clear the db only when resetting te
 
 #!/bin/bash
 scripts/resetapp -c
-vendor/bin/codecept run acceptance $@ -c src/AppBundle
+docker-compose exec php vendor/bin/codecept run acceptance $@ -c src/AppBundle
+```
+
+## Optimising Composer
+
+We can also optimise composer by building an optimised class map to help speed up searching for namespaces. We can run this once during deployment to production.
+
+```
+# scripts/optimize_composer
+
+#!/bin/bash
+
+# optimise composer
+scripts/composer dump-autoload --optimize --no-dev --classmap-authoritative
 ```
 
 ## Minimising JS/CSS

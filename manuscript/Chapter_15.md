@@ -274,6 +274,7 @@ Next, we will intercept the kernel.request event.
 ...
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use AppBundle\Entity\UserLog;
 ...
     public static function getSubscribedEvents()
     {
@@ -362,10 +363,10 @@ and the french version
 
 Now reset the db, re-login again, click on the user log menu and you will see the new menu on the left.
 
-There were db changes, let us chapter the change.
+There were db changes, let us capture the change so that we can update production when we need to.
 
 ```
-./scripts/console doctrine:migrations:diff
+-> ./scripts/console doctrine:migrations:diff
 ```
 
 and we can reset the db now.

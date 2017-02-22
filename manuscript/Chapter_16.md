@@ -125,7 +125,7 @@ scripts/composer dump-autoload --optimize --no-dev --classmap-authoritative
 
 You might have heard of using assetic to manage assets and minimising JS/CSS from [The book](http://symfony.com/doc/current/cookbook/assetic/asset_management.html) and [The Cookbook](http://symfony.com/doc/current/cookbook/assetic/index.html). The nice thing about using assetic is that you can do compilation of [sass](http://sass-lang.com) or [less](http://lesscss.org) files on the fly. If you are unsure about css preprocessor, I recommend checking them out. At the time of writing, sass is more popular.
 
-The has been a lot of innovation in frontend technologies with node in recent years. [gulpjs](http://gulpjs.com) is now the industrial standard when handling task like this.
+The has been a lot of innovation in frontend technologies especially with node in recent years. [gulpjs](http://gulpjs.com) is being widely to minify js and css.
 
 Assuming you are using mac, make sure you have homebrew. If not, install it
 
@@ -142,6 +142,7 @@ Install node if not done.
 If successful, "node -v" and "npm -v" should return values. Now we create package.json.
 
 ```
+# in symfony folder
 -> npm init
 name: (songbird)
 version: (1.0.0)
@@ -177,6 +178,7 @@ Jquery and bootstrap are the 2 most widely used libraries. It make sense for us 
 Let us install gulp and all the dependencies.
 
 ```
+# in symfony folder
 -> npm install gulp gulp-util gulp-cat gulp-uglify gulp-uglifycss gulp-less gulp-sass gulp-concat gulp-sourcemaps gulp-if --save
 ```
 
@@ -275,32 +277,34 @@ gulp.task('fonts', function() {
     .pipe(gulp.dest('web/minified/fonts'));
 });
 
+gulp.task('installAssets', function() {
+    exec('./scripts/console assets:install --symlink', logStdOutAndErr);
+});
+
+//define executable tasks when running "gulp" command
+gulp.task('default', ['js', 'css', 'fonts', 'installAssets']);
+
 gulp.task('watch', function () {
     var onChange = function (event) {
         console.log('File '+event.path+' has been '+event.type);
     };
-    gulp.watch('src/AppBundle/Resources/public/js/*.js', ['js'])
+    gulp.watch('src/AppBundle/Resources/public/js/*.js', ['default'])
         .on('change', onChange);
 
-    gulp.watch('src/AppBundle/Resources/public/less/*.less', ['css'])
+    gulp.watch('src/AppBundle/Resources/public/less/*.less', ['default'])
         .on('change', onChange);
 
-    gulp.watch('src/AppBundle/Resources/public/sass/*.scss', ['css'])
+    gulp.watch('src/AppBundle/Resources/public/sass/*.scss', ['default'])
         .on('change', onChange);
 
-    gulp.watch('src/AppBundle/Resources/public/css/*.css', ['css'])
+    gulp.watch('src/AppBundle/Resources/public/css/*.css', ['default'])
         .on('change', onChange);
 });
 
-gulp.task('installAssets', function() {
-    exec('./scripts/assetsinstall', logStdOutAndErr);
-});
 // show exec output
 var logStdOutAndErr = function (err, stdout, stderr) {
     console.log(stdout + stderr);
 };
-//define executable tasks when running "gulp" command
-gulp.task('default', ['js', 'css', 'fonts', 'installAssets']);
 
 ```
 
@@ -322,7 +326,7 @@ Since we are only using 1 css and js file, we only need to include the files onc
 ...
 ```
 
-We no longer need to use separate css for the custom views. Remove all the stylesheet blocks in src/AppBundle/Resources/views/Resetting and src/AppBundle/Resources/views/Security.
+We no longer need to use separate css for the custom views. Remove all the stylesheet blocks in src/AppBundle/Resources/FOSUserBundle/views/Resetting and src/AppBundle/Resources/FOSUserBundle/views/Security.
 
 
 Let us update gitignore:
@@ -330,11 +334,15 @@ Let us update gitignore:
 ```
 # .gitignore
 ...
-/web/uploads/
 /web/minified/
 ...
 ```
 
+and create the minified dir
+
+```
+mkdir -p web/minified
+```
 
 Since we are using bower to include common js and css, we can remove all the unncessary css and js that we have included from the previous chapters.
 
@@ -362,30 +370,33 @@ Now go to songbird.app/login, and verify the new javascript.js and styles.css ar
 
 You should by now aware of the debug toolbar (profiler) at the bottom of the screen as you access the app_dev.php/* url. The toolbar provide lots of debugging information for the application like the route name, db queries, render time, memory usage, translation...etc.
 
-If you have been observant enough, you should have seen the red alert on the toolbar. Try logging in as admin and go to http://songbird.app/app_dev.php/admin/?entity=User&action=list and look at the toolbar. What happened?
+If you have been observant enough, you should have seen the red alert on the toolbar. Try logging in as admin and go to http://songbird.app:8000/app_dev.php/admin/?entity=User&action=list and look at the toolbar. What happened?
 
 You would see the obvious alert icon in the toolbar... Clicking on the red icon will tell you that you have missing translations.
 
 There will be lots of "messages" under the domain column if there is no translation for certain text.
 
-How would you fix the translation errors? Using the debug toolbar is straight forward and should be self explanatory.
+How would you fix the translation errors? 
+
+How about the performance link? What can you see from there?
+
+Using the debug toolbar is straight forward and should be self explanatory.
 
 > Tip: PHP developers should be aware of the print_r or var_dump command to dump objects or variables. Try doing it with Symfony and your browser will crash. In PHP, use [var_dumper](http://symfony.com/doc/current/components/var_dumper/introduction.html) and in twig, use [dump](http://twig.sensiolabs.org/doc/functions/dump.html) instead.
 
 
 ## Identifying bottlenecks with blackfire.io
 
-Even though the in-built debug profiler can provide the rendering time, it doesn't go into detail where the bottlenecks are. To find out where the bottlenecks are, we need Blackfire.
+Even though the in-built debug profiler can provide the rendering time and performance information but it doesn't go into detail where the bottlenecks are. To find out where the bottlenecks are, we need Blackfire.
 
-You should have installed blackfire from the previous section.
+*You should have installed blackfire from the previous section.*
 
 To make use of Blackfire is easy, install the [google chrome companion extension](https://blackfire.io/docs/integrations/chrome).
-
 
 Once done, you should see a new blackfire icon on the top right of google chrome. Let us load the user management page:
 
 ```
-http://songbird.app/admin/?entity=User&action=list
+http://songbird.app:8000/admin/?entity=User&action=list
 
 ```
 
@@ -393,11 +404,11 @@ http://songbird.app/admin/?entity=User&action=list
 
 and click "create a new reference", then click on on the Profile button.
 
-At this point, the chrome browser will interact with the vm and tells the blackfire agent to pass the diagnostic data over to blackfire server. You will also see some values in the blackfire toolbar. So we are talking about 1 sec of processing time.
+At this point, the chrome browser will interact with the php docker container and tells the blackfire agent to pass the diagnostic data over to blackfire server. You will also see some values in the blackfire toolbar. So we are talking about a few sec of processing time. This is slow and thats because we are using docker.
 
 ![blackfire profile](images/blackfire_profile.png)
 
-Once done, you will see a new profile toolbar. Give the profile a name, say "prod app".
+Once done, you will see a new profile toolbar. Give the profile a name, say "songbird prod default".
 
 We will do another optimisation for the sake of illustration. Symfony comes with a reverse proxy, let us enable it.
 
@@ -421,8 +432,6 @@ $kernel = new AppKernel('prod', true);
 $kernel->loadClassCache();
 $kernel = new AppCache($kernel);
 
-
-
 // When using the HttpCache, you need to call the method in your front controller instead of relying on the configuration parameter
 Request::enableHttpMethodParameterOverride();
 $request = Request::createFromGlobals();
@@ -435,7 +444,7 @@ Now refresh the page and then click on the blackfire icon again. In the blackfir
 
 ![](images/blackfire_profile_compare.png)
 
-There should be some improvements in the loading time. What was the improvement?
+Did you see any improvements in the loading time. What was the improvement?
 
 Click on "View comparision"
 
@@ -450,32 +459,44 @@ I was merely scrapping the surface of blackfire. I suggest you do the [24 days o
 [PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer) automatically fixes coding standards. Its always a good idea to use it to clean up your code before commiting.
 
  ```
- -> composer require friendsofphp/php-cs-fixer --dev
+ -> ./scripts/composer require friendsofphp/php-cs-fixer --dev
  ```
  
  once this php-cs-fixer is installed, we can use it from the command line like so
  
  ```
- -> vendor/bin/php-cs-fixer fix app/
+ -> ./vendor/bin/php-cs-fixer fix app/
        1) AppKernel.php
        2) autoload.php
     Fixed all files in 0.914 seconds, 7.000 MB memory used
  ```
  
- Do it for the src directory as well. We can now commit all the fixed files.
+ Let us add the php-cs-fixer cache dir to .gitignore as well
+ 
+ ```
+ # .gitignore
+ ...
+ .php_cs.cache
+ ```
+ 
+ Do it for the src directory as well. Run all the tests. We can now commit all the fixed files once we are happy with the results.
  
 ## Summary
 
-In this chapter, we briefly discussed several optimisation strategies. We installed apc and minified css and js using gulpjs. We have also refactored the runtest script so that it doesn't clear the cache every time it starts a new test. lastly, we walked through troubleshooting using the web toolbar and blackfire.io.
+In this chapter, we briefly discussed several optimisation strategies. We installed blackfire, minified css and js using gulpjs. We have also refactored the runtest script so that it doesn't clear the cache every time it starts a new test. lastly, we walked through troubleshooting using the web toolbar and blackfire.io.
 
 ## Exercises
 
 * Using the debug profiler, fix all the translation errors.
+
 * What other performance enhancing tools can you think of?
+
 * Try minimising the js and css in the admin area?
 
 ## References
 
 * [Improving Symfony Performance](http://symfony.com/doc/current/book/performance.html)
+
 * [Symfony gateway cache](http://symfony.com/doc/current/book/http_cache.html)
+
 * [24 days of blackfire](https://blackfire.io/docs/24-days/index)

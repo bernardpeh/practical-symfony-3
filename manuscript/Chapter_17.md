@@ -4,7 +4,7 @@ So far, we have been very lazy (a good thing?). We have offloaded bulk of the CM
 
 ## The Plan
 
-To be truly **decoupled** from the rest of the bundles, we want our page bundle to have no dependency on other bundles like FOSbundles. Each page should have a unique slug and a couple of meta data such as title, short description, long description, created_date...etc. We will be using [nestable js](https://github.com/BeFiveINFO/Nestable) to allow drag and drop + page nesting using ajax.
+We want our page bundle to have no dependency on other bundles like FOSUserbundle. Each page should have a unique slug and a couple of meta data such as title, short description, long description, created_date...etc. We will be using [nestable js](https://github.com/bernardpeh/Nestable) to allow drag and drop + page nesting using ajax.
 
 We will create 2 entities. The first entity is the Page entity and will consist of simple attributes like id, slug, sequence, parent and children id...etc. The second entity will be the PageMeta entity consisting of attributes like name, locale, title, short description and content. The relationship between the Page and PageMeta entity will be one to many.
 
@@ -44,7 +44,7 @@ if [ -z "$*" ]; then
 fi
 
 # using symfony bundle generation script is a quick way to generate bundles but doesn't mean its the best way.
-bin/console generate:bundle --namespace=$1/$2 --dir=src --bundle-name=$1$2 --format=annotation --no-interaction
+scripts/console generate:bundle --namespace=$1/$2 --dir=src --bundle-name=$1$2 --format=annotation --no-interaction
 rm -rf src/$1/$2/Tests/*
 rm -rf src/$1/$2/Resources/views/Default
 rm src/$1/$2/Controller/DefaultController.php
@@ -60,7 +60,7 @@ now let us run the script
 -> ./scripts/createbundle Songbird NestablePageBundle
 ```
 
-run a git status to make sure everything is working. Do a git diff and you will see that the script does a lot of work for you.
+run a git status and you will see that the script does a lot of work for you.
 
 ```
 -> git status
@@ -87,13 +87,13 @@ Let us create the entities.
 For Page entity:
 
 ```
--> bin/console generate:doctrine:entity --entity=SongbirdNestablePageBundle:Page --format=annotation --fields="slug:string(255) isPublished:boolean sequence:integer modified:datetime created:datetime" --no-interaction
+-> ./scripts/console generate:doctrine:entity --entity=SongbirdNestablePageBundle:Page --format=annotation --fields="slug:string(length=255 unique=true) isPublished:boolean(nullable=true) sequence:integer(nullable=true) modified:datetime created:datetime" --no-interaction
 ```
 
 and for PageMeta entity:
 
 ```
--> bin/console generate:doctrine:entity --entity=SongbirdNestablePageBundle:PageMeta --format=annotation --fields="page_title:string(255) menu_title:string(255) locale:string(4) short_description:text content:text" --no-interaction
+-> ./scripts/console generate:doctrine:entity --entity=SongbirdNestablePageBundle:PageMeta --format=annotation --fields="page_title:string(length=255) menu_title:string(255) locale:string(4) short_description:text(nullable=true) content:text(nullable=true)" --no-interaction
 ```
 
 We now need to update the relationship between the 2 entities:
@@ -107,7 +107,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Page
  *
- * @ORM\Table()
+ * @ORM\Table(name="page")
  * @ORM\Entity(repositoryClass="Songbird\NestablePageBundle\Entity\PageRepository")
  * @ORM\HasLifecycleCallbacks()
  */
@@ -217,18 +217,18 @@ and
     ...
 ```
 
-There were some new [doctrine association annotations](http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html) used here, notably @ManyToOne and @OneToMany. Establishing the right associations can save lots of time when managing relational database. For PageMeta.php, we set the default locale to "en" if none is set.
+There were some new [doctrine association annotations](http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html) used here, notably @ManyToOne and @OneToMany are the most common. Establishing the right associations can save lots of time when managing table relationships. For PageMeta.php, we set the default locale to "en" if none is set.
 
 We can now auto generate the stubs for the 2 entities:
 
 ```
--> bin/console generate:doctrine:entities SongbirdNestablePageBundle --no-backup
+-> ./scripts/console generate:doctrine:entities SongbirdNestablePageBundle --no-backup
 Generating entities for bundle "SongbirdNestablePageBundle"
   > generating Songbird\NestablePageBundle\Entity\Page
   > generating Songbird\NestablePageBundle\Entity\PageMeta
 ```
 
-This command help us to generate the getters and setters for the new variables that we have added. For the page entity for example, you should see new functions like setParent() and getParent() being added - another huge time saver.
+This command helps us to generate the getters and setters for the new variables that we have added. For the page entity for example, you should see new functions like setParent() and getParent() being added - another huge time saver.
 
 We will also create a helper to help us find the page meta entries based on locale.
 
@@ -279,13 +279,19 @@ class PageRepository extends EntityRepository
 }
 ```
 
+Before we reset the app, let us create the doctrine migration file so that we can deploy this db changes to production (if we have one). It is a good practice to do that.
+
+```
+-> ./scripts/console doctrine:migrations:diff
+```
+
 reset the app now and verify that the 2 new tables, ie page and page_meta being created in the songbird db.
 
 ```
 -> ./scripts/resetapp
 ```
 
-We are going to use a variant of [nestable.js](https://github.com/BeFiveINFO/Nestable) to create our draggable menu. Let us create the js and css directories.
+We are going to use a variant of [nestable.js](https://github.com/bernardpeh/Nestable) to create our draggable menu. Let us create the js and css directories.
 
 ```
 -> mkdir -p src/Songbird/NestablePageBundle/Resources/public/{js,css}
@@ -296,7 +302,7 @@ Download jquery.nestable.js and put it under src/Songbird/NestablePageBundle/Res
 ```
 -> cd src/Songbird/NestablePageBundle/Resources/public/js
 -> wget http://code.jquery.com/jquery-1.11.3.min.js
--> wget https://raw.githubusercontent.com/BeFiveINFO/Nestable/master/jquery.nestable.js
+-> wget https://raw.githubusercontent.com/bernardpeh/Nestable/master/jquery.nestable.js
 ```
 
 Now let us create the css
@@ -407,11 +413,13 @@ and the french version:
 We will now generate CRUD for the 2 entities in a quick way:
 
 ```
--> bin/console g:doctrine:crud --entity=SongbirdNestablePageBundle:Page --route-prefix=songbird_page --with-write -n
--> bin/console g:doctrine:crud --entity=SongbirdNestablePageBundle:PageMeta --route-prefix=songbird_pagemeta --with-write -n
+# dont memorise this. You can get help using the --help option
+
+-> ./scripts/console g:doctrine:crud --entity=SongbirdNestablePageBundle:Page --route-prefix=songbird_page --with-write -n
+-> ./scripts/console g:doctrine:crud --entity=SongbirdNestablePageBundle:PageMeta --route-prefix=songbird_pagemeta --with-write -n
 ```
 
-We added the route-prefix to make sure our path is unique so that it can be reused with minimal changes.
+Noticed we use "g" as a shortcut to "generate" in the command line. We've added the route-prefix to make sure our path is unique so that it can be reused with minimal changes.
 
 ## Create Sample Data
 
@@ -617,26 +625,25 @@ reset the app to load the fixtures and check that the entries have been added to
 Now go to the page url and you should see the default crud template
 
 ```
-http://songbird.app/songbird_page/
+http://songbird.app:8000/app_dev.php/songbird_page/
 ```
 
 Everything is looking plain at the moment, let us integrate nestablejs.
 
 ## Integrating NestableJS
 
-How do we integrate NestableJS to our bundle? The secret will be in the Page Controller.
+How do we integrate NestableJS to our bundle? The secret will be in the Page Controller. We will change the logic there.
 
 ```
 # src/Songbird/NestablePageBundle/Controller/PageController.php
 
 namespace Songbird\NestablePageBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
+use Songbird\NestablePageBundle\Entity\Page;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Songbird\NestablePageBundle\Entity\Page;
-use Songbird\NestablePageBundle\Form\PageType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -650,9 +657,8 @@ class PageController extends Controller
     /**
      * Lists all Page entities.
      *
-     * @Route("/", name="songbird_page")
+     * @Route("/", name="songbird_page_index")
      * @Method("GET")
-     * @Template()
      */
     public function indexAction()
     {
@@ -670,34 +676,34 @@ class PageController extends Controller
         $em = $this->getDoctrine()->getManager();
         $rootMenuItems = $em->getRepository('SongbirdNestablePageBundle:Page')->findParent();
 
-        return $this->render('SongbirdNestablePageBundle:Page:list.html.twig', array(
+        return $this->render('page/list.html.twig', array(
             'tree' => $rootMenuItems,
         ));
     }
 
-	/**
-	 * reorder pages
-	 *
-	 * @Route("/reorder", name="songbird_page_reorder")
-	 * @Method("POST")
-	 */
-	public function reorderAction(Request $request)
-	{
-		$em = $this->getDoctrine()->getManager();
-		// id of affected element
-		$id = $request->get('id');
-		// parent Id
-		$parentId = ($request->get('parentId') == '') ? null : $request->get('parentId');
-		// new sequence of this element. 0 means first element.
-		$position = $request->get('position');
+    /**
+     * reorder pages
+     *
+     * @Route("/reorder", name="songbird_page_reorder")
+     * @Method("POST")
+     */
+    public function reorderAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        // id of affected element
+        $id = $request->get('id');
+        // parent Id
+        $parentId = ($request->get('parentId') == '') ? null : $request->get('parentId');
+        // new sequence of this element. 0 means first element.
+        $position = $request->get('position');
 
-		$result = $em->getRepository('SongbirdNestablePageBundle:Page')->reorderElement($id, $parentId, $position);
+        $result = $em->getRepository('SongbirdNestablePageBundle:Page')->reorderElement($id, $parentId, $position);
 
-		return new JsonResponse(
-			array('message' => $this->get('translator')->trans($result[0], array(), 'SongbirdNestablePageBundle')
-			, 'success' => $result[1])
-		);
-	}
+        return new JsonResponse(
+            array('message' => $this->get('translator')->trans($result[0], array(), 'SongbirdNestablePageBundle')
+            , 'success' => $result[1])
+        );
+    }
 
     /**
      * Creates a new Page entity.
@@ -733,45 +739,45 @@ class PageController extends Controller
      */
     public function showAction(Request $request, Page $page)
     {
-	    $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
 
-	    $pageMeta = $em->getRepository('SongbirdNestablePageBundle:PageMeta')->findPageMetaByLocale($page,$request->getLocale());
+        $pageMeta = $em->getRepository('SongbirdNestablePageBundle:PageMeta')->findPageMetaByLocale($page,$request->getLocale());
 
-    	$deleteForm = $this->createDeleteForm($page);
+        $deleteForm = $this->createDeleteForm($page);
 
         return $this->render('page/show.html.twig', array(
             'page' => $page,
-	        'pageMeta' => $pageMeta,
+            'pageMeta' => $pageMeta,
             'delete_form' => $deleteForm->createView(),
         ));
     }
 
-	/**
-	 * Displays a form to edit an existing Page entity.
-	 *
-	 * @Route("/{id}/edit", name="songbird_page_edit")
-	 * @Method({"GET", "POST"})
-	 */
-	public function editAction(Request $request, Page $page)
-	{
-		$deleteForm = $this->createDeleteForm($page);
-		$editForm = $this->createForm('Songbird\NestablePageBundle\Form\PageType', $page);
-		$editForm->handleRequest($request);
+    /**
+     * Displays a form to edit an existing Page entity.
+     *
+     * @Route("/{id}/edit", name="songbird_page_edit")
+     * @Method({"GET", "POST"})
+     */
+    public function editAction(Request $request, Page $page)
+    {
+        $deleteForm = $this->createDeleteForm($page);
+        $editForm = $this->createForm('Songbird\NestablePageBundle\Form\PageType', $page);
+        $editForm->handleRequest($request);
 
-		if ($editForm->isSubmitted() && $editForm->isValid()) {
-			$em = $this->getDoctrine()->getManager();
-			$em->persist($page);
-			$em->flush();
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($page);
+            $em->flush();
 
-			return $this->redirectToRoute('songbird_page_edit', array('id' => $page->getId()));
-		}
+            return $this->redirectToRoute('songbird_page_edit', array('id' => $page->getId()));
+        }
 
-		return $this->render('page/edit.html.twig', array(
-			'page' => $page,
-			'edit_form' => $editForm->createView(),
-			'delete_form' => $deleteForm->createView(),
-		));
-	}
+        return $this->render('page/edit.html.twig', array(
+            'page' => $page,
+            'edit_form' => $editForm->createView(),
+            'delete_form' => $deleteForm->createView(),
+        ));
+    }
 
     /**
      * Deletes a Page entity.
@@ -806,12 +812,12 @@ class PageController extends Controller
             ->setAction($this->generateUrl('songbird_page_delete', array('id' => $page->getId())))
             ->setMethod('DELETE')
             ->getForm()
-        ;
+            ;
     }
 }
 ```
 
-We have added 2 extra methods, listAction and reorderAction. As the controller should have minimum logic, we have moved the bulk of reorderAction logic to the model.
+We have added 2 extra methods, listAction and reorderAction. As the controller should have minimum logic, we have moved the bulk of reorderAction logic to the repository.
 
 ```
 # src/Songbird/NestablePageBundle/Entity/PageRepository.php
@@ -1014,10 +1020,10 @@ class PageType extends AbstractType
 
 and we will leave the PageMetaController.php as default.
 
-Now, we need to make changes to the view to include nestablejs.
+Now, we need to make changes to the view - list.html.twig.
 
 ```
-# src/Songbird/NestablePageBundle/Resources/views/Page/list.html.twig
+# app/Resources/views/page/list.html.twig
 {% extends '::base.html.twig' %}
 
 {% block stylesheets %}
@@ -1035,7 +1041,7 @@ Now, we need to make changes to the view to include nestablejs.
 	    <button type="button" onclick="$('.dd').nestable('collapseAll')">Collapse All</button>
 	    <div id="nestable" class="dd">
 	        <ol class="dd-list">
-	            {% include "SongbirdNestablePageBundle:Page:tree.html.twig" with { 'tree':tree } %}
+	            {% include "page/tree.html.twig" with { 'tree':tree } %}
 	        </ol>
 	    </div>
 	{% endblock %}
@@ -1053,7 +1059,7 @@ Now, we need to make changes to the view to include nestablejs.
         </ul>
 {% endblock %}
 
-{% block javascripts %}
+{% block script %}
     {{ parent() }}
     <script src="{{ asset('bundles/songbirdnestablepage/js/jquery-1.11.3.min.js') }}"></script>
     <script src="{{ asset('bundles/songbirdnestablepage/js/jquery.nestable.js') }}"></script>
@@ -1061,23 +1067,23 @@ Now, we need to make changes to the view to include nestablejs.
 
     $(function() {
 
-    	var before = null, after = null;
+			var before = null, after = null;
 
-    	$('.dd').nestable({
-    		afterInit: function ( event ) { }
-    	});
+			$('.dd').nestable({
+				afterInit: function ( event ) { }
+			});
 
         $('.dd').nestable('collapseAll');
         before = JSON.stringify($('.dd').nestable('serialize'));
         $('.dd').on('dragEnd', function(event, item, source, destination, position) {
 
-        	id = item.attr('data-id');
-        	parentId = item.closest('li').parent().closest('li').attr('data-id');
+					id = item.attr('data-id');
+					parentId = item.closest('li').parent().closest('li').attr('data-id');
 
-        	// if parent id is null of if parent id and id is the same, it is the top level.
-        	parentId = (parentId == id || typeof(parentId)  === "undefined") ?  '' : parentId;
+					// if parent id is null of if parent id and id is the same, it is the top level.
+					parentId = (parentId == id || typeof(parentId)  === "undefined") ?  '' : parentId;
 
-        	after = JSON.stringify($('.dd').nestable('serialize'));
+					after = JSON.stringify($('.dd').nestable('serialize'));
 
 	        if (before != after) {
 	            $.ajax({
@@ -1085,15 +1091,15 @@ Now, we need to make changes to the view to include nestablejs.
 	                url: "{{ path('songbird_page_reorder') }}",
 	                data: {id: id, parentId: parentId, position: position},
 	                success: function (data, dataType) {
-	                	if (data.success) {
-	                		$('.alert').addClass('alert-success');
-	                	}
-	                	else {
-	                		$('.alert').addClass('alert-danger');
-	                	}
-	                	$('.alert').html(data.message);
-	                	$('.alert').fadeTo( 0 , 1, function() {});
-	                	$('.alert').fadeTo( 4000 , 0, function() {});
+										if (data.success) {
+											$('.alert').addClass('alert-success');
+										}
+										else {
+											$('.alert').addClass('alert-danger');
+										}
+										$('.alert').html(data.message);
+										$('.alert').fadeTo( 0 , 1, function() {});
+										$('.alert').fadeTo( 4000 , 0, function() {});
 	                },
 
 	                error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -1111,7 +1117,7 @@ Now, we need to make changes to the view to include nestablejs.
 and tree.html.twig
 
 ```
-# src/Songbird/NestablePageBundle/Resources/views/Page/tree.html.twig
+# app/Resources/views/page/tree.html.twig
 {% for v in tree %}
     <li class='dd-item' data-id='{{ v.getId() }}'>
         <div class='dd-handle'>
@@ -1121,7 +1127,7 @@ and tree.html.twig
         {% set children = v.getChildren()|length %}
         {% if children > 0 %}
             <ol class='dd-list'>
-                {% include "SongbirdNestablePageBundle:Page:tree.html.twig" with { 'tree':v.getChildren() } %}
+                {% include "page/tree.html.twig" with { 'tree':v.getChildren() } %}
             </ol>
         {% endif %}
     </li>
@@ -1159,7 +1165,14 @@ The rest of the view templates can use the defaults. Ready to test the bundle?
 
 ```
 -> ./scripts/resetapp
--> ./scripts/assetsinstall
+# remember gulp? the assets:install command is in there.
+-> gulp
+```
+
+Now go to the page index and try reorder the menu.
+
+```
+http://songbird.app:8000/app_dev.php/songbird_page/
 ```
 
 ![](images/nestablebundle_menu.png)
@@ -1444,14 +1457,17 @@ Remember to commit all the code before moving on.
 
 ## Summary
 
-In this chapter, we have created our own page bundle. We have customised the listing page and created a draggable menu using the jquery nestable menu. Data is submitted to the backend via ajax and updated dynamically.
+In this chapter, we have created our own page bundle and generated CRUD in a quick way using the command line. We have also customised the listing page and created a draggable menu using the jquery nestable menu. Data is submitted to the backend via ajax and updated dynamically.
 
 ## Exercises
 
 * Are there any benefits of creating a page bundle that has no dependency on Symfony at all? How would you do it? (Optional)
+
 * [KnpmenuBundle](https://github.com/KnpLabs/KnpMenuBundle) is a popular bundle for handling menus. How would you integrate it with SongbirdNestableMenu? (Optional)
 
 ## References
-* [Nestable js](https://github.com/BeFiveINFO/Nestable)
+* [Nestable js](https://github.com/bernardpeh/Nestable)
+
 * [Symfony Testing](http://symfony.com/doc/current/book/testing.html)
+
 * [Doctrine Association Mapping](http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html)

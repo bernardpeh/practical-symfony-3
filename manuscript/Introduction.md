@@ -196,8 +196,8 @@ mkdir -p web/uploads/featured_images
 -> scripts/resetapp
 
 # install js libraries
--> bower update
--> npm update
+-> bower install
+-> npm install
 
 # install assets
 -> gulp

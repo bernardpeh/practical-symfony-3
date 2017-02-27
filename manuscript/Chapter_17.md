@@ -215,6 +215,10 @@ and
         $this->locale = 'en';
     }
     ...
+    public function newAction(Request $request)
+    {
+        // Noticed that CRUD tries to be intelligent and change pageMeta to pageMetum but its not really that intelligent
+        $pageMetum = new PageMeta();
 ```
 
 There were some new [doctrine association annotations](http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html) used here, notably @ManyToOne and @OneToMany are the most common. Establishing the right associations can save lots of time when managing table relationships. For PageMeta.php, we set the default locale to "en" if none is set.

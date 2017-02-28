@@ -120,24 +120,32 @@ security:
           - { path: ^/admin/, role: ROLE_ADMIN }
 ```
 
-## Updating DB credentials
+## DB credentials
+
+The db credentials are in app/config/parameters.yml. They are usually variables based on your environment. Since we are using docker, we can hard code them.
+
+Have a look at the file if you are interested.
 
 ```
 # symfony/app/config/parameters.yml
 
 # your db host is the container in your docker environment
-# run "docker network inspect songbird_mynet" if unsure
-database_host: 172.25.0.2
+# run "docker network inspect songbird_mynet" to see the ip of the mysql instance.
 
-# your db credentials is based on what you have in the .env file
-# run "docker-compose config" if unsure
-database_port: null
-database_name: songbird
-database_user: root
-database_password: root
-mailer_host: 127.0.0.1
+parameters:
+    database_host: 172.25.0.2
+    database_port: 3306
+    database_name: songbird
+    database_user: root
+    database_password: root
+    mailer_transport: smtp
+    mailer_host: 172.25.0.6:1025
+    mailer_user: null
+    mailer_password: null
+    secret: ThisTokenIsNotSoSecretChangeIt
 
 ```
+
 ## Creating the User Entity
 
 Have a quick read if you are unfamiliar with [doctrine and entity](http://symfony.com/doc/current/book/doctrine.html). We will be using doctrine very often in this book.

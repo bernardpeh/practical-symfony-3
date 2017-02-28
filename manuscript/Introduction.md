@@ -178,19 +178,8 @@ If you are already getting impatient and wants to see a demo of the completed pr
 # add ip to your host file (assuming you are in unix env)
 -> sudo echo "127.0.0.1 songbird.app" >> /etc/hosts
 
-# update symfony/app/config/parameters.yml
-
-# database_host: 172.25.0.2
-# database_port: 3306
-# database_name: songbird
-# database_user: root
-# database_password: root
-# mailer_host: '172.25.0.6:1025'
-# mailer_user: null
-# mailer_password: null
-
 # create the uploads dir
-mkdir -p web/uploads/featured_images
+mkdir -p web/uploads/profiles
 
 # install db and fixtures
 -> scripts/resetapp

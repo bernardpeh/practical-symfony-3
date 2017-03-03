@@ -1,6 +1,6 @@
 # Chapter 18: Making Your Bundle Reusable
 
-We have created a page bundle in the previous chapter. It's not perfect but let's say we want to share it with everyone. How do we do that? Be warned, we need lots of refactoring in the code to make it sharable.
+We have created a page bundle in the previous chapter using the default way. It's not perfect if you want to share it with everyone. How do we do that? Be warned, we need lots of refactoring in the code to make it sharable.
 
 This is a long chapter. Its is a good process to go through because it makes you pause and think. If you already know the process and want to skip through, simple clone the [NestablePageBundle from github](https://github.com/bernardpeh/NestablePageBundle) and follow the installation instructions in the readme file. Then, jump over to the next chapter.
 
@@ -47,7 +47,7 @@ Follow the prompts. You might need to read up on software licensing. [MIT licens
 }
 ```
 
-Note that we have to add the "autoload" component so that Symfony can autoload the namespace post installation. <a href="https://getcomposer.org/doc/04-schema.md#autoload">PS-4</a> is the default standard at the time of writing. Next, let us create the license in a text file
+Note that we have to add the "autoload" component so that Symfony can autoload the namespace post installation. [PS-4](https://getcomposer.org/doc/04-schema.md#autoload) is the default standard at the time of writing. Next, let us create the license in a text file
 
 ```
 -> touch LICENSE
@@ -82,7 +82,7 @@ Your repository is now available for the public to pull.
 
 ## Updating Application composer.json
 
-Note that this composer.json is different from the one that we have just created. If we add our repo to [packagist](https://packagist.org), we could install our bundle like any other bundles by using the "composer require" command. I was afraid that anyone reading this tutorial might submit their test bundle to packagist, so I thought it would be a better idea to install the bundle from git instead. Let's use github for the sake of illustration.
+If we add our repo to [packagist](https://packagist.org), we could install our bundle like any other bundles using the "composer require" command. Anyone reading this tutorial might submit their test bundle to packagist, so I thought it would be a better idea to install the bundle from git instead. Let's use github for the sake of illustration.
 
 ```
 # composer.json
@@ -122,11 +122,12 @@ Let us do some cleaning up. We no longer need the src/Songbird/NestablePageBundl
 
 ```
 git rm -rf src/Songbird/
+git rm -rf app/Resources/views/{page,pagemeta}
 ```
 Let us check if the route is still there.
 
 ```
--> bin/console debug:router | grep songbird
+-> ./scripts/console debug:router | grep songbird
 ...
 songbird_page            GET      ANY    ANY  /songbird_page/
 songbird_page_list       GET      ANY    ANY  /songbird_page/list
@@ -185,8 +186,9 @@ Now, let us update AppKernel
 
 ```
 # app/config/AppKernel.php
-# new SongbirdNestablePageBundleSongbirdNestablePageBundle(),
-new {your-initial}NestablePageBundle{your-initial}NestablePageBundle(),
+...
+# new SongbirdNestablePageBundle(),
+new {your-initial}NestablePageBundle(),
 ```
 
 and routing
@@ -208,7 +210,7 @@ and routing
 My initial is bpeh, let us check that the routes are working.
 
 ```
-bin/console debug:router | grep bpeh
+-> ./scripts/console debug:router | grep bpeh
 bpeh_page                GET      ANY    ANY  /bpeh_page/
 bpeh_page_list           GET      ANY    ANY  /bpeh_page/list
 bpeh_page_reorder        POST     ANY    ANY  /bpeh_page/reorder
@@ -218,37 +220,36 @@ bpeh_page_reorder        POST     ANY    ANY  /bpeh_page/reorder
 We can now install the assets.
 
 ```
--> ./scripts/assetsinstall
+-> gulp
 ```
 
 Now go your new page list url and do a quick test. In my case,
 
 ```
-http://songbird.app/app_dev.php/bpeh_page/list
+http://songbird.app:8000/app_dev.php/bpeh_page/list
 ```
 
 Looks like it is working. How can we be sure? Remember our functional tests?
 
 ```
--> phpunit -c app vendor/{your-name}/nestable-page-bundle/
+-> ./scripts/phpunit vendor/bpeh/nestable-page-bundle/
 ...
-Time: 29.04 seconds, Memory: 88.50Mb
-
-OK (5 tests, 14 assertions)
 ```
+
+If it fails, why? Can you fix it? 
 
 Remember to commit your code before moving to the next chapter. Up your nestablepagebundle tags to 0.2.0 or something else since there were major changes.
 
 ## Making the Bundle Extensible
 
-When this bundle is initialised in AppKernel.php, running "bin/console doctrine:schema:create will create the default tables. We should be able to extend this bundle and modify the entity name and methods easily. The war is not over. There are still lots to be done!!
+When this bundle is initialised in AppKernel.php, running "scripts/console doctrine:schema:create will create the default tables. We should be able to extend this bundle and modify the entity name and methods easily. The war is not over. There are still lots to be done!!
 
 Let us clean up the AppKernel and Route.
 
 ```
 # app/AppKernel.php
 ...
-// new {your-inital}NestablePageBundle{your-initial}NestablePageBundle(),
+// new {your-inital}NestablePageBundle(),
 ...
 ```
 
@@ -271,7 +272,7 @@ and refocus our attention to the NestablePageBundle:
 
 First of all, we need to make Page and PageMeta entities extensible. We will move the entities to the Model directory, making the entities abstract. 
 
-I'll be using my initial (bpeh) from now onwards to make life easier when referencing paths.
+I'll be using my initial "bpeh" from now onwards to make life easier when referencing paths.
 
 ```
 # vendor/bpeh/nestable-page-bundle/Model/PageBase.php
@@ -343,16 +344,16 @@ abstract class PageBase
      * @ORM\OrderBy({"sequence" = "ASC"})
      */
     protected $children;
-
+   
     /**
      * @ORM\OneToMany(targetEntity="Bpeh\NestablePageBundle\Model\PageMetaBase", mappedBy="page", cascade={"persist"}))
      */
     protected $pageMetas;
-
+    
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
@@ -375,7 +376,7 @@ abstract class PageBase
     /**
      * Get slug
      *
-     * @return string
+     * @return string 
      */
     public function getSlug()
     {
@@ -398,7 +399,7 @@ abstract class PageBase
     /**
      * Get isPublished
      *
-     * @return boolean
+     * @return boolean 
      */
     public function getIsPublished()
     {
@@ -421,7 +422,7 @@ abstract class PageBase
     /**
      * Get sequence
      *
-     * @return integer
+     * @return integer 
      */
     public function getSequence()
     {
@@ -444,7 +445,7 @@ abstract class PageBase
     /**
      * Get modified
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getModified()
     {
@@ -467,12 +468,13 @@ abstract class PageBase
     /**
      * Get created
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getCreated()
     {
         return $this->created;
     }
+
     /**
      * Constructor
      */
@@ -513,7 +515,7 @@ abstract class PageBase
     /**
      * Get parent
      *
-     * @return \Bpeh\NestablePageBundle\Model\PageBase
+     * @return \Bpeh\NestablePageBundle\Model\PageBase 
      */
     public function getParent()
     {
@@ -546,7 +548,7 @@ abstract class PageBase
     /**
      * Get children
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getChildren()
     {
@@ -579,13 +581,13 @@ abstract class PageBase
     /**
      * Get pageMetas
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getPageMetas()
     {
         return $this->pageMetas;
     }
-
+    
     /**
      * convert object to string
      * @return string
@@ -597,7 +599,7 @@ abstract class PageBase
 }
 
 ```
-Note that we have changed all variables to protected to allow inheritance. The references to PageBase has also been changed.
+Note that we have changed all variables to "protected" to allow inheritance. The references to PageBase has also been changed.
 
 To make our bundle flexible, we also need to allow user to specify their own child entities, form type and templates to use.
 
@@ -696,7 +698,7 @@ class BpehNestablePageExtension extends Extension
 
 Now in config.yml, anyone can define the page and pagemeta entities themselves.
 
-We also need to initialise the new config parameters when the controllers are loaded. We will do that via the controller event listener.
+We also need to run the constructor to initialise the new config parameters when the controllers are loaded. To do that, we will need to do it via the controller event listener.
 
 ```
 # vendor/bpeh/nestable-page-bundle/Resources/config/services.yml
@@ -717,7 +719,6 @@ and in the controller listener class
 
 namespace Bpeh\NestablePageBundle\EventListener;
 
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Bpeh\NestablePageBundle\Controller\PageController;
 use Bpeh\NestablePageBundle\Controller\PageMetaController;
@@ -735,13 +736,12 @@ class ControllerListener
         if (!is_array($controller)) {
             return;
         }
-
+        
         if ($controller[0] instanceof PageController || $controller[0] instanceof PageMetaController) {
             $controller[0]->init();
         }
     }
 }
-
 ```
 
 The Page Controller can now use the parameters as defined in config.yml to load the entities and form types.
@@ -751,7 +751,7 @@ The Page Controller can now use the parameters as defined in config.yml to load 
 
 namespace Bpeh\NestablePageBundle\Controller;
 
-use Bpeh\NestablePageBundle\Entity\Page;
+use Bpeh\NestablePageBundle\Model\PageBase as Page;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -837,6 +837,13 @@ class PageController extends Controller
 	    $em = $this->getDoctrine()->getManager();
 	    // id of affected element
 	    $id = $request->get('id');
+
+	    // if invalid token, fail silently
+	    if (!$this->isCsrfTokenValid('bpeh_page_reorder', $request->get('csrf'))) {
+		    // fail silently
+		    return;
+	    }
+
 	    // parent Id
 	    $parentId = ($request->get('parentId') == '') ? null : $request->get('parentId');
 	    // new sequence of this element. 0 means first element.
@@ -848,7 +855,6 @@ class PageController extends Controller
 		    array('message' => $this->get('translator')->trans($result[0], array(), 'BpehNestablePageBundle')
 		    , 'success' => $result[1])
 	    );
-
     }
 
 	/**
@@ -997,7 +1003,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Bpeh\NestablePageBundle\Entity\PageMeta;
+use Bpeh\NestablePageBundle\Model\PageMetaBase as PageMeta;
 
 /**
  * PageMeta controller.
@@ -1189,9 +1195,9 @@ class PageMetaController extends Controller
 We also need to refactor PageMetaRepository because findPageMetaByLocale can now return either an object or scalar value.
 
 ```
-# vendor/bpeh/nestable-page-bundle/Entity/PageMetaRepository.php
+# vendor/bpeh/nestable-page-bundle/Repository/PageMetaRepository.php
 
-namespace Bpeh\NestablePageBundle\Entity;
+namespace Bpeh\NestablePageBundle\Repository;
 
 use Bpeh\NestablePageBundle\Model\PageBase;
 
@@ -1203,15 +1209,12 @@ use Bpeh\NestablePageBundle\Model\PageBase;
  */
 class PageMetaRepository extends \Doctrine\ORM\EntityRepository {
 
-	/**
-	 * find page locale and return object or counter
-	 *
-	 * @param \Bpeh\NestablePageBundle\Entity\Page $page
-	 * @param $locale
-	 * @param bool $count
-	 *
-	 * @return mixed
-	 */
+    /**
+     * @param PageBase $page
+     * @param $locale
+     * @param bool $count
+     * @return mixed
+     */
 	public function findPageMetaByLocale( PageBase $page, $locale, $count = false ) {
 
 		$qb = $this->createQueryBuilder( 'pm' );
@@ -1249,9 +1252,9 @@ The bundle is now ready to be extended.
 
 ## Extending BpehNestablePageBundle
 
-If you are already lost, I've created a [demo bundle](https://github.com/bernardpeh/NestablePageBundle) and you can install the demo bundle and test out it for yourself.
+To make things easy, I've created a [demo bundle](https://github.com/bernardpeh/NestablePageBundle) and you can install the demo bundle and test out it for yourself.
 
-Let us extend BpehNestablePageBundle by copying that bundle.
+Let us extend BpehNestablePageBundle by copying the PageTestBundle.
 
 ```
 -> cd src/AppBundle
@@ -1260,9 +1263,7 @@ Let us extend BpehNestablePageBundle by copying that bundle.
 -> mv PageTestBundle.php Page.php
 -> cp ../../vendor/bpeh/nestable-page-bundle/PageTestBundle/Controller/*.php Controller/
 -> cp ../../vendor/bpeh/nestable-page-bundle/PageTestBundle/Entity/*.php Entity/
-# let us move the pagerepository.php to the right dir
--> mv Entity/PageRepository.php Repository/
--> mv Entity/PageMetaRepository.php Repository/
+-> cp ../../vendor/bpeh/nestable-page-bundle/PageTestBundle/Repository/*.php Repository/
 -> cp -a ../../vendor/bpeh/nestable-page-bundle/PageTestBundle/Form .
 -> cp ../../vendor/bpeh/nestable-page-bundle/PageTestBundle/DataFixtures/ORM/LoadPageData.php DataFixtures/ORM/
 ```
@@ -1297,7 +1298,7 @@ use Bpeh\NestablePageBundle\Model\PageBase;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * PageMeta
+ * Page
  *
  * @ORM\Table(name="page")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PageRepository")
@@ -1342,6 +1343,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="pagemeta")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PageMetaRepository")
+ * @ORM\HasLifecycleCallbacks() 
  */
 class PageMeta extends PageMetaBase
 {
@@ -1374,7 +1376,7 @@ Let us update the PageRepository.php
 
 namespace AppBundle\Repository;
 
-use Bpeh\NestablePageBundle\Entity\PageRepository as BasePageRepository;
+use Bpeh\NestablePageBundle\Repository\PageRepository as BasePageRepository;
 
 /**
  * PageRepository
@@ -1393,7 +1395,7 @@ and PageMetaRepository.php
 
 namespace AppBundle\Repository;
 
-use Bpeh\NestablePageBundle\Entity\PageMetaRepository as BasePageMetaRepository;
+use Bpeh\NestablePageBundle\Repository\PageMetaRepository as BasePageMetaRepository;
 
 /**
  * PageRepository
@@ -1486,7 +1488,6 @@ and PageMetaType.php
 ```
 # src/AppBundle/Form/PageMetaType.php
 
-
 namespace AppBundle\Form;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -1520,7 +1521,7 @@ class PageMetaType extends BasePageMetaType
 Let us confirm the new routes are working...
 
 ```
--> bin/console debug:router | grep page
+-> ./scripts/console debug:router | grep page
      bpeh_page                        GET        ANY      ANY    /page/
      bpeh_page_list                   GET        ANY      ANY    /page/list
      bpeh_page_reorder                POST       ANY      ANY    /page/reorder
@@ -1538,6 +1539,7 @@ Let us confirm the new routes are working...
 Looks good. Its time to update config.yml
 
 ```
+# app/config/config.yml
 ...
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
@@ -1564,7 +1566,19 @@ bpeh_nestable_page:
     # pagemeta_view_show: YourBundle:show.html.twig
 ```
 
-Finally, init the new bundle in AppKernel.php
+Remember to clean up the routes.
+
+```
+# app/config/routing.yml
+
+# remove these
+# nestable_page:
+#    resource: "@PageTestBundle/Controller/"
+#    type:     annotation
+#    prefix:   /
+```
+
+Init the new bundle in AppKernel.php
 
 ```
 # app/AppKernel.php
@@ -1575,28 +1589,71 @@ Finally, init the new bundle in AppKernel.php
 ...
 ```
 
-If everything is working, the new url should be working.
+Remember to update the data fixtures.
 
 ```
-songbird.app/app_dev.php/page
+# src/AppBundle/DataFixtures/ORM/LoadPageData.php
+
+use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use AppBundle\Entity\Page;
+use AppBundle\Entity\PageMeta;
+...
 ```
 
+There were schema changes. We have to update the sql so that we can deploy it easily if we need to. stash our work and load chapter_16 db.
+
+```
+-> git stash
+-> git checkout chapter_16
+-> ./scripts/resetapp
+-> ./scripts/console doctrine:migrations:diff
+-> git checkout mychapter_18
+-> git stash pop
+# we can commit everything at this stage
+-> git add .
+-> git commit
+```
+
+Reset the db again.
+
+```
+-> ./scripts/resetapp
+```
+
+Now go to http://songbird.app:8000/app_dev.php/page and make sure the new url should be working.
+
+run all the tests and make sure you didn't break anything.
+
+```
+-> ./scripts/runtest
+```
+
+I hope you are getting used to this... Its a pretty routine process once you get used to it.
 
 ## Summary
 
-In this chapter, we have created a new repo for the NestablePageBundle. We have updated composer to pull the bundle from the repo and auto-loaded it according to the PSR-4 standard. We learned the hard way of creating a non-extensible bundle with the wrong namespace and then mass renaming it again. Making the entities extensible was a massive job and required a lot of refactoring in our code.
+In this chapter, we have created a new repo for the NestablePageBundle. We have updated composer to pull the bundle from the repo and auto-loaded it according to the PSR-4 standard. We learned the hard way of creating a non-extensible bundle with the wrong namespace and then mass renaming it again. Making the entities extensible was a massive job and required a lot of refactoring in our code. If you know you are creating a reusable bundle, its better to get the namespace correct and create it right from the start.
 
-We have done so much to make NestablePageBundle as decoupled as possible. Still, there was lots of room for improvement. Was it worth the effort? Definitely!
+We have done so much to make NestablePageBundle as decoupled as possible. Still, there are lots of room for improvement. Was it worth the effort? Definitely! People can now install our bundle in their Symfony applications easily.
 
 ## Exercises
 
 * Delete the whole vendor directory and try doing a composer update. Did anything break?
+
 * Update the functional test.
 
 ## References
 
 * [Define relationship between abstract classes and interfaces](http://symfony.com/doc/current/doctrine/resolve_target_entity.html)
+
 * [Short guide to licenses](http://www.smashingmagazine.com/2010/03/a-short-guide-to-open-source-and-similar-licenses)
+
 * [Software licenses at a glance](http://tldrlegal.com)
+
 * [Composer Schema](https://getcomposer.org/doc/04-schema.md)
+
 * [Composer versioning](https://getcomposer.org/doc/articles/versions.md)

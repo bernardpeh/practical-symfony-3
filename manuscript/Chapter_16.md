@@ -410,7 +410,9 @@ At this point, the chrome browser will interact with the php docker container an
 
 Once done, you will see a new profile toolbar. Give the profile a name, say "songbird prod default".
 
-We will do another optimisation for the sake of illustration. Symfony comes with a reverse proxy, let us enable it.
+## Reverse Proxy and APCU
+
+We will do another optimisation. Symfony comes with a [reverse proxy](https://en.wikipedia.org/wiki/Reverse_proxy) and the ability to use [apcu](http://php.net/manual/en/book.apcu.php), let us enable it.
 
 ```
 # web/app.php

@@ -1,6 +1,6 @@
 # Chapter 20: The Front View
 
-Going to "http://songbird.app/" has nothing at the moment because we have so far been focusing on the the admin area and not touched the frontend. In this chapter, we will create an automatic route based on the slug and display the frontend view when the slug matches. Any route that matches "/" and "/home" will be using the index template while the rest of the pages will be using the view template.
+Going to "http://songbird.app:8000/" has nothing at the moment because we have so far been focusing on the the admin area and not touched the frontend. In this chapter, we will create an automatic route based on the slug and display the frontend view when the slug matches. Any route that matches "/" and "/home" will be using the index template while the rest of the pages will be using the view template.
 
 We will create a simple home and subpages using bootstrap and use [smartmenus javascript library](http://www.smartmenus.org/) to create the top menu which will render the the submenus as well.
 
@@ -587,6 +587,7 @@ In this chapter, we have created the frontend controllers and views. We used sma
 ## Exercises
 
 * Try extending the NestablePageBundle so that you can have multiple menus, say a top and bottom menu?
+
 * One of the argument against using a language toggle is that it is bad for SEO. Language toggle can be good for usability. Can you think of a way to overcome the SEO issue?
 
 ## References

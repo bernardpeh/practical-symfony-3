@@ -27,6 +27,7 @@ In this chapter, we are going to integrate NestablePageBundle with EasyAdminBund
 |19.21|List pages|I go to the page management url|I should get a access denied message|
 |19.22|show about us page|I go to show about us url|I should get a access denied message|
 |19.23|edit about us page|I go to edit about us url|I should get a access denied message|
+|19.24|List pagemeta|I go to list pagemeta url|I should get a access denied message|
 
 ## Adding new image field to PageMeta Entity
 
@@ -347,6 +348,8 @@ class AdminController extends BaseAdminController
      */
     public function listPageAction()
     {
+        $this->dispatch(EasyAdminEvents::PRE_LIST);
+
         $rootMenuItems = $this->getDoctrine()->getRepository('AppBundle\Entity\Page')->findParent();
 
         return $this->render('@EasyAdmin/Page/list.html.twig', array(

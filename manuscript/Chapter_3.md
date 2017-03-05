@@ -23,14 +23,17 @@ The idea is to do **actual coding in your host** (main operating system) and let
 
 * Install [Docker-compose](https://docs.docker.com/compose/install/)
 
-* Fire up docker containers
+* We can now fire up docker containers
 
 ```
+# update SYMFONY_APP_PATH parameters in the .env file and leave the rest as defaults
 -> cp .env.dist .env
 
+# we need to create new db dir when mounting docker
+-> mkdir -p .data/db
+
 # update parameters in the .env file if you want, then run
--> docker-compose build
--> docker-compose up -d
+-> docker-compose up --build -d
 
 # to confirm all the containers are fired up correctly
 -> docker-compose ps
@@ -109,6 +112,26 @@ Finally, let us ignore .env in .gitignore
 logs/
 ...
 /.env
+```
+
+## Mac Users (Optional)
+
+Docker is such an amazing tool and I think it will only get more popular. However at the time of writing, mac operating system suffer performance issues due to osxfs. We can improve the disk access speed by using nfs instead. You can google about this and read about the technical details.
+
+To mount via nfs, click on the docker icon on the top of your desktop -> Preferences -> File Sharing (remove all mounted dirs except /tmp) -> Restart docker.
+
+We can then export the whole /Users dir
+
+```
+-> cd ~
+-> git clone https://github.com/IFSight/d4m-nfs
+-> cd d4m-nfs
+-> echo "/Users;/Users" > etc/d4m-nfs-mounts.txt
+-> sudo ./d4m-nfs.sh
+# restart docker containers
+-> cd ~/songbird
+-> docker-compose down
+-> docker-compose up -d
 ```
 
 ## Summary

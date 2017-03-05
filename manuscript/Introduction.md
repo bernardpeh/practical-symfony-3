@@ -169,8 +169,10 @@ If you are already getting impatient and wants to see a demo of the completed pr
 -> git clone https://github.com/bernardpeh/songbird
 -> cd songbird
 -> git checkout chapter_final
+# update SYMFONY_APP_PATH parameters in the .env file and leave the rest as defaults
 -> cp .env.dist .env
-# update SYMFONY_APP_PATH parameters in the .env file, then run
+# we need to create new db dir when mounting docker
+ -> mkdir -p .data/db
 -> cd symfony
 -> docker-compose build
 -> docker-compose up -d
@@ -191,6 +193,8 @@ mkdir -p web/uploads/profiles
 # install assets
 -> gulp
 ```
+
+*Docker could be slower for mac users. Chapter 3 provides a workaround.*
 
 Now go to http://songbird.app:8000 and you should see the homepage.
 

@@ -126,7 +126,7 @@ We can then export the whole /Users dir
 -> cd ~
 -> git clone https://github.com/IFSight/d4m-nfs
 -> cd d4m-nfs
--> echo "/Users;/Users" > etc/d4m-nfs-mounts.txt
+-> echo "/Users:/Users" > etc/d4m-nfs-mounts.txt
 -> sudo ./d4m-nfs.sh
 # restart docker containers
 -> cd ~/songbird

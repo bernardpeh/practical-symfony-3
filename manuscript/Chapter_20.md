@@ -35,12 +35,15 @@ namespace AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 class FrontendController extends Controller
 {
     /**
      * @Route("/{slug}", name="app_frontend_index", requirements = {"slug" = "^((|home)$)"})
      * @Method("GET")
+     * @Template()
      * @param Request $request
      *
      * @return array
@@ -60,6 +63,7 @@ class FrontendController extends Controller
 
     /**
      * @Route("/{slug}", name="app_frontend_view")
+     * @Template()
      * @Method("GET")
      */
     public function pageAction(Request $request)
@@ -77,7 +81,7 @@ class FrontendController extends Controller
 }
 ```
 
-With the new routes added, we will move the frontend routes to the last priority, so routes like /login will be executed first.
+With the new @Template annotation, the action just need to return an array rather than a response. With the new routes added, we will move the frontend routes to the last priority, so routes like /login will be executed first.
 
 ```
 # app/config/routing.yml
@@ -185,9 +189,9 @@ Let us update the frontend base view.
 We will now create a homepage view.
 
 ```
-# src/AppBundle/Resources/views/Frontend/index.html.twig
+# app/Resources/AppBundle/views/Frontend/index.html.twig
 
-{% extends "AppBundle::base.html.twig" %}
+{% extends "base.html.twig" %}
 
 {% block title %}
 	{{ pagemeta.getPageTitle() }}
@@ -220,9 +224,9 @@ We will now create a homepage view.
 and pages view
 
 ```
-# src/AppBundle/Resources/views/Frontend/page.html.twig
+# app/Resources/AppBundle/views/Frontend/page.html.twig
 
-{% extends "AppBundle::base.html.twig" %}
+{% extends "base.html.twig" %}
 
 {% block title %}
 	{{ pagemeta.getPageTitle() }}
@@ -249,7 +253,7 @@ and pages view
 and lastly, recursive view for the menu
 
 ```
-# src/AppBundle/Resources/views/Frontend/tree.html.twig
+# app/Resources/AppBundle/views/Frontend/tree.html.twig
 
 {% for v in tree %}
 
@@ -348,14 +352,13 @@ we now need to make this class available as a service.
 ...
 ```
 
-Since we have added a new top navbar, we need to remove the SongBird logo from the login and password reset pages. Update the following pages as you see fit:
+Since we have added a new top navbar, let us remove the SongBird logo from the login and password reset pages. Update the following pages as you see fit:
 
 ```
-src/AppBundle/Resources/views/Resetting/checkEmail.html.twig
-src/AppBundle/Resources/views/Resetting/passwordAlreadyRequested.html.twig
-src/AppBundle/Resources/views/Resetting/request.html.twig
-src/AppBundle/Resources/views/Resetting/reset.html.twig
-src/AppBundle/Resources/views/Security/login.html.twig
+/songbird/symfony/app/Resources/FOSUserBundle/views/Resetting/checkEmail.html.twig
+/songbird/symfony/app/Resources/FOSUserBundle/views/Resetting/request.html.twig
+/songbird/symfony/app/Resources/FOSUserBundle/views/Resetting/reset.html.twig
+/songbird/symfony/app/Resources/FOSUserBundle/views/Security/login.html.twig
 ```
 
 Let us update bower.json to pull in smartmenus js.
@@ -429,7 +432,7 @@ Let us update the datafixtures as well.
         $manager->persist($homemetaFR);
 ```
 
-I've added new images to the homepage. The new images are in the src/AppBundle/DataFixtures/ORM/images folder.
+I've added new images to the homepage. The new images are in the src/AppBundle/DataFixtures/ORM/images folder. Feel free to get the images from there.
 
 Lastly, let us update the stylesheets. We might as well update them in scss
 
@@ -554,14 +557,20 @@ body {
 We no longer need our old .css files
 
 ```
--> git rm src/AppBundle/Resources/public/css/signin.css
--> git rm  src/AppBundle/Resources/public/css/style.css
+-> git rm src/AppBundle/Resources/public/css/*
 ```
 
 Now run gulp and refresh the homepage and everything should renders.
 
 ```
 -> gulp
+```
+
+Remember to create the featured_images dir and reset the db if not done
+
+```
+-> mkdir -p web/uploads/featured_images
+-> ./scripts/resetapp
 ```
 
 Go to homepage and this should be the end result.

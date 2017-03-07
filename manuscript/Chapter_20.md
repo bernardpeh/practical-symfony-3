@@ -28,39 +28,40 @@ Let create a new frontend controller
 ```
 # src/AppBundle/Controller/FrontendController.php
 
-<?php
-
 namespace AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
+/**
+ * Class FrontendController
+ * @package AppBundle\Controller
+ */
 class FrontendController extends Controller
 {
     /**
      * @Route("/{slug}", name="app_frontend_index", requirements = {"slug" = "^((|home)$)"})
-     * @Method("GET")
      * @Template()
+     * @Method("GET")
      * @param Request $request
      *
      * @return array
      */
     public function indexAction(Request $request)
     {
-        $page = $this->getDoctrine()->getRepository('AppBundle:Page')->findOneBySlug($request->get('_route_params')['slug']);
+        $slug = $request->get('_route_params')['slug'];
+        $slug = ($slug) ?: 'home';
+        $page = $this->getDoctrine()->getRepository('AppBundle:Page')->findOneBySlug($slug);
         $pagemeta = $this->getDoctrine()->getRepository('AppBundle:PageMeta')->findPageMetaByLocale($page, $request->getLocale());
         $rootMenuItems = $this->getDoctrine()->getRepository('AppBundle:Page')->findParent();
-
         return array(
             'pagemeta' => $pagemeta,
             'tree' => $rootMenuItems,
         );
     }
-
-
     /**
      * @Route("/{slug}", name="app_frontend_view")
      * @Template()
@@ -68,11 +69,9 @@ class FrontendController extends Controller
      */
     public function pageAction(Request $request)
     {
-
         $page = $this->getDoctrine()->getRepository('AppBundle:Page')->findOneBySlug($request->get('_route_params')['slug']);
         $pagemeta = $this->getDoctrine()->getRepository('AppBundle:PageMeta')->findPageMetaByLocale($page, $request->getLocale());
         $rootMenuItems = $this->getDoctrine()->getRepository('AppBundle:Page')->findParent();
-
         return array(
             'pagemeta' => $pagemeta,
             'tree' => $rootMenuItems,
@@ -81,7 +80,7 @@ class FrontendController extends Controller
 }
 ```
 
-With the new @Template annotation, the action just need to return an array rather than a response. With the new routes added, we will move the frontend routes to the last priority, so routes like /login will be executed first.
+All routing magic can be done with the @Route annotation (we can even use regex as shown in the indexAction). With the new @Template annotation, the action just need to return an array rather than a response. With the new routes added, we will move the frontend routes to the last priority, so routes like /login will be executed first.
 
 ```
 # app/config/routing.yml

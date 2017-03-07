@@ -81,6 +81,7 @@ done
 
 if [[ $CLEAR_CACHE ]]
 then
+    echo "CLEARING CACHE...";
     rm -rf app/cache/*
     # bin/console cache:clear --env=prod --no-warmup
 fi
@@ -91,6 +92,7 @@ scripts/console doctrine:schema:create
 
 if [[ $LOAD_FIXTURES ]]
 then
+    echo "LOADING FIXTURES...";
     scripts/console doctrine:fixtures:load -n
 fi
 

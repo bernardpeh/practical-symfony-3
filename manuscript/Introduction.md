@@ -26,6 +26,96 @@ Definitely. SongBird is not just a tutorial CMS, you can use it as a vanilla fra
 
 You can also think of SongBird as the foundation for the [CMF project](http://cmf.symfony.com/). Once you are comfortable with the basics of building a CMS, you are ready for more complex development.
 
+## Chapters Overview
+
+**Chapter 1: Survival Skills**
+
+A quick introduction to the skills required to learn Symfony.
+
+**Chapter 2: What is SongBird**
+ 
+Introduction to what Songbird is and isn't.
+
+**Chapter 3: Creating the Dev Environment**
+
+Installing Songbird using docker. Docker is fantastic but its a shame that mac users need a work around at the time of writing.
+
+**Chapter 4: The Testing Framework Part 1 (Optional)**
+
+Introduces and Installing Codeception for Behavioural Testing.
+
+**Chapter 5: The Testing Framework Part 2 (Optional)**
+
+Writing a sample BDD acceptance test.
+
+**Chapter 6: The User Management System Part 1**
+
+Introduces and Installing FOSUserBundle for User Management.
+
+**Chapter 7: The User Management System Part 2**
+
+Generating user CRUD using the command line and a bit of doctrine appetizer.
+
+**Chapter 8: Doctrine Fixtures and Migrations**
+
+Installing and running Doctrine Fixtures and Migrations. It is important to have a consistent way of creating test data and migrating schemas.
+
+**Chapter 9: The Admin Panel Part 1**
+
+Installing EasyAdminBundle and integrating it with FOSUserBundle.
+
+**Chapter 10: BDD With Codeception (Optional)**
+
+Writing BDD acceptance tests for user management business rules.
+
+**Chapter 11: Customising the Login Process**
+
+Customising Twig templates for the login and request password pages.
+
+**Chapter 12: The Admin Panel Part 2**
+
+Tweaking EasyAdmin UI.
+
+**Chapter 13: Internalisation**
+
+Getting Songbird to support french as well.
+
+**Chapter 14: Uploading Files**
+
+Installing VichUploaderBundle and integrating it with EasyAdminBundle.
+ 
+**Chapter 15: Logging User Activities**
+
+Creating a simple bundle to log user activities.
+ 
+**Chapter 16: Improving Performance and Troubleshooting**
+
+Installing blackfire and improving Symfony performance. Introduces Gulp to manage all frontend assets.
+
+**Chapter 17: The Page Manager Part 1**
+
+Creating a custom bundle called NestablePageBundle to manage pages. Introduces PHPUnit to write functional tests.
+ 
+**Chapter 18: Making Your Bundle Reusable**
+
+Refactoring NestablePageBundle and making it as a separate installable component.
+ 
+**Chapter 19: The Page Manager Part 2**
+
+Installing CKEditor to the CMS and creating a custom locale selector.
+ 
+**Chapter 20: The Front View**
+
+Creating the frontend controller and view.
+ 
+**Chapter 21: Dependency Injection Revisited**
+
+Using Compiler Pass to add user roles to EasyAdminBundle.
+
+**Chapter Final**
+
+Congratulations. It's time to start build something yourself using Symfony.
+
 ## Conventions Used in This Book
 
 **Each git branch is a chapter**. Obviously, chapter_6 branch means it is Chapter 6. Otherwise stated, all path references assumes **~/songbird** as the root folder. Always execute commands from the root folder.
@@ -210,7 +300,12 @@ Now go to http://songbird.app:8000 and you should see the homepage.
 
 ![](images/cms_final.png)
 
-You can log into the backend using admin:admin
+You can log into the backend by going to http://songbird.app:8000/admin using 
+
+```
+user: admin
+password: admin
+```
 
 To run full BDD test on the site
 

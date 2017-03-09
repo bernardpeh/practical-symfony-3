@@ -1,12 +1,16 @@
 # Final Chapter: Conclusion
 
-Congratulations for perservering for so long... It's been a long journey. In the previous chapters, we have created a simple CMS using a [modular](https://en.wikipedia.org/wiki/Modular_design) approach. The CMS is *really simple* but is secure, supports user logging and internalisation. While going through the exercises, we have explored possibilities to build different parts of the CMS bit by bit.
+Congratulations for perservering for so long... It's been a long journey. In the previous chapters, we have created a simple CMS using a [modular](https://en.wikipedia.org/wiki/Modular_design) approach. The CMS is *really simple* but is secure, supports user logging and internalisation. While going through the exercises, we have explored possibilities to build different parts of the CMS bit by bit. 
+
+Now, you have all the basic knowledge and foundation to create more complex applications with Symfony.
 
 So, what's next from here? Ready for more adventures?
 
 Here are some suggestions:
 
-* I am sure you will find bugs and typos along the way. Create pull requests in git.
+* Start building something with Symfony fullstack or its components.
+
+* I am sure you will find bugs and typos along the way. Create pull requests for SongBird in git.
 
 * Improve on the NestablePageBundle to reduce the amount of work required to integrate with EasyAdminBundle.
 
@@ -26,7 +30,6 @@ Here are some suggestions:
 
 * How about packing your application up into an installable bundle? That way, you can distribute your application easily.
 
+
 Good luck on your next Symfony Journey!
-
-
 

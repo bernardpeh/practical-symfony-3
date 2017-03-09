@@ -19,4 +19,5 @@ It is important to note that the rationale behind SongBird CMS is to have broad 
 I hope you have fun creating your own version of SongBird by following the exercises in this book, choosing your best arsenal for your future adventures.
 
 Cheers,
+
 Bernard Peh

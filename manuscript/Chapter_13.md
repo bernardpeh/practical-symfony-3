@@ -231,9 +231,9 @@ Now let us update the menu translation in menu.html.twig
 ## Sticky Locale
 
 Let us create the supported languages in config.yml
+
 ```
 # app/config/config.yml
-
 ...
 parameters:
     # set this to english as default

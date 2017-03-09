@@ -93,7 +93,7 @@ Say for now, we want ROLE_USER to access the admin dashboard.
 Let us create the new admin controller
 
 ```
-#src/AppBundle/Controller/AdminController.php
+# src/AppBundle/Controller/AdminController.php
 namespace AppBundle\Controller;
 
 use JavierEguiluz\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;

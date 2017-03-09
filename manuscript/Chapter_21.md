@@ -577,8 +577,6 @@ The menu display is not managed by the event subscriber. We have to add an is_gr
 
 Try logging in now as test1 and you will see that the menu and entities should be access controlled.
 
-![](images/new_dashboard.png)
-
 ## Adding Roles to EasyAdmin Actions
 
 We have seen that easyadmin actions is controlled by the yml files, ie something like:
@@ -720,11 +718,11 @@ We are close to the end of the chapter. Let us clean up all our code using php-c
 
 ## Update BDD (Optional)
 
-We have updated some business rules. Users can now see and do what they are allowed in the admin area. Its time to ensure we update our tests to reflect these changes.
+We have updated some business rules. Users can now see and do what they are allowed in the admin area based on their role in the easyadmin yaml config files. Its time to ensure we update our tests to reflect these changes.
 
 ## Summary
 
-In this chapter, we have cleaned up config.yml and provided a custom solution (Using compiler pass) to make EasyAdmin support user permissions in the admin area. It was a huge effort but not yet a full solution. However, it should make life easy for people who wants to configure admin permissions easily.
+In this chapter, we have cleaned up config.yml and provided a custom solution (Using compiler pass and event listeners) to make EasyAdmin support user permissions in the admin area. It was a huge effort but not yet a full solution. However, it should make life easy for people who wants to configure admin permissions easily.
 
 ## Exercises
 

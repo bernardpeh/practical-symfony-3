@@ -454,8 +454,6 @@ Click on "View comparision"
 
 ![](images/blackfire_profile_improvements.png)
 
-As you would expect, it should be clear where the bottleneck was huh? See the blue lines...
-
 I was merely scrapping the surface of blackfire. I suggest you do the [24 days of blackfire](https://blackfire.io/docs/24-days/index) tutorials if you want to dig in deeper.
 
 ## Fix Coding Standards with PHP-CS-Fixer

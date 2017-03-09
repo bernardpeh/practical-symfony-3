@@ -126,13 +126,12 @@ Normal users should not see the left entities menus. Again, let us copy the menu
 ```
 
 and the actual menu.html.twig
+
 ```
 # app/Resources/EasyAdminBundle/views/default/menu.html.twig
 
 ...
-
 {% block main_menu_before %}{% endblock %}
-
 <ul class="sidebar-menu">
     {% block main_menu %}
         {% if is_granted('ROLE_SUPER_ADMIN') %}
@@ -154,7 +153,6 @@ and the actual menu.html.twig
         {% endif %}
     {% endblock main_menu %}
 </ul>
-
 {% block main_menu_after %}{% endblock %}
 ```
 
@@ -224,7 +222,6 @@ Now that we have defined the admin layout, we should update BDD tests for seeMyD
 
 |**Scenario Id**|**Given**|**When**|**Then**|
 |10.1.2|See my dashboard content|I login correctly|I should not see the text "User Management" and should see the text "Dear test1"|
-</table>
 
 |**Scenario Id**|**Given**|**When**|**Then**|
 |10.2.2|See my dashboard content|I login correctly|I should see the text "User Management" and "Dear Admin"|

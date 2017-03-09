@@ -29,8 +29,9 @@ The idea is to do **actual coding in your host** (main operating system) and let
 # update SYMFONY_APP_PATH parameters in the .env file and leave the rest as defaults
 -> cp .env.dist .env
 
-# we need to create new db dir when mounting docker
+# we need to create new dir when mounting docker (if case if using nfs)
 -> mkdir -p .data/db
+-> mkdir -p logs/{symfony,nginx}
 
 # update parameters in the .env file if you want, then run
 -> docker-compose up --build -d

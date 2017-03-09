@@ -601,5 +601,7 @@ In this chapter, we have created the frontend controllers and views. We used sma
 ## References
 
 * [Controllers best practice](http://symfony.com/doc/current/best_practices/controllers.html)
+
 * [Smart Menus](http://www.smartmenus.org/)
+
 * [Twig Extension](http://symfony.com/doc/current/cookbook/templating/twig_extension.html)

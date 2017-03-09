@@ -1,10 +1,10 @@
 # Chapter 21: Dependency Injection Revisited
 
-Upon reflection of what we have covered in the last 20 chapters, I think there are a lot of improvements that can be done. In particular, I feel that I wouldn't do justice to this book if I don't give an example of [Compiler Pass](http://symfony.com/doc/current/service_container/compiler_passes.html).
+Upon reflection of what we have covered in the last 20 chapters, I think there are lots of improvements that can be done. In particular, I feel that I wouldn't do justice to this book if I don't give an example of [Compiler Pass](http://symfony.com/doc/current/service_container/compiler_passes.html).
 
 This is an advance chapter. If you skipped all the chapters and came to this chapter by chance, I recommend you to read up DI and DIC before continuing.
 
-In this chapter, I like to introduce 2 improvements to the CMS using DI.
+In this chapter, I like to introduce 2 improvements to the CMS.
 
 a) Simplifying config.yml
 
@@ -30,10 +30,10 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 /**
-* This is the class that loads and manages your bundle configuration
-*
-* To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
-*/
+ * This is the class that loads and manages your bundle configuration
+ *
+ * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
+ */
 class AppExtension extends Extension implements PrependExtensionInterface
 {
     /**
@@ -51,45 +51,47 @@ class AppExtension extends Extension implements PrependExtensionInterface
     /**
      * http://symfony.com/doc/current/bundles/prepend_extension.html
      */
-	public function prepend(ContainerBuilder $container)
-	{
-		// doctrine config
-		$doctrine = [];
-		$doctrine['orm']['resolve_target_entities']['Bpeh\NestablePageBundle\Model\PageBase'] = 'AppBundle\Entity\Page';
-		$doctrine['orm']['resolve_target_entities']['Bpeh\NestablePageBundle\Model\PageMetaBase'] = 'AppBundle\Entity\PageMeta';
-		$container->prependExtensionConfig('doctrine', $doctrine);
+    public function prepend(ContainerBuilder $container)
+    {
+        // doctrine config
+        $doctrine = [];
+        $doctrine['orm']['resolve_target_entities']['Bpeh\NestablePageBundle\Model\PageBase'] = 'AppBundle\Entity\Page';
+        $doctrine['orm']['resolve_target_entities']['Bpeh\NestablePageBundle\Model\PageMetaBase'] = 'AppBundle\Entity\PageMeta';
+        $container->prependExtensionConfig('doctrine', $doctrine);
 
-		// fos config
-		$fosuser = [];
-		$fosuser['db_driver'] = 'orm';
-		$fosuser['firewall_name'] = 'main';
-		$fosuser['user_class'] = 'AppBundle\Entity\User';
-		$container->prependExtensionConfig('fos_user', $fosuser);
+        // fos config
+        $fosuser = [];
+        $fosuser['db_driver'] = 'orm';
+        $fosuser['firewall_name'] = 'main';
+        $fosuser['user_class'] = 'AppBundle\Entity\User';
+        $fosuser['from_email']['address'] = 'admin@songbird.app';
+        $fosuser['from_email']['sender_name'] = 'Songbird';
+        $container->prependExtensionConfig('fos_user', $fosuser);
 
-		# Nestable page config
-		$page = [];
-		$page['page_entity'] = 'AppBundle\Entity\Page';
-		$page['pagemeta_entity'] = 'AppBundle\Entity\PageMeta';
-		$page['page_form_type'] = 'AppBundle\Form\PageType';
-		$page['pagemeta_form_type'] = 'AppBundle\Form\PageMetaType';
-		$container->prependExtensionConfig('bpeh_nestable_page', $page);
+        # Nestable page config
+        $page = [];
+        $page['page_entity'] = 'AppBundle\Entity\Page';
+        $page['pagemeta_entity'] = 'AppBundle\Entity\PageMeta';
+        $page['page_form_type'] = 'AppBundle\Form\PageType';
+        $page['pagemeta_form_type'] = 'AppBundle\Form\PageMetaType';
+        $container->prependExtensionConfig('bpeh_nestable_page', $page);
 
-		# Vich config
-		$vich = [];
-		$vich['db_driver'] = 'orm';
-		$vich['mappings']['profile_images']['uri_prefix'] = '%app.profile_image.path%';
-		$vich['mappings']['profile_images']['upload_destination'] = '%kernel.root_dir%/../web/uploads/profiles';
-		$vich['mappings']['profile_images']['namer'] = 'vich_uploader.namer_uniqid';
-		$vich['mappings']['featured_image']['uri_prefix'] = '%app.featured_image.path%';
-		$vich['mappings']['featured_image']['upload_destination'] = '%kernel.root_dir%/../web/uploads/featured_images';
-		$vich['mappings']['featured_image']['namer'] = 'vich_uploader.namer_uniqid';
-		$container->prependExtensionConfig('vich_uploader', $vich);
+        # Vich config
+        $vich = [];
+        $vich['db_driver'] = 'orm';
+        $vich['mappings']['profile_images']['uri_prefix'] = '%app.profile_image.path%';
+        $vich['mappings']['profile_images']['upload_destination'] = '%kernel.root_dir%/../web/uploads/profiles';
+        $vich['mappings']['profile_images']['namer'] = 'vich_uploader.namer_uniqid';
+        $vich['mappings']['featured_image']['uri_prefix'] = '%app.featured_image.path%';
+        $vich['mappings']['featured_image']['upload_destination'] = '%kernel.root_dir%/../web/uploads/featured_images';
+        $vich['mappings']['featured_image']['namer'] = 'vich_uploader.namer_uniqid';
+        $container->prependExtensionConfig('vich_uploader', $vich);
 
-	}
+    }
 }
 ```
 
-my config.yml then becomes like this
+my config.yml then becomes like this:
 
 ```
 # app/config/config.yml
@@ -160,13 +162,13 @@ swiftmailer:
     spool:     { type: memory }
 ```
 
-I could have moved more parameters over to the prepend function if I want.
+Noticed that I could have moved more parameters over to the prepend function if I want to simplify the installation further.
 
 ## Adding Simple Access Control to EasyAdminBundle
 
-I still want to congratulate [javiereguiluz](https://github.com/javiereguiluz) for creating the wonderful [EasyAdminBundle](https://github.com/javiereguiluz/EasyAdminBundle). As of current, the bundle doesn't support user permissions out of the box. I believe there might be plans to include this feature in the future as it is a widely requested feature.
+I still want to comment [javiereguiluz](https://github.com/javiereguiluz) for creating the wonderful [EasyAdminBundle](https://github.com/javiereguiluz/EasyAdminBundle). As of current, the bundle doesn't support user permissions out of the box. I believe there might be plans to include this feature in the future as it is a widely requested feature.
 
-As an exercise, let's say that we want to customise the bundle such that we can control access to certain parts of the admin area based on the user's role. We want to do that simply by changing the easyadmin yaml files.
+As an exercise, let's say that we want to customise the bundle so that we can control access to certain parts of the admin area based on the user's role and we want to do that simply by changing the easyadmin yaml files.
 
 Let us allow all authenticated users to access the admin area rather than just ROLE_USER.
 
@@ -186,18 +188,18 @@ The new design.yml should look like this:
 
 easy_admin:
     design:
-        brand_color: '#337ab7'
+        brand_color: '#5493ca'
         assets:
             css:
-              - /bundles/app/css/style.css
+                - /bundles/app/css/style.css
         menu:
           - { label: 'Dashboard', route: 'dashboard', default: true }
-          - { entity: 'User', icon: 'user', role: ROLE_ADMIN }
-          - { entity: 'Page', icon: 'file', role: ROLE_USER }
+          - { entity: 'User', icon: 'user', role: ROLE_USER }
+          - { entity: 'Page', icon: 'file', role: ROLE_ADMIN }
           - { entity: 'UserLog', icon: 'database', role: ROLE_ADMIN }
 ```
 
-Noticed that we have added a new array key called "role" to each menu item and the value (say "ROLE_ADMIN") means the mimimum permission level required to access that menu. In this case, everyone can see the dashboard, ROLE_USER and above can see the Page link and only ROLE_ADMIN can see the User and UserLog link.
+Noticed that we have added a new attribute called "role" to each menu item and the value (say "ROLE_ADMIN") means the mimimum permission level required to access that menu. In this case, everyone can see the dashboard, ROLE_USER and above can access the User link and only ROLE_ADMIN can see the User and UserLog link.
 
 We are going to do something similar for all the entities yaml, starting from the page entity
 
@@ -209,7 +211,7 @@ easy_admin:
         Page:
             class: AppBundle\Entity\Page
             label: admin.link.page_management
-            role: ROLE_USER
+            role: ROLE_ADMIN
             # for new page
             new:
                 fields:
@@ -243,11 +245,9 @@ easy_admin:
                   - sequence
                   - parent
                   - modified
-            delete:
-                role: ROLE_ADMIN
         PageMeta:
             class: AppBundle\Entity\PageMeta
-            role: ROLE_USER
+            role: ROLE_ADMIN
             form:
               fields:
                 - page_title
@@ -260,8 +260,6 @@ easy_admin:
                 - page
 ```
 
-We are allowing ROLE_USER to access all the actions of the page entity except deleting.
-
 Now, the user entity:
 
 ```
@@ -272,9 +270,60 @@ easy_admin:
         User:
             class: AppBundle\Entity\User
             label: admin.link.user_management
-            role: ROLE_ADMIN
-            ...
-
+            role: ROLE_USER
+            # for new user
+            new:
+                role: ROLE_ADMIN
+                fields:
+                  - username
+                  - firstname
+                  - lastname
+                  - { property: 'plainPassword', type: 'repeated', type_options: { type: 'Symfony\Component\Form\Extension\Core\Type\PasswordType', first_options: {label: 'Password'}, second_options: {label: 'Repeat Password'}, invalid_message: 'The password fields must match.'}}
+                  - { property: 'email', type: 'email', type_options: { trim: true } }
+                  - { property: 'imageFile', type: 'vich_image' }
+                  - roles
+                  - enabled
+            edit:
+                role: ROLE_ADMIN
+                fields:
+                - username
+                - firstname
+                - lastname
+                - { property: 'plainPassword', type: 'repeated', type_options: { type: 'Symfony\Component\Form\Extension\Core\Type\PasswordType', required: false, first_options: {label: 'Password'}, second_options: {label: 'Repeat Password'}, invalid_message: 'The password fields must match.'}}
+                - { property: 'email', type: 'email', type_options: { trim: true } }
+                - { property: 'imageFile', type: 'vich_image' }
+                - roles
+                - enabled
+            show:
+                role: ROLE_ADMIN
+                fields:
+                - id
+                - { property: 'image', type: 'image', base_path: '%app.profile_image.path%'}
+                - username
+                - firstname
+                - lastname
+                - email
+                - roles
+                - enabled
+                - { property: 'last_login', type: 'datetime' }
+                - modified
+                - created
+            list:
+                role: ROLE_USER
+                title: 'User Listing'
+                actions: ['show']
+                fields:
+                  - id
+                  - { property: 'image', type: 'image', base_path: '%app.profile_image.path%'}
+                  - username
+                  - email
+                  - firstname
+                  - lastname
+                  - enabled
+                  - roles
+                  - { property: 'last_login', type: 'datetime' }
+            delete:
+                role: ROLE_ADMIN
 ```
 
 and finally - userlog.yml. 
@@ -328,6 +377,8 @@ We have added a new compiler pass class called ConfigPass.php. Compiler Pass nee
 
 <?php
 
+<?php
+
 namespace AppBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -335,41 +386,40 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ConfigPass implements CompilerPassInterface
 {
-	public function process( ContainerBuilder $container ) {
+    public function process( ContainerBuilder $container ) {
 
-		// $container->getParameterBag();
-		// $container->getServiceIds();
+        // $container->getParameterBag();
+        // $container->getServiceIds();
 
-		$config = $container->getParameter('easyadmin.config');
+        $config = $container->getParameter('easyadmin.config');
 
-		// use menu to use IS_AUTHENTICATED_FULLY role by default if not set
-		foreach($config['design']['menu'] as $k => $v) {
-			if (!isset($v['role'])) {
-				$config['design']['menu'][$k]['role'] = 'IS_AUTHENTICATED_FULLY';
-			}
-		}
+        // use menu to use IS_AUTHENTICATED_FULLY role by default if not set
+        foreach($config['design']['menu'] as $k => $v) {
+            if (!isset($v['role'])) {
+                $config['design']['menu'][$k]['role'] = 'IS_AUTHENTICATED_FULLY';
+            }
+        }
 
-		// update entities to use IS_AUTHENTICATED_FULLY role by default if not set
-		foreach ($config['entities'] as $k => $v) {
-			if (!isset($v['role'])) {
-				$config['entities'][$k]['role'] = 'IS_AUTHENTICATED_FULLY';
-			}
-		}
+        // update entities to use IS_AUTHENTICATED_FULLY role by default if not set
+        foreach ($config['entities'] as $k => $v) {
+            if (!isset($v['role'])) {
+                $config['entities'][$k]['role'] = 'IS_AUTHENTICATED_FULLY';
+            }
+        }
 
-		// update views to use entities role by default if not set
-		foreach ($config['entities'] as $k => $v) {
-			$views = ['new', 'edit', 'show', 'list'];
-			foreach ($views as $view) {
-				if (!isset($v[$view]['role'])) {
-					$config['entities'][$k][$view]['role'] = $v['role'];
-				}
-			}
-		}
+        // update views to use entities role by default if not set
+        foreach ($config['entities'] as $k => $v) {
+            $views = ['new', 'edit', 'show', 'list', 'form', 'delete'];
+            foreach ($views as $view) {
+                if (!isset($v[$view]['role'])) {
+                    $config['entities'][$k][$view]['role'] = $v['role'];
+                }
+            }
+        }
 
-		$container->setParameter('easyadmin.config', $config);
+        $container->setParameter('easyadmin.config', $config);
 
-	}
-
+    }
 }
 ```
 
@@ -395,32 +445,7 @@ We now need to add a bit more logic to the subscriber.
 
 class AppSubscriber implements EventSubscriberInterface
 {
-    protected $container;
-
-    /**
-     * AppSubscriber constructor.
-     * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container) // this is @service_container
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
-    {
-    	// return the subscribed events, their methods and priorities
-        return array(
-		EasyAdminEvents::PRE_NEW => 'checkUserRights',
-                EasyAdminEvents::PRE_LIST => 'checkUserRights',
-                EasyAdminEvents::PRE_EDIT => 'checkUserRights',
-                EasyAdminEvents::PRE_SHOW => 'checkUserRights',
-        	EasyAdminEvents::PRE_DELETE => 'checkUserRights',
-                ...
-                );
-    }
+    ...
 
     /**
      * show an error if user is not superadmin and tries to manage restricted stuff
@@ -433,34 +458,36 @@ class AppSubscriber implements EventSubscriberInterface
         {
 
             // if super admin, allow all
-    	    $authorization = $this->container->get('security.authorization_checker');
+            $authorization = $this->container->get('security.authorization_checker');
             $request = $this->container->get('request_stack')->getCurrentRequest()->query;
-            if ($authorization->isGranted('ROLE_SUPER_ADMIN')) {
+    
+            if ($authorization->isGranted('ROLE_ADMIN')) {
                 return;
             }
-
+    
             $entity = $request->get('entity');
             $action = $request->get('action');
             $user_id = $request->get('id');
-
-            // This is an exception, allow user to view and edit their own profile irregardless of permissions
-            if ($entity == 'User') {
-                // if edit and show
-                if ($action == 'edit' || $action == 'show') {
-                    // check user is himself
-                    if ($user_id == $this->container->get('security.token_storage')->getToken()->getUser()->getId()) {
-                        return;
+    
+            // allow user to see and edit their own profile irregardless of permissions
+                    if ($entity == 'User') {
+                        // if edit and show
+                        if ($action == 'edit' || $action == 'show') {
+                            // check user is himself
+                            if ($user_id == $this->container->get('security.token_storage')->getToken()->getUser()->getId()) {
+                                return;
+                            }
+                        }
                     }
+    
+            $config = $this->container->get('easyadmin.config.manager')->getBackendConfig();
+    
+            // check for permission for each action
+            foreach ($config['entities'] as $k => $v) {
+                if ($entity == $k && !$authorization->isGranted($v[$action]['role'])) {
+                    throw new AccessDeniedException();
                 }
             }
-
-    	    $config = $this->container->get('easyadmin.config.manager')->getBackendConfig();
-            // check for permission for each action
-    	    foreach ($config['entities'] as $k => $v) {
-    	    	if ($entity == $k && !$authorization->isGranted($v[$action]['role'])) {
-    			    throw new AccessDeniedException();
-    		    }
-    	    }
         }
     ...
 ```
@@ -485,79 +512,236 @@ Note that this will work only if our AdminController dispatches the events, ie
     }
 ```
 
-The menu display is not managed by the event subscriber. We simply need to change the twig a bit.
+The menu display is not managed by the event subscriber. We have to add an is_granted statement before rendering the menu. See below:
 
 ```
 # app/Resources/views/easy_admin/menu.html.twig
 
-{%  extends '@EasyAdmin/default/menu.html.twig' %}
+{% macro render_menu_item(item, translation_domain) %}
+    {% if item.type == 'divider' %}
+        {{ item.label|trans(domain = translation_domain) }}
+    {% else %}
+        {% set menu_params = { menuIndex: item.menu_index, submenuIndex: item.submenu_index } %}
+        {% set path =
+        item.type == 'link' ? item.url :
+        item.type == 'route' ? path(item.route, item.params) :
+        item.type == 'entity' ? path('easyadmin', { entity: item.entity, action: 'list' }|merge(menu_params)|merge(item.params)) :
+        item.type == 'empty' ? '#' : ''
+        %}
 
-{% block main_menu %}
-
-    {% for item in easyadmin_config('design.menu') %}
-        {% if is_granted(item.role) %}
-        <li class="{{ item.type == 'divider' ? 'header' }} {{ item.children is not empty ? 'treeview' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.index0 ? 'active' }} {{ app.request.query.get('submenuIndex')|default(-1) != -1 ? 'submenu-active' }}">
-            {{ helper.render_menu_item(item) }}
-
-            {% if item.children|default([]) is not empty %}
-                <ul class="treeview-menu">
-                    {% for subitem in item.children %}
-                        <li class="{{ subitem.type == 'divider' ? 'header' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.parent.loop.index0 and app.request.query.get('submenuIndex')|default(-1) == loop.index0 ? 'active' }}">
-                            {{ helper.render_menu_item(subitem) }}
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </li>
+        {# if the URL generated for the route belongs to the backend, regenerate
+           the URL to include the menu_params to display the selected menu item
+           (this is checked comparing the beginning of the route URL with the backend homepage URL)
+        #}
+        {% if item.type == 'route' and (path starts with path('easyadmin')) %}
+            {% set path = path(item.route, menu_params|merge(item.params)) %}
         {% endif %}
-    {% endfor %}
 
-{% endblock main_menu %}
+        <a href="{{ path }}" {% if item.target|default(false) %}target="{{ item.target }}"{% endif %}>
+            {% if item.icon is not empty %}<i class="fa {{ item.icon }}"></i>{% endif %}
+            <span>{{ item.label|trans(domain = translation_domain) }}</span>
+            {% if item.children|default([]) is not empty %}<i class="fa fa-angle-left pull-right"></i>{% endif %}
+        </a>
+    {% endif %}
+{% endmacro %}
+
+{% import _self as helper %}
+
+{% block main_menu_before %}{% endblock %}
+
+<ul class="sidebar-menu">
+    {% block main_menu %}
+        {% for item in easyadmin_config('design.menu') %}
+            {% if is_granted(item.role) %}
+                <li class="{{ item.type == 'divider' ? 'header' }} {{ item.children is not empty ? 'treeview' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.index0 ? 'active' }} {{ app.request.query.get('submenuIndex')|default(-1) != -1 ? 'submenu-active' }}">
+
+                    {{ helper.render_menu_item(item, 'app') }}
+
+                    {% if item.children|default([]) is not empty %}
+                        <ul class="treeview-menu">
+                            {% for subitem in item.children %}
+                                <li class="{{ subitem.type == 'divider' ? 'header' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.parent.loop.index0 and app.request.query.get('submenuIndex')|default(-1) == loop.index0 ? 'active' }}">
+                                    {{ helper.render_menu_item(subitem, _entity_config.translation_domain|default('messages')) }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endif %}
+        {% endfor %}
+    {% endblock main_menu %}
+</ul>
+
+{% block main_menu_after %}{% endblock %}
 ```
 
 Try logging in now as test1 and you will see that the menu and entities should be access controlled.
 
 ![](images/new_dashboard.png)
 
-Note that the above method for allowing user permissions for EasyAdmin is just one of many ways to do it. Implementing a full solution needs a big code rewrite. One big area I can think of is to allow roles to define its actions. ie something like this:
+## Adding Roles to EasyAdmin Actions
+
+We have seen that easyadmin actions is controlled by the yml files, ie something like:
 
 ```
-easy_admin:
-    entities:
-        UserLog:
-            class: AppBundle\Entity\UserLog
-            label: admin.link.user_log
-            role: ROLE_ADMIN
-                show:
-                    actions: ['list', 'edit', 'delete']
-                list:
-                    actions: ['show', '-edit', '-delete']
-            role: ROLE_USER
-                show:
-                    actions: ['list', '-edit', '-delete']
-                list:
-                    actions: ['show', '-edit', '-delete']        
+# app/config/easyadmin/userlog.yml
+...
+show:
+    actions: ['list', '-edit', '-delete']
+list:
+    actions: ['show', '-edit', '-delete']
+...
 ```
 
-But this structure would require a lot of code change to the templates. We have enough to think about and will leave it for now.
+What if we want the actions to be "role" aware? If you look at the easyadmin twig files, you will see that it calls a Twig function "getActionsForItem" to get the actions prior to render. This gives us a chance to change the function logic by extending the class.
+
+
+```
+# src/AppBundle/Twig/Extension/EasyAdminTwigExtension.php
+
+namespace AppBundle\Twig\Extension;
+
+use JavierEguiluz\Bundle\EasyAdminBundle\Configuration\ConfigManager;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
+
+/**
+ * Class EasyAdminTwigExtension
+ * @package AppBundle\Twig\Extension
+ */
+class EasyAdminTwigExtension extends \JavierEguiluz\Bundle\EasyAdminBundle\Twig\EasyAdminTwigExtension
+{
+    private $checker;
+
+    public function __construct(ConfigManager $configManager, PropertyAccessor $propertyAccessor, $debug = false, AuthorizationChecker $checker)
+    {
+        parent::__construct($configManager, $propertyAccessor, $debug);
+        $this->checker = $checker;
+    }
+
+    /**
+     * Overrides parent function
+     *
+     * @param string $view
+     * @param string $entityName
+     *
+     * @return array
+     */
+    public function getActionsForItem($view, $entityName)
+    {
+        $entityConfig = $this->getEntityConfiguration($entityName);
+        $disabledActions = $entityConfig['disabled_actions'];
+        $viewActions = $entityConfig[$view]['actions'];
+
+        $actionsExcludedForItems = array(
+            'list' => array('new', 'search'),
+            'edit' => array(),
+            'new' => array(),
+            'show' => array(),
+        );
+        $excludedActions = $actionsExcludedForItems[$view];
+
+        // hid these buttons if easyadmin says so
+        $actions = ['edit', 'form', 'delete', 'list', 'show'];
+        foreach ($actions as $action) {
+            if (isset($entityConfig[$action]['role']) && !$this->checker->isGranted($entityConfig[$action]['role'])) {
+                array_push($excludedActions, $action);
+            }
+        }
+        
+        return array_filter($viewActions, function ($action) use ($excludedActions, $disabledActions) {
+            return !in_array($action['name'], $excludedActions) && !in_array($action['name'], $disabledActions);
+        });
+    }
+}
+```
+
+And we have to remember to call our new twig class in services.yml
+
+```
+# src/AppBundle/Resources/config/services.yml
+  ...
+  app.twig.extension:
+    class: AppBundle\Twig\Extension\EasyAdminTwigExtension
+    arguments:
+        - "@easyadmin.config.manager"
+        - "@property_accessor"
+        - "%kernel.debug%"
+        - "@security.authorization_checker"
+    tags:
+      - { name: twig.extension }
+```
+
+One thing to remember though is that we have to load our AppBundle after EasyAdminbundle so that our app.twig.extension can override the easyadmin.twig.extension service of EasyAdminBundle
+
+```
+# app/AppKernel.php
+...
+        $bundles = [
+            new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+            new Symfony\Bundle\SecurityBundle\SecurityBundle(),
+            new Symfony\Bundle\TwigBundle\TwigBundle(),
+            new Symfony\Bundle\MonologBundle\MonologBundle(),
+            new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
+            new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+            new Vich\UploaderBundle\VichUploaderBundle(),
+            // init my fosuser
+            new FOS\UserBundle\FOSUserBundle(),
+            new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+            new JavierEguiluz\Bundle\EasyAdminBundle\EasyAdminBundle(),
+            new Bpeh\NestablePageBundle\BpehNestablePageBundle(),
+            new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
+            new AppBundle\AppBundle(),
+            new AppBundle\User(),
+            new AppBundle\Page(),
+...            
+```
+
+I have disabled the "edit" action for all users, so the edit button will not show even if the user is himself. For the sake of simplicity, let us change the layout header link to use edit action instead.
+
+```
+# app/Resources/EasyAdminBundle/views/default/layout.html.twig
+...
+<a href="{{ path('easyadmin') }}/?entity=User&action=edit&id={{ app.user.id }}">{{ app.user.username|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) }}</a>
+...
+```
+
+## Cleaning up
+
+We are close to the end of the chapter. Let us clean up all our code using php-cs-fixer (Still remember this?)
+
+```
+-> vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix src/
+-> vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix src/
+# finally optimising composer
+-> ./scripts/optimize_composer
+```
 
 ## Update BDD (Optional)
 
-Normal users can now see the Page list in the dashboard, perform all actions except delete. Add this rule to the new BDD Test.
-
-Write your test and make sure everything passes.
+We have updated some business rules. Users can now see and do what they are allowed in the admin area. Its time to ensure we update our tests to reflect these changes.
 
 ## Summary
 
-In this chapter, we have cleaned up config.yml and provided a custom solution to make EasyAdmin support user permissions in the admin area. It was a huge effort but not yet a full solution. However, it should make life easy for people who wants to configure admin permissions easily.
+In this chapter, we have cleaned up config.yml and provided a custom solution (Using compiler pass) to make EasyAdmin support user permissions in the admin area. It was a huge effort but not yet a full solution. However, it should make life easy for people who wants to configure admin permissions easily.
 
 ## Exercises
 
-* Other than menu.html.twig, try updating other EasyAdmin view templates to support the "role" attribute. Is there a simple way to do it?
+* Think of another way to make EasyAdmin support user permissions.
+
+* Write your test and make sure everything passes (Optional)
+
+* Can you implement [autowiring](http://symfony.com/doc/current/components/dependency_injection/autowiring.html) in services.yml? What are the pros and cons of using autowiring?
 
 ## References
 
 * [Prepend Config](http://symfony.com/doc/current/bundles/prepend_extension.html)
+
 * [Dependency Injection Component](https://symfony.com/doc/current/components/dependency_injection.html)
+
 * [Service Container](http://symfony.com/doc/current/service_container.html)
+
 * [Tagging Symfony Services](http://thorpesystems.com/blog/tagging-symfony-services/)
+
+* [Autowiring](http://symfony.com/doc/current/components/dependency_injection/autowiring.html)

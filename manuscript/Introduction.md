@@ -169,22 +169,32 @@ If you are already getting impatient and wants to see a demo of the completed pr
 -> git clone https://github.com/bernardpeh/songbird
 -> cd songbird
 -> git checkout chapter_final
+
 # update SYMFONY_APP_PATH parameters in the .env file and leave the rest as defaults
 -> cp .env.dist .env
-# we need to create new db dir when mounting docker
- -> mkdir -p .data/db
+
+# we need to create new dir when mounting docker (if case if using nfs)
+-> mkdir -p .data/db
+-> mkdir -p logs/{symfony,nginx}
 -> cd symfony
--> docker-compose build
--> docker-compose up -d
--> docker-compose exec php composer install
+
+# See chapter 3 to improve mac performance before continuing (if you are interested)
+-> docker-compose up --build -d
+
+# To confirm all your containers are running
+-> docker-compose ps
+
 # add ip to your host file (assuming you are in unix env)
 -> sudo echo "127.0.0.1 songbird.app" >> /etc/hosts
 
 # create the uploads dir
-mkdir -p web/uploads/profiles
+mkdir -p web/uploads/{profiles,featured_images}
 
-# install db and fixtures
--> scripts/resetapp
+# install symfony libraries - ignore the db errors when running composer install
+-> ./scripts/composer install
+
+# install db and fixtures 
+-> ./scripts/resetapp
 
 # install js libraries
 -> bower install
@@ -202,7 +212,15 @@ Now go to http://songbird.app:8000 and you should see the homepage.
 
 You can log into the backend using admin:admin
 
+To run full BDD test on the site
+
+```
+# Optional Step to check site is fully functional
+-> ./scripts/runtest
+```
+
 ## References
 
 * [RAD](https://en.wikipedia.org/wiki/Rapid_application_development)
+
 * [Agile Software Development](https://en.wikipedia.org/wiki/Agile_software_development)

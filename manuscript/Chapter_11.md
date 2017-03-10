@@ -90,6 +90,7 @@ and base.html.twig
 To override FOSUserBundle template, have a look at the vendors/friendsofsymfony/Resources/views. Thanks to inheritance, we can override login.html.twig based on the layout that we have created.
 
 Let us create the login file
+
 ```
 -> mkdir -p app/Resources/FOSUserBundle/views/Security
 -> touch app/Resources/FOSUserBundle/views/Security/login.html.twig
@@ -181,6 +182,7 @@ When using docker, installing a new service is easy (don't need to worry about d
 ```
 
 Now let us fire up the new container
+
 ```
 # under songbird dir
 -> docker-compose down
@@ -188,6 +190,7 @@ Now let us fire up the new container
 ```
 
 We also need to make sure swiftmailer is configured to talk to the new mailcatcher host
+
 ```
 # symfony/app/config/parameters.yml
 # configure based on your own settings
